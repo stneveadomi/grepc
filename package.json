@@ -19,18 +19,23 @@
       }
     ],
     "views": {
-      "grecs-explorer": [
+      "grepc-explorer": [
         {
           "id": "grepc",
           "name": "grepc"
+        },
+        {
+          "type": "webview",
+          "id": "grepc.webview",
+          "name": "Grepc Control Panel"
         }
       ]
     },
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "grecs-explorer",
-          "title": "Grecs",
+          "id": "grepc-explorer",
+          "title": "Grepc",
           "icon": "media/grecs.png"
         }
       ]
@@ -44,7 +49,7 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
+    "lint": "eslint ext-src --ext-ts",
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {

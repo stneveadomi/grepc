@@ -11,5 +11,5 @@ import { RowComponent } from './row/row.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  rows = [{header: 'header', body: 'body'}];
+  rows = [{header: 'header1', body: 'body'}];
 }

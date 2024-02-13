@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { GrepcProvider } from './grepcProvider';
+import { GrepcViewProvider } from './viewProviders/grepcViewProvider';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -40,6 +41,10 @@ export function activate(context: vscode.ExtensionContext) {
 		console.log('onDidChangeTextEditorSelection', e);
 		triggerUpdateDecorations();
 	});
+
+	const webviewProvider = new GrepcViewProvider(context.extensionUri);
+	vscode.window.registerWebviewViewProvider(GrepcViewProvider.viewType, webviewProvider);
+	//GrepcPanel.render(context.extensionUri);
 
 	function updateDecorations() {
 		console.timeStamp('Running update decorations');
