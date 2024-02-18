@@ -1,0 +1,56 @@
+.rule-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 100%;
+    width: 100%;
+}
+
+
+
+.rule-header,.decoration-header {
+    display: flex;
+    flex-direction: row;
+    text-transform: uppercase;
+    font-weight: bold;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 4px;
+}
+
+.delete-rule::before {
+    content: '\ea76';
+}
+
+.rule-body {
+    flex-grow: 0;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    gap: 5px;
+    overflow: hidden;
+}
+
+.rule-id::before {
+    content: '\eab4';
+    padding: 0 4px;
+}
+
+.codicon::before {
+    font: normal normal normal 16px/1 codicon;
+    display: inline-block;
+    text-decoration: none;
+    text-rendering: auto;
+    text-align: center;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+input[type='checkbox'] {
+    padding: 0;
+}
+

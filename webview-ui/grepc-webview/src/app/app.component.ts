@@ -1,15 +1,19 @@
-import { ApplicationModule, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { CommonModule, NgFor } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { RowComponent } from './row/row.component';
+import { RuleComponent } from './rule/rule.component';
+import { Rule } from '../models/rule';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RowComponent],
+  imports: [CommonModule, RouterOutlet, RuleComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  rows = [{header: 'header1', body: 'body'}];
+  rules: Rule[] = [
+    {enabled: true, decorationExpanded: true, expanded: true, id: 'Rule 1', regularExpression: /abc/}
+  ];
 }

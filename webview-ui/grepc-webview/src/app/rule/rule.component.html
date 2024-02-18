@@ -1,0 +1,24 @@
+<div class="rule-container">
+    <header class="rule-header" (click)="toggleExpand($event)">
+        <span class="rule-id codicon">{{rule.id}}</span>
+        <input type="checkbox" class="slider-checkbox" value="Rule ID" />
+        <span *ngIf="rule.enabled" class="circle">
+            {{occurences}}
+        </span>
+        <span 
+            class="delete-rule codicon"
+            (click)="deleteSelf()">
+        </span>
+    </header>
+    <content [@expand]="this.rule.expanded ? 'open' : 'closed'" class="rule-body">
+        <input type="text" class="regex-input"/>
+        <input type="text" name="include-files" />
+        <input type="text" name="exclude-files" />
+        <header class="decoration-header" (click)="toggleDecorationExpanded($event)">
+            <span class="rule-id codicon">Decorations</span>
+        </header>
+        <content [@expand]="this.rule.decorationExpanded ? 'open' : 'closed'">
+            <p>To Do: Insert decorations</p>
+        </content>
+    </content>
+</div>

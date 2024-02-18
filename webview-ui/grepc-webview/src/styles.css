@@ -4,5 +4,14 @@ html, body { height: 100%; }
 
 
 body {
-    background-color: var(--vscode-sideBar-background)
+    padding: 0;
+    background-color: var(--vscode-sideBar-background);
+    font-family: var(--vscode-font-family);
+    
+}
+
+
+h2 {
+    margin: 0;
+    color: var(--vscode-debugIcon-breakpointDisabledForeground);
 }
