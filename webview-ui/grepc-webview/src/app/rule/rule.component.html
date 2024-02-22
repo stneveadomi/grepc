@@ -1,6 +1,9 @@
 <div class="rule-container">
     <header class="rule-header" (click)="toggleExpand($event)">
-        <span class="rule-id codicon">{{rule.id}}</span>
+        <span class="rule-id codicon"
+            (click)="toggleExpand($event)">
+            {{rule.id}}
+        </span>
         <input type="checkbox" class="slider-checkbox" value="Rule ID" />
         <span *ngIf="rule.enabled" class="circle">
             {{occurences}}
@@ -11,11 +14,13 @@
         </span>
     </header>
     <content [@expand]="this.rule.expanded ? 'open' : 'closed'" class="rule-body">
-        <input type="text" class="regex-input"/>
-        <input type="text" name="include-files" />
-        <input type="text" name="exclude-files" />
+        <input type="text" class="regex-input" placeholder="Regular Expression"/>
+        <input type="text" name="include-files" placeholder="Include Files"/>
+        <input type="text" name="exclude-files" placeholder="Exclude Files"/>
         <header class="decoration-header" (click)="toggleDecorationExpanded($event)">
-            <span class="rule-id codicon">Decorations</span>
+            <span class="rule-id codicon" (click)="toggleDecorationExpanded($event)">
+                Decorations
+            </span>
         </header>
         <content [@expand]="this.rule.decorationExpanded ? 'open' : 'closed'">
             <p>To Do: Insert decorations</p>

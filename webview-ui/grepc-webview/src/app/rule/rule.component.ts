@@ -37,19 +37,26 @@ export class RuleComponent {
   }
 
   toggleExpand(event: Event) {
-    console.log('target:', event.target);
-    if(this.rule.expanded) {
-      //minimize
-      //rotate icon
-    } else {
-      //expand
-      //rotation icon
+    console.log('target:', JSON.stringify(event.target));
+    if(event.target === event.currentTarget) {
+      if(this.rule.expanded) {
+        //minimize
+        //rotate icon
+      } else {
+        //expand
+        //rotation icon
+      }
+      this.rule.expanded = !this.rule.expanded;
     }
-    this.rule.expanded = !this.rule.expanded;
+
   }
 
-  toggleDecorationExpanded() {
-    this.rule.decorationExpanded = !this.rule.decorationExpanded;
+  toggleDecorationExpanded(event: Event) {
+    if(event.target === event.currentTarget) {
+      console.log(event.target);
+      this.rule.decorationExpanded = !this.rule.decorationExpanded;
+    }
+    
   }
 
 }

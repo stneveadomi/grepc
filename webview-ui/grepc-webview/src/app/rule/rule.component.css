@@ -54,3 +54,16 @@ input[type='checkbox'] {
     padding: 0;
 }
 
+input[type='text'] {
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    width: calc(100% - 88px);
+    height: 24px;
+    position: relative;
+    display: block;
+    padding: 3px 0 3px 6px;
+    box-sizing: border-box;
+    border-radius: 2px;
+    border: 1px solid var(--vscode-input-border);
+}
+
