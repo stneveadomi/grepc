@@ -3,11 +3,12 @@ import { Rule } from '../../models/rule';
 import { CommonModule, NgFor } from '@angular/common';
 import { AppComponent } from '../app.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { SliderCheckboxComponent } from '../slider-checkbox/slider-checkbox.component';
 
 @Component({
   selector: 'app-rule',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SliderCheckboxComponent],
   animations: [
     trigger('expand', [
       state('open', style({

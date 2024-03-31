@@ -1,27 +1,51 @@
 <div class="rule-container">
     <header class="rule-header" (click)="toggleExpand($event)">
-        <span class="rule-id codicon"
-            (click)="toggleExpand($event)">
-            {{rule.id}}
-        </span>
-        <input type="checkbox" class="slider-checkbox" value="Rule ID" />
-        <span *ngIf="rule.enabled" class="circle">
-            {{occurences}}
-        </span>
-        <span 
-            class="delete-rule codicon"
-            (click)="deleteSelf()">
-        </span>
+        <div class="rule-header-container">
+            <div
+                (click)="toggleExpand($event)"
+                [ngClass]="this.rule.expanded ? 'open' : 'closed'" 
+                class="drop-down codicon codicon-chevron-right">
+            </div>
+            <span class="rule-id center-vertical">
+                {{rule.id}}
+            </span>
+        </div>
+        
+        <div class="rule-header-controls center-vertical">
+            <div class="center-vertical control-gap">
+                <span *ngIf="rule.enabled" class="circle">
+                    {{occurences}}
+                </span>
+                <app-slider-checkbox></app-slider-checkbox>
+            </div>
+
+            <span 
+                class="delete-rule codicon codicon-chrome-close"
+                (click)="deleteSelf()">
+            </span>
+        </div>
     </header>
+
     <content [@expand]="this.rule.expanded ? 'open' : 'closed'" class="rule-body">
         <input type="text" class="regex-input" placeholder="Regular Expression"/>
         <input type="text" name="include-files" placeholder="Include Files"/>
         <input type="text" name="exclude-files" placeholder="Exclude Files"/>
+
         <header class="decoration-header" (click)="toggleDecorationExpanded($event)">
-            <span class="rule-id codicon" (click)="toggleDecorationExpanded($event)">
-                Decorations
-            </span>
+            <div class="rule-header-container">
+                <div
+                    (click)="toggleDecorationExpanded($event)"
+                    [ngClass]="this.rule.decorationExpanded ? 'open' : 'closed'" 
+                    class="drop-down codicon codicon-chevron-right">
+                </div>
+
+                <span class="rule-id" (click)="toggleDecorationExpanded($event)">
+                    Decorations
+                </span>
+            </div>
+
         </header>
+
         <content [@expand]="this.rule.decorationExpanded ? 'open' : 'closed'">
             <p>To Do: Insert decorations</p>
         </content>

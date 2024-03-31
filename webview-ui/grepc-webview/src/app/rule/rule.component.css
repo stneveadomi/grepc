@@ -5,8 +5,6 @@
     width: 100%;
 }
 
-
-
 .rule-header,.decoration-header {
     display: flex;
     flex-direction: row;
@@ -18,8 +16,13 @@
     padding: 4px;
 }
 
-.delete-rule::before {
-    content: '\ea76';
+.rule-header-controls {
+    gap: 2em;
+
+}
+
+.control-gap {
+    gap: 1em;
 }
 
 .rule-body {
@@ -32,22 +35,34 @@
     overflow: hidden;
 }
 
-.rule-id::before {
-    content: '\eab4';
-    padding: 0 4px;
+.rule-id {
+    display: inline-flex;
+    width: 8em;
 }
 
-.codicon::before {
-    font: normal normal normal 16px/1 codicon;
-    display: inline-block;
-    text-decoration: none;
-    text-rendering: auto;
+.drop-down {
+    padding: 0 4px;
+    transition: all .1s;
+}
+
+.codicon {
     text-align: center;
-    text-transform: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    user-select: none;
-    -webkit-user-select: none;
+    align-items: center;
+    align-content: center;
+}
+
+.center-vertical {
+    text-align: center;
+    align-items: center;
+    align-content: center;
+}
+
+.open {
+    transform: rotate(90deg);
+}
+
+.close {
+    transform: rotate(-90deg);
 }
 
 input[type='checkbox'] {
@@ -67,3 +82,6 @@ input[type='text'] {
     border: 1px solid var(--vscode-input-border);
 }
 
+app-slider-checkbox {
+    display: inline-flex;
+}

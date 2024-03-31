@@ -1,0 +1,7 @@
+<input
+    type="checkbox" 
+    class="slider-checkbox"
+    [ngClass]="this.sliderToggle ? 'enabled' : 'disabled'"
+    (click)="this.toggle($event)"
+    [@slider]="this.sliderToggle ? 'enabled' : 'disabled'"
+    value="Rule ID" />

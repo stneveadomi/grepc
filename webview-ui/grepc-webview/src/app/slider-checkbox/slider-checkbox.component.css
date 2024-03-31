@@ -1,0 +1,41 @@
+.slider-checkbox {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+         appearance: none;
+    width: 3em;
+    height: 1.2em;
+    position: relative;
+
+    background-color: var(--vscode-input-background);
+    
+    border: 1px solid #CCCCCC;
+    border-radius: 1em;
+}
+
+.slider-checkbox::before {
+    background-color: #CCCCCC;
+    content: "";
+    appearance: none;
+
+    border-radius: 50%;
+    width: 0.8em;
+    height: 0.8em;
+    position: absolute;
+    top: 50%;
+    left: 7px;
+    margin-left: -0.4em;
+    margin-top: -0.4em;
+    transition: all .3s ease-in-out;
+}
+
+input:focus {
+    outline: unset;
+}
+
+.disabled::before {
+    transform: translateX(0);
+}
+
+.enabled::before {
+    transform: translateX(1.83em);
+}
