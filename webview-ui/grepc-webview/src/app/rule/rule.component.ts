@@ -40,13 +40,6 @@ export class RuleComponent {
   toggleExpand(event: Event) {
     console.log('target:', JSON.stringify(event.target));
     if(event.target === event.currentTarget) {
-      if(this.rule.expanded) {
-        //minimize
-        //rotate icon
-      } else {
-        //expand
-        //rotation icon
-      }
       this.rule.expanded = !this.rule.expanded;
     }
 

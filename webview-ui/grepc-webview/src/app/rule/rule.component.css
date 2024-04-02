@@ -3,6 +3,8 @@
     flex-direction: column;
     min-width: 100%;
     width: 100%;
+
+    border-bottom: 1px solid rgb(73, 73, 73);
 }
 
 .rule-header,.decoration-header {
@@ -80,6 +82,7 @@ input[type='text'] {
     box-sizing: border-box;
     border-radius: 2px;
     border: 1px solid var(--vscode-input-border);
+    margin-left: 2em;
 }
 
 app-slider-checkbox {

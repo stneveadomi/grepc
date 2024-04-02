@@ -6,7 +6,9 @@
                 [ngClass]="this.rule.expanded ? 'open' : 'closed'" 
                 class="drop-down codicon codicon-chevron-right">
             </div>
-            <span class="rule-id center-vertical">
+            <span 
+                (click)="toggleExpand($event)"
+                class="rule-id center-vertical">
                 {{rule.id}}
             </span>
         </div>
