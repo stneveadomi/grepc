@@ -47,6 +47,10 @@
     transition: all .1s;
 }
 
+.delete-rule {
+    cursor: pointer;
+}
+
 .codicon {
     text-align: center;
     align-items: center;
@@ -87,4 +91,5 @@ input[type='text'] {
 
 app-slider-checkbox {
     display: inline-flex;
+    cursor: pointer;
 }

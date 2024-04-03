@@ -10,6 +10,8 @@
     
     border: 1px solid #CCCCCC;
     border-radius: 1em;
+
+    cursor: pointer;
 }
 
 .slider-checkbox::before {
