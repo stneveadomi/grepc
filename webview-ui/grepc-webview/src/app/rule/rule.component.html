@@ -6,11 +6,36 @@
                 [ngClass]="this.rule.expanded ? 'open' : 'closed'" 
                 class="drop-down codicon codicon-chevron-right">
             </div>
-            <span 
+            <span
+                *ngIf="!this.isEditing"
                 (click)="toggleExpand($event)"
+                (mouseenter)="showEditIcon = true"
+                (mouseleave)="showEditIcon = false"
                 class="rule-id center-vertical">
                 {{rule.id}}
+                <div
+                    (click)="toggleEdit()"
+                    [ngClass]="this.showEditIcon ? 'editing' : 'fixed'"
+                    class="codicon codicon-edit clickable">
+                </div>
             </span>
+            <div *ngIf="this.isEditing">
+                <input
+                    class="rule-id-input"
+                    type="text"
+                    [(value)]="this.rule.id"/>
+                <div
+                    (click)="toggleEdit(); toggleShowEditIcon()"
+                    class="codicon codicon-close clickable">
+                </div>
+                <div
+                    (click)="updateTitle(); toggleEdit(); toggleShowEditIcon()"
+                    class="codicon codicon-check clickable">
+
+                </div>
+            </div>
+            
+
         </div>
         
         <div class="rule-header-controls center-vertical">

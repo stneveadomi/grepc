@@ -37,3 +37,7 @@ span {
 div {
     display: inline-flex;
 }
+
+.clickable {
+    cursor: pointer;
+}

@@ -7,7 +7,7 @@
     border-bottom: 1px solid rgb(73, 73, 73);
 }
 
-.rule-header,.decoration-header {
+.rule-header, .decoration-header {
     display: flex;
     flex-direction: row;
     text-transform: uppercase;
@@ -20,11 +20,6 @@
 
 .rule-header-controls {
     gap: 2em;
-
-}
-
-.control-gap {
-    gap: 1em;
 }
 
 .rule-body {
@@ -39,7 +34,24 @@
 
 .rule-id {
     display: inline-flex;
-    width: 8em;
+    gap: 0.25em;
+    max-width: 8em;
+}
+
+input[type='text'].rule-id-input {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    color: var(--vscode-editor-foreground);
+    font-family: var(--vscode-font-family);
+    font-weight: bold;
+    font-size: var(--vscode-font-size);
+    
+    text-transform: uppercase;
+}
+
+.control-gap {
+    gap: 1em;
 }
 
 .drop-down {
@@ -57,10 +69,18 @@
     align-content: center;
 }
 
+.codicon-edit {
+    font-size: 10pt;
+}
+
 .center-vertical {
     text-align: center;
     align-items: center;
     align-content: center;
+}
+
+.fixed {
+    display: none;
 }
 
 .open {

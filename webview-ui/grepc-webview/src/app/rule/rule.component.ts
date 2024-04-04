@@ -23,6 +23,7 @@ import { SliderCheckboxComponent } from '../slider-checkbox/slider-checkbox.comp
   styleUrl: './rule.component.css'
 })
 export class RuleComponent {
+
   @Input({required: true})
   rule!: Rule;
 
@@ -31,15 +32,18 @@ export class RuleComponent {
 
   occurences = 0;
 
+  showEditIcon = false;
+
+  isEditing = false;
+
   constructor() { }
 
   deleteSelf() {
     console.log('Deleting rule', this.rule.id);
   }
 
-  toggleExpand(event: Event) {
-    console.log('target:', JSON.stringify(event.target));
-    if(event.target === event.currentTarget) {
+  toggleExpand(event?: Event) {
+    if(event === undefined || event.target === event.currentTarget) {
       this.rule.expanded = !this.rule.expanded;
     }
 
@@ -53,4 +57,16 @@ export class RuleComponent {
     
   }
 
+  toggleEdit() {
+    this.isEditing = !this.isEditing;
+  }
+
+  toggleShowEditIcon() {
+    this.showEditIcon = !this.showEditIcon;
+  }
+
+  updateTitle() {
+    /* TO DO: UPDATE PROPER RULE ID */
+
+  }
 }
