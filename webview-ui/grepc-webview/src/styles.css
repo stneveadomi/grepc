@@ -9,9 +9,7 @@ body {
     padding: 0;
     background-color: var(--vscode-sideBar-background);
     font-family: var(--vscode-font-family);
-    
 }
-
 
 h2 {
     margin: 0;
@@ -28,14 +26,6 @@ h2 {
     background-color: rgb(73, 73, 73);
     width: 16px;
     height: 16px;
-}
-
-span {
-    display: inline-flex;
-}
-
-div {
-    display: inline-flex;
 }
 
 .clickable {

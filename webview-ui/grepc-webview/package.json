@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "^17.0.0",
     "@angular/router": "^17.0.0",
     "@vscode/codicons": "^0.0.35",
+    "ngx-color-picker": "^16.0.0",
     "rimraf": "^5.0.5",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

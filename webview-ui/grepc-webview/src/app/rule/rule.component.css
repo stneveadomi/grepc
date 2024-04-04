@@ -22,7 +22,7 @@
     gap: 2em;
 }
 
-.rule-body {
+.rule-body, .decoration-body {
     flex-grow: 0;
     flex-shrink: 0;
     display: flex;
@@ -30,6 +30,10 @@
     align-content: flex-start;
     gap: 5px;
     overflow: hidden;
+}
+
+.decoration-body {
+    padding-left: 1em;
 }
 
 .rule-id {
@@ -95,7 +99,7 @@ input[type='checkbox'] {
     padding: 0;
 }
 
-input[type='text'] {
+input {
     background-color: var(--vscode-input-background);
     color: var(--vscode-input-foreground);
     width: calc(100% - 88px);
@@ -112,4 +116,12 @@ input[type='text'] {
 app-slider-checkbox {
     display: inline-flex;
     cursor: pointer;
+}
+
+div {
+    display: inline-flex;
+}
+
+span {
+    display: inline-flex;
 }

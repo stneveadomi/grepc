@@ -4,11 +4,12 @@ import { CommonModule, NgFor } from '@angular/common';
 import { AppComponent } from '../app.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { SliderCheckboxComponent } from '../slider-checkbox/slider-checkbox.component';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 @Component({
   selector: 'app-rule',
   standalone: true,
-  imports: [CommonModule, SliderCheckboxComponent],
+  imports: [CommonModule, SliderCheckboxComponent, ColorPickerModule],
   animations: [
     trigger('expand', [
       state('open', style({

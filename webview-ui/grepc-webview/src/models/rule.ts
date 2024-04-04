@@ -5,7 +5,7 @@ export interface Rule {
     id: string;
     
     regularExpression: RegExp;
-    backgroundColor?: string;
+    backgroundColor: string;
     outline?: string;
     outlineColor?: string;
     outlineStyle?: string;

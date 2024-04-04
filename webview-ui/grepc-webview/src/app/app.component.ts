@@ -14,7 +14,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 })
 export class AppComponent {
   rules: Rule[] = [
-    {enabled: true, decorationExpanded: false, expanded: false, id: 'Rule 1', regularExpression: /abc/},
-    {enabled: true, decorationExpanded: false, expanded: false, id: 'Rule 2', regularExpression: /abc/}
+    {enabled: true, decorationExpanded: false, expanded: false, id: 'Rule 1', regularExpression: /abc/, backgroundColor: ''},
+    {enabled: true, decorationExpanded: false, expanded: false, id: 'Rule 2', regularExpression: /abc/, backgroundColor: ''}
   ];
 }

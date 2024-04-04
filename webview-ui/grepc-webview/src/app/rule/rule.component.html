@@ -31,11 +31,8 @@
                 <div
                     (click)="updateTitle(); toggleEdit(); toggleShowEditIcon()"
                     class="codicon codicon-check clickable">
-
                 </div>
             </div>
-            
-
         </div>
         
         <div class="rule-header-controls center-vertical">
@@ -45,7 +42,6 @@
                 </span>
                 <app-slider-checkbox></app-slider-checkbox>
             </div>
-
             <span 
                 class="delete-rule codicon codicon-chrome-close"
                 (click)="deleteSelf()">
@@ -73,8 +69,23 @@
 
         </header>
 
-        <content [@expand]="this.rule.decorationExpanded ? 'open' : 'closed'">
-            <p>To Do: Insert decorations</p>
+        <content class="decoration-body" [@expand]="this.rule.decorationExpanded ? 'open' : 'closed'">
+            <div style="display: block">   
+                <input [value]="this.rule.backgroundColor"
+                [style.background]="this.rule.backgroundColor"
+                [(colorPicker)]="this.rule.backgroundColor"/>
+            </div>
+            
+            <input type="text" name="include-files" placeholder="Outline"/>
+            <input type="text" name="include-files" placeholder="Outline Color"/>
+            <input type="text" name="include-files" placeholder="Outline Style"/>
+            <input type="text" name="include-files" placeholder="Outline Width"/>
+            <input type="text" name="include-files" placeholder="Border"/>
+            <input type="text" name="include-files" placeholder="Font"/>
+            <input type="text" name="exclude-files" placeholder="Text Decoration"/>
+            <input type="text" name="include-files" placeholder="Cursor"/>
+            <input type="text" name="include-files" placeholder="Color"/>
+            <input type="text" name="include-files" placeholder="Opacity"/>
         </content>
     </content>
 </div>
