@@ -21,13 +21,14 @@
     "views": {
       "grepc-explorer": [
         {
-          "id": "grepc",
-          "name": "grepc"
+          "type": "webview",
+          "id": "grepc.webview.local",
+          "name": "Workspace Rules"
         },
         {
           "type": "webview",
-          "id": "grepc.webview",
-          "name": "Grepc Control Panel"
+          "id": "grepc.webview.global",
+          "name": "Global Rules"
         }
       ]
     },
@@ -53,12 +54,14 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.12",
     "@types/mocha": "^10.0.3",
     "@types/node": "^18.18.13",
     "@types/vscode": "^1.84.0",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
     "@vscode/test-electron": "^2.3.6",
+    "@vscode/codicons": "^0.0.35",
     "eslint": "^8.52.0",
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
@@ -68,6 +71,6 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@vscode/codicons": "^0.0.35"
+    
   }
 }

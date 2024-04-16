@@ -33,7 +33,23 @@
 }
 
 .decoration-body {
-    padding-left: 1em;
+    padding-left: 2em;
+    margin-bottom: 1em;
+    gap: 0;
+
+    label {
+        line-height: 2em;
+    }
+
+    input {
+        margin-left: 0;
+    }
+}
+
+.decoration-container {
+    display: flex;
+    flex-direction: column;
+    
 }
 
 .rule-id {
@@ -124,4 +140,19 @@ div {
 
 span {
     display: inline-flex;
+}
+
+label {
+    
+    margin: auto;
+    font-size: 11px;
+    font-weight: 400;
+    overflow: hidden;
+    padding: 0 0 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.input-label {
+    display: block;
 }

@@ -16,8 +16,10 @@ const extensionConfig = {
   output: {
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
     path: path.resolve(__dirname, 'dist'),
+    clean: true,
     filename: 'extension.js',
-    libraryTarget: 'commonjs2'
+    libraryTarget: 'commonjs2',
+    devtoolModuleFilenameTemplate: '../[resource-path]'
   },
   externals: {
     vscode: 'commonjs vscode' // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
@@ -25,7 +27,33 @@ const extensionConfig = {
   },
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
+    mainFields: ['browser', 'module', 'main'],
+    // fallback: {
+    //   assert: require.resolve('assert'),
+    //   buffer: require.resolve('buffer'),
+    //   console: require.resolve('console-browserify'),
+    //   constants: require.resolve('constants-browserify'),
+    //   crypto: require.resolve('crypto-browserify'),
+    //   domain: require.resolve('domain-browser'),
+    //   events: require.resolve('events'),
+    //   http: require.resolve('stream-http'),
+    //   https: require.resolve('https-browserify'),
+    //   os: require.resolve('os-browserify/browser'),
+    //   path: require.resolve('path-browserify'),
+    //   punycode: require.resolve('punycode'),
+    //   process: require.resolve('process/browser'),
+    //   querystring: require.resolve('querystring-es3'),
+    //   stream: require.resolve('stream-browserify'),
+    //   string_decoder: require.resolve('string_decoder'),
+    //   sys: require.resolve('util'),
+    //   timers: require.resolve('timers-browserify'),
+    //   tty: require.resolve('tty-browserify'),
+    //   url: require.resolve('url'),
+    //   util: require.resolve('util'),
+    //   vm: require.resolve('vm-browserify'),
+    //   zlib: require.resolve('browserify-zlib'),
+    // },
   },
   module: {
     rules: [
@@ -34,7 +62,12 @@ const extensionConfig = {
         exclude: /node_modules/,
         use: [
           {
-            loader: 'ts-loader'
+            loader: 'ts-loader',
+            options: {
+              compilerOptions: {
+                  "module": "es6" // override `tsconfig.json` so that TypeScript emits native JavaScript modules.
+              }
+            }
           }
         ]
       }

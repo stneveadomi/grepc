@@ -54,38 +54,105 @@
         <input type="text" name="include-files" placeholder="Include Files"/>
         <input type="text" name="exclude-files" placeholder="Exclude Files"/>
 
-        <header class="decoration-header" (click)="toggleDecorationExpanded($event)">
-            <div class="rule-header-container">
-                <div
-                    (click)="toggleDecorationExpanded($event)"
-                    [ngClass]="this.rule.decorationExpanded ? 'open' : 'closed'" 
-                    class="drop-down codicon codicon-chevron-right">
+        <div class="decoration-container">
+            <header class="decoration-header" (click)="toggleDecorationExpanded($event)">
+                <div class="rule-header-container">
+                    <div
+                        (click)="toggleDecorationExpanded($event)"
+                        [ngClass]="this.rule.decorationExpanded ? 'open' : 'closed'" 
+                        class="drop-down codicon codicon-chevron-right">
+                    </div>
+    
+                    <span class="rule-id" (click)="toggleDecorationExpanded($event)">
+                        Decorations
+                    </span>
                 </div>
-
-                <span class="rule-id" (click)="toggleDecorationExpanded($event)">
-                    Decorations
-                </span>
-            </div>
-
-        </header>
-
-        <content class="decoration-body" [@expand]="this.rule.decorationExpanded ? 'open' : 'closed'">
-            <div style="display: block">   
-                <input [value]="this.rule.backgroundColor"
-                [style.background]="this.rule.backgroundColor"
-                [(colorPicker)]="this.rule.backgroundColor"/>
-            </div>
-            
-            <input type="text" name="include-files" placeholder="Outline"/>
-            <input type="text" name="include-files" placeholder="Outline Color"/>
-            <input type="text" name="include-files" placeholder="Outline Style"/>
-            <input type="text" name="include-files" placeholder="Outline Width"/>
-            <input type="text" name="include-files" placeholder="Border"/>
-            <input type="text" name="include-files" placeholder="Font"/>
-            <input type="text" name="exclude-files" placeholder="Text Decoration"/>
-            <input type="text" name="include-files" placeholder="Cursor"/>
-            <input type="text" name="include-files" placeholder="Color"/>
-            <input type="text" name="include-files" placeholder="Opacity"/>
-        </content>
+    
+            </header>
+    
+            <content class="decoration-body" [@expand]="this.rule.decorationExpanded ? 'open' : 'closed'">
+                <div class="block">
+                    <label>
+                        background color:
+                    </label>   
+                    <input [value]="this.rule.backgroundColor"
+                    [style.background]="this.rule.backgroundColor"
+                    [(colorPicker)]="this.rule.backgroundColor"/>
+                </div>
+                <div class="input-label">
+                    <label>
+                        outline:
+                    </label>
+                    <input type="text" name="include-files" placeholder="Outline"/>
+                </div>
+                <div class="input-label">
+                    <label>
+                        outline color:
+                    </label>
+                    <input type="text" name="include-files" placeholder="Outline Color"
+                        [value]="this.rule.outlineColor"
+                        [style.background]="this.rule.outlineColor"
+                        [(colorPicker)]="this.rule.outlineColor"/>
+                </div>
+                <div class="input-label">
+                    <label>
+                        outline style:
+                    </label>
+                    <input type="text" name="include-files" placeholder="Outline Style"
+                        [(value)]="this.rule.outlineStyle"/>
+                </div>            
+                <div class="input-label">
+                    <label>
+                        outline width:
+                    </label>
+                    <input type="text" name="include-files" placeholder="Outline Width"
+                        [(value)]="this.rule.outlineWidth"/>
+                </div>            
+                <div class="input-label">
+                    <label>
+                        border:
+                    </label>
+                    <input type="text" name="include-files" placeholder="Border"
+                        [(value)]="this.rule.border"/>
+                </div>            
+                <div class="input-label">
+                    <label>
+                        font:
+                    </label>
+                    <input type="text" name="include-files" placeholder="Font"
+                        [(value)]="this.rule.font"/>
+                </div>            
+                <div class="input-label">
+                    <label>
+                        text decoration:
+                    </label>
+                    <input type="text" name="exclude-files" placeholder="Text Decoration"
+                        [(value)]="this.rule.textDecoration"/>
+                </div>            
+                <div class="input-label">
+                    <label>
+                        cursor:
+                    </label>
+                    <input type="text" name="include-files" placeholder="Cursor"
+                        [(value)]="this.rule.cursor"/>
+                </div>
+                <div class="input-label">
+                    <label>
+                        color:
+                    </label>
+                    <input type="text" name="include-files" placeholder="Color"
+                        [value]="this.rule.color"
+                        [style.background]="this.rule.color"
+                        [(colorPicker)]="this.rule.color"/>
+                </div>
+                <div class="input-label">
+                    <label>
+                        opacity:
+                    </label>
+                    <input type="text" name="include-files" placeholder="Opacity"
+                        [value]="this.rule.opacity"/>
+                </div>
+            </content>
+        </div>
     </content>
 </div>

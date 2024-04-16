@@ -14,7 +14,10 @@
 		// "noUnusedParameters": true,  /* Report errors on unused parameters. */
 	},
 	"include": [
-		"./ext-src"
+		"./ext-src",
+		"./node_modules/vscode/vscode.d.ts",
+		"./node_modules/vscode/lib/*",
+		"./node_modules/@vscode/codicons/*"
 	],
 	"exclude": [
 		"./node_modules",

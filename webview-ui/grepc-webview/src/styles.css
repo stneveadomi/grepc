@@ -31,3 +31,7 @@ h2 {
 .clickable {
     cursor: pointer;
 }
+
+.block {
+    display: block;
+}

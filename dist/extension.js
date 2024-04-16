@@ -1,121 +1,7 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ([
-/* 0 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.deactivate = exports.activate = void 0;
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-const vscode = __importStar(__webpack_require__(1));
-const grepcProvider_1 = __webpack_require__(2);
-const grepcViewProvider_1 = __webpack_require__(3);
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-function activate(context) {
-    let timeout = undefined;
-    // create a decorator type that we use to decorate small numbers
-    const smallNumberDecorationType = vscode.window.createTextEditorDecorationType({
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        overviewRulerColor: 'blue',
-        overviewRulerLane: vscode.OverviewRulerLane.Right,
-        light: {
-            // this color will be used in light color themes
-            borderColor: 'darkblue'
-        },
-        dark: {
-            // this color will be used in dark color themes
-            borderColor: 'lightblue'
-        }
-    });
-    let activeEditor = vscode.window.activeTextEditor;
-    const highlightRule = () => {
-        triggerUpdateDecorations();
-    };
-    let disposable1 = vscode.window.onDidChangeActiveTextEditor(e => {
-        console.log('onDidChangeActiveTextEditor', e);
-    });
-    let disposable2 = vscode.window.onDidChangeTextEditorSelection(e => {
-        console.log('onDidChangeTextEditorSelection', e);
-        triggerUpdateDecorations();
-    });
-    const webviewProvider = new grepcViewProvider_1.GrepcViewProvider(context.extensionUri);
-    vscode.window.registerWebviewViewProvider(grepcViewProvider_1.GrepcViewProvider.viewType, webviewProvider);
-    //GrepcPanel.render(context.extensionUri);
-    function updateDecorations() {
-        console.timeStamp('Running update decorations');
-        console.error('Running update decorations');
-        if (!activeEditor) {
-            return;
-        }
-        const regEx = /\w+/g;
-        const text = activeEditor.document.getText();
-        const decorations = [];
-        let match;
-        while ((match = regEx.exec(text))) {
-            const startPos = activeEditor.document.positionAt(match.index);
-            const endPos = activeEditor.document.positionAt(match.index + match[0].length);
-            const decoration = {
-                range: new vscode.Range(startPos, endPos),
-                hoverMessage: 'Number **' + match[0] + '**'
-            };
-            decorations.push(decoration);
-        }
-        activeEditor.setDecorations(smallNumberDecorationType, decorations);
-    }
-    function triggerUpdateDecorations(throttle = false) {
-        if (timeout) {
-            clearTimeout(timeout);
-            timeout = undefined;
-        }
-        if (throttle) {
-            timeout = setTimeout(updateDecorations, 500);
-        }
-        else {
-            updateDecorations();
-        }
-    }
-    if (activeEditor) {
-        triggerUpdateDecorations();
-    }
-    context.subscriptions.push(vscode.commands.registerCommand('grepc.highlightRule', highlightRule));
-    let grepcProvider = new grepcProvider_1.GrepcProvider();
-    vscode.window.registerTreeDataProvider('grepc', grepcProvider);
-    context.subscriptions.push(disposable1, disposable2);
-}
-exports.activate = activate;
-// This method is called when your extension is deactivated
-function deactivate() { }
-exports.deactivate = deactivate;
-
-
-/***/ }),
+/* 0 */,
 /* 1 */
 /***/ ((module) => {
 
@@ -123,104 +9,51 @@ module.exports = require("vscode");
 
 /***/ }),
 /* 2 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   GrepcViewProvider: () => (/* binding */ GrepcViewProvider)
+/* harmony export */ });
+/* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vscode__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _utilities_getNonce__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GrepcProvider = void 0;
-const vscode = __importStar(__webpack_require__(1));
-class GrepcProvider {
-    rulesTreeItem = new vscode.TreeItem("RULES", vscode.TreeItemCollapsibleState.Expanded);
-    constructor() {
-        this.rulesTreeItem.id = "rules";
-    }
-    getTreeItem(element) {
-        return element;
-    }
-    getChildren(element) {
-        if (!element) {
-            return this.getRootTreeItems();
-        }
-        return [];
-    }
-    getRootTreeItems() {
-        return [this.rulesTreeItem];
-    }
-}
-exports.GrepcProvider = GrepcProvider;
-
-
-/***/ }),
-/* 3 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GrepcViewProvider = void 0;
-const vscode = __importStar(__webpack_require__(1));
-const getNonce_1 = __webpack_require__(4);
 class GrepcViewProvider {
-    extensionUri;
+    _extensionUri;
     static viewType = 'grepc.webview';
+    static provider;
     webview = null;
-    constructor(extensionUri) {
-        this.extensionUri = extensionUri;
+    _disposables = [];
+    constructor(_extensionUri) {
+        this._extensionUri = _extensionUri;
     }
     resolveWebviewView(webviewView, context, token) {
         this.webview = webviewView.webview;
-        this.webview.options = {
+        webviewView.webview.options = {
             // Enable JavaScript in the webview
             enableScripts: true,
             // Restrict the webview to only load resources from the `dist` and `webview-ui/build` directories
-            localResourceRoots: [vscode.Uri.joinPath(this.extensionUri, "dist"), vscode.Uri.joinPath(this.extensionUri, "webview-ui/grepc-webview/dist/grepc-webview/browser")],
+            localResourceRoots: [
+                this._extensionUri
+            ],
         };
-        this.webview.html = this._getWebviewContent(webviewView.webview, this.extensionUri);
+        webviewView.onDidDispose(() => this.dispose(), null, this._disposables);
+        webviewView.webview.html = this._getWebviewContent(webviewView.webview);
+        this._setWebviewMessageListener(webviewView.webview);
+    }
+    /**
+     * Cleans up and disposes of webview resources when the webview panel is closed.
+     */
+    dispose() {
+        // Dispose of all disposables (i.e. commands) for the current webview panel
+        while (this._disposables.length) {
+            const disposable = this._disposables.pop();
+            if (disposable) {
+                disposable.dispose();
+            }
+        }
     }
     /**
      * *** CREDIT GOES TO MICROSOFT EXAMPLE REPO: https://github.com/microsoft/vscode-webview-ui-toolkit-samples/blob/main/frameworks/hello-world-angular/src/panels/HelloWorldPanel.ts
@@ -230,47 +63,73 @@ class GrepcViewProvider {
      * are created and inserted into the webview HTML.
      *
      * @param webview A reference to the extension webview
-     * @param extensionUri The URI of the directory containing the extension
      * @returns A template string literal containing the HTML that should be
      * rendered within the webview panel
      */
-    _getWebviewContent(webview, extensionUri) {
+    _getWebviewContent(webview) {
         // The CSS file from the Angular build output
-        const stylesUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "webview-ui", "grepc-webview", "dist", "grepc-webview", "browser", "styles.css"));
+        const stylesUri = webview.asWebviewUri(vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(this._extensionUri, "webview-ui", "grepc-webview", "dist", "grepc-webview", "browser", "styles.css"));
         // The JS files from the Angular build output
-        const polyfillsUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "webview-ui", "grepc-webview", "dist", "grepc-webview", "browser", "polyfills.js"));
-        const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "webview-ui", "grepc-webview", "dist", "grepc-webview", "browser", "main.js"));
-        const nonce = (0, getNonce_1.getNonce)();
+        const polyfillsUri = webview.asWebviewUri(vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(this._extensionUri, "webview-ui", "grepc-webview", "dist", "grepc-webview", "browser", "polyfills.js"));
+        const scriptUri = webview.asWebviewUri(vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(this._extensionUri, "webview-ui", "grepc-webview", "dist", "grepc-webview", "browser", "main.js"));
+        const codiconsUri = webview.asWebviewUri(vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(this._extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css'));
+        const nonce = (0,_utilities_getNonce__WEBPACK_IMPORTED_MODULE_1__.getNonce)();
         // TODO: Fix this and update nonce.
+        //
         //                <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+        //                 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; font-src ${webview.cspSource}; style-src ${webview.cspSource}; img-src ${webview.cspSource} https:; script-src 'nonce-${nonce}';" />
+        // 
         return /*html*/ `
             <!DOCTYPE html>
             <html lang="en">
-            <head>
-                <meta charset="UTF-8" />
-                <title>GrepcWebview</title>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <link rel="stylesheet" type="text/css" href="${stylesUri}">
-            </head>
-            <body>
-                <app-root></app-root>
-                <script type="module" nonce="${nonce}" src="${polyfillsUri}"></script>
-                <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
-            </body>
+                <head>
+                    <base href="${this._extensionUri}">
+                    <meta charset="UTF-8" />
+                    <title>GrepcWebview</title>
+                    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; font-src ${webview.cspSource}; style-src ${webview.cspSource} 'nonce-${nonce}'; img-src ${webview.cspSource} https: data:; script-src 'nonce-${nonce}';">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <link href="${stylesUri}" rel="stylesheet" >
+                </head>
+                <body>
+                    <app-root ngCspNonce="${nonce}"></app-root>
+                    <script type="module" nonce="${nonce}" src="${polyfillsUri}"></script>
+                    <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
+                </body>
             </html>
         `;
     }
+    /**
+   * Sets up an event listener to listen for messages passed from the webview context and
+   * executes code based on the message that is recieved.
+   *
+   * @param webview A reference to the extension webview
+   * @param context A reference to the extension context
+   */
+    _setWebviewMessageListener(webview) {
+        webview.onDidReceiveMessage((message) => {
+            const command = message.command;
+            const text = message.text;
+            switch (command) {
+                case "hello":
+                    // Code that should run in response to the hello message command
+                    vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage(text);
+                    return;
+                // Add more switch case statements here as more webview message commands
+                // are created within the webview context (i.e. inside media/main.js)
+            }
+        }, undefined, this._disposables);
+    }
 }
-exports.GrepcViewProvider = GrepcViewProvider;
 
 
 /***/ }),
-/* 4 */
-/***/ ((__unused_webpack_module, exports) => {
+/* 3 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getNonce = void 0;
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getNonce: () => (/* binding */ getNonce)
+/* harmony export */ });
 /**
  * *** CREDIT TO: https://github.com/microsoft/vscode-webview-ui-toolkit-samples/tree/5baaf6588fd73a45a1994266eed6c615d7c92faf/frameworks/hello-world-angular
  * A helper function that returns a unique alphanumeric identifier called a nonce.
@@ -288,7 +147,6 @@ function getNonce() {
     }
     return text;
 }
-exports.getNonce = getNonce;
 
 
 /***/ })
@@ -312,20 +170,147 @@ exports.getNonce = getNonce;
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
 /******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__(0);
-/******/ 	module.exports = __webpack_exports__;
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   activate: () => (/* binding */ activate),
+/* harmony export */   deactivate: () => (/* binding */ deactivate)
+/* harmony export */ });
+/* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vscode__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _viewProviders_grepcViewProvider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+// The module 'vscode' contains the VS Code extensibility API
+// Import the module and reference it with the alias vscode in your code below
+
+
+// This method is called when your extension is activated
+// Your extension is activated the very first time the command is executed
+function activate(context) {
+    const webviewProvider = new _viewProviders_grepcViewProvider__WEBPACK_IMPORTED_MODULE_1__.GrepcViewProvider(context.extensionUri);
+    context.subscriptions.push(vscode__WEBPACK_IMPORTED_MODULE_0__.window.registerWebviewViewProvider(_viewProviders_grepcViewProvider__WEBPACK_IMPORTED_MODULE_1__.GrepcViewProvider.viewType + ".local", webviewProvider), vscode__WEBPACK_IMPORTED_MODULE_0__.window.registerWebviewViewProvider(_viewProviders_grepcViewProvider__WEBPACK_IMPORTED_MODULE_1__.GrepcViewProvider.viewType + ".global", webviewProvider));
+    // let timeout: NodeJS.Timeout | undefined = undefined;
+    // // create a decorator type that we use to decorate small numbers
+    // const smallNumberDecorationType = vscode.window.createTextEditorDecorationType({
+    // 	borderWidth: '1px',
+    // 	borderStyle: 'solid',
+    // 	overviewRulerColor: 'blue',
+    // 	overviewRulerLane: vscode.OverviewRulerLane.Right,
+    // 	light: {
+    // 		// this color will be used in light color themes
+    // 		borderColor: 'darkblue'
+    // 	},
+    // 	dark: {
+    // 		// this color will be used in dark color themes
+    // 		borderColor: 'lightblue'
+    // 	}
+    // });
+    // let activeEditor = vscode.window.activeTextEditor;
+    // const highlightRule = () => {
+    // 	triggerUpdateDecorations();
+    // };
+    // let disposable1 = vscode.window.onDidChangeActiveTextEditor(e => {
+    // 	console.log('onDidChangeActiveTextEditor', e);
+    // });
+    // let disposable2 = vscode.window.onDidChangeTextEditorSelection(e => {
+    // 	console.log('onDidChangeTextEditorSelection', e);
+    // 	triggerUpdateDecorations();
+    // });
+    //GrepcPanel.render(context.extensionUri);
+    // function updateDecorations() {
+    // 	console.timeStamp('Running update decorations');
+    // 	console.error('Running update decorations');
+    // 	if (!activeEditor) {
+    // 		return;
+    // 	}
+    // 	const regEx = /\w+/g;
+    // 	const text = activeEditor.document.getText();
+    // 	const decorations: vscode.DecorationOptions[] = [];
+    // 	let match;
+    // 	while((match = regEx.exec(text)))
+    // 	{
+    // 		const startPos = activeEditor.document.positionAt(match.index);
+    // 		const endPos = activeEditor.document.positionAt(match.index + match[0].length);
+    // 		const decoration = { 
+    // 			range: new vscode.Range(startPos, endPos), 
+    // 			hoverMessage: 'Number **' + match[0] + '**' 
+    // 		};
+    // 		decorations.push(decoration);
+    // 	}
+    // 	activeEditor.setDecorations(smallNumberDecorationType, decorations);
+    // }
+    // function triggerUpdateDecorations(throttle = false) {
+    // 	if (timeout) {
+    // 		clearTimeout(timeout);
+    // 		timeout = undefined;
+    // 	}
+    // 	if (throttle) {
+    // 		timeout = setTimeout(updateDecorations, 500);
+    // 	} else {
+    // 		updateDecorations();
+    // 	}
+    // }
+    // if (activeEditor) {
+    // 	triggerUpdateDecorations();
+    // }
+    // context.subscriptions.push(vscode.commands.registerCommand('grepc.highlightRule', highlightRule));
+    // context.subscriptions.push(disposable1, disposable2);
+}
+// This method is called when your extension is deactivated
+function deactivate() { }
+
+})();
+
+module.exports = __webpack_exports__;
 /******/ })()
 ;
 //# sourceMappingURL=extension.js.map
