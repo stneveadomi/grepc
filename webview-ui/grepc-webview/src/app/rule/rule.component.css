@@ -84,6 +84,7 @@ input[type='text'].rule-id-input {
 }
 
 .codicon {
+    display: inline-flex;
     text-align: center;
     align-items: center;
     align-content: center;
@@ -155,4 +156,10 @@ label {
 
 .input-label {
     display: block;
+    position: relative;
+}
+
+.block {
+    display: block;
+    position: relative;
 }

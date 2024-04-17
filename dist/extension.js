@@ -72,7 +72,6 @@ class GrepcViewProvider {
         // The JS files from the Angular build output
         const polyfillsUri = webview.asWebviewUri(vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(this._extensionUri, "webview-ui", "grepc-webview", "dist", "grepc-webview", "browser", "polyfills.js"));
         const scriptUri = webview.asWebviewUri(vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(this._extensionUri, "webview-ui", "grepc-webview", "dist", "grepc-webview", "browser", "main.js"));
-        const codiconsUri = webview.asWebviewUri(vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(this._extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css'));
         const nonce = (0,_utilities_getNonce__WEBPACK_IMPORTED_MODULE_1__.getNonce)();
         // TODO: Fix this and update nonce.
         //

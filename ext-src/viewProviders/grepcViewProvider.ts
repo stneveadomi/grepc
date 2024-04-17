@@ -55,7 +55,6 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         // The JS files from the Angular build output
         const polyfillsUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "webview-ui", "grepc-webview", "dist", "grepc-webview", "browser", "polyfills.js"));
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "webview-ui", "grepc-webview", "dist", "grepc-webview", "browser", "main.js"));
-        const codiconsUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css'));
         const nonce = getNonce();
         // TODO: Fix this and update nonce.
         //
