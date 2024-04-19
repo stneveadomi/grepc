@@ -5,6 +5,7 @@ import { AppComponent } from '../app.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { SliderCheckboxComponent } from '../slider-checkbox/slider-checkbox.component';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { RuleService } from '../../services/rule.service';
 
 @Component({
   selector: 'app-rule',
@@ -37,10 +38,13 @@ export class RuleComponent {
 
   isEditing = false;
 
-  constructor() { }
+  constructor(
+    private ruleService: RuleService
+  ) { }
 
   deleteSelf() {
     console.log('Deleting rule', this.rule.id);
+    this.ruleService.removeRule(this.rule.id);
   }
 
   toggleExpand(event?: Event) {
@@ -52,7 +56,6 @@ export class RuleComponent {
 
   toggleDecorationExpanded(event: Event) {
     if(event.target === event.currentTarget) {
-      console.log(event.target);
       this.rule.decorationExpanded = !this.rule.decorationExpanded;
     }
     

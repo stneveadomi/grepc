@@ -1,13 +1,17 @@
 import * as vscode from 'vscode';
 import { getNonce } from "../utilities/getNonce";
+import { RuleFactory } from '../rules/ruleFactory';
 
 export class GrepcViewProvider implements vscode.WebviewViewProvider {
-    public static readonly viewType = 'grepc.webview';
-    public static provider: GrepcViewProvider | undefined;
+    public provider: GrepcViewProvider | undefined;
     private webview: vscode.Webview | null = null;
     private _disposables: vscode.Disposable[] = [];
 
-    public constructor(private readonly _extensionUri: vscode.Uri) {}
+    public constructor(
+        public readonly viewType: string,
+        private readonly _extensionUri: vscode.Uri,
+        private readonly _ruleFactory: RuleFactory
+    ) {}
 
     resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext<unknown>, token: vscode.CancellationToken): void | Thenable<void> {
         this.webview = webviewView.webview;
@@ -23,6 +27,11 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         webviewView.onDidDispose(() => this.dispose(), null, this._disposables);
         webviewView.webview.html = this._getWebviewContent(webviewView.webview);
         this._setWebviewMessageListener(webviewView.webview);
+        this._pushRules(webviewView.webview);
+    }
+
+    private _pushRules(webview: vscode.Webview) {
+        webview.postMessage({type: 'rules', data: JSON.stringify(Array.from(this._ruleFactory.getRules().entries()))});
     }
 
     /**
@@ -93,16 +102,21 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
   private _setWebviewMessageListener(webview: vscode.Webview) {
     webview.onDidReceiveMessage(
       (message: any) => {
-        const command = message.command;
-        const text = message.text;
+        const type = message.type;
 
-        switch (command) {
-          case "hello":
+        switch (type) {
+          case "rules":
             // Code that should run in response to the hello message command
-            vscode.window.showInformationMessage(text);
+            vscode.window.showInformationMessage("Updating Rules");
+            console.log('received message from webview:', message);
+            this._ruleFactory.parseRules(message?.data);
             return;
-          // Add more switch case statements here as more webview message commands
-          // are created within the webview context (i.e. inside media/main.js)
+          case "rulesRequest":
+            //designed to send rules on startup to webviews
+            //especially if they are reopened without the extension closing.
+            console.log('received rulesRequest from webview:', message);
+            this._pushRules(this.webview!);
+            return;
         }
       },
       undefined,

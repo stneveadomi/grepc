@@ -2,15 +2,24 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { GrepcViewProvider } from './viewProviders/grepcViewProvider';
+import { RuleFactory } from './rules/ruleFactory';
+import { GlobalState } from './utilities/types';
+import { timeStamp } from 'console';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-
-	const webviewProvider = new GrepcViewProvider(context.extensionUri);
+	const logger = vscode.window.createOutputChannel('grepc');
+	logger.show();
+	logger.appendLine(JSON.stringify(context.workspaceState));
+	logger.appendLine(JSON.stringify(context.globalState));
+	const localRuleFactory = new RuleFactory(context.workspaceState, false);
+	const globalRuleFactory = new RuleFactory(<GlobalState> context.globalState, true);
+	const localWebviewProvider = new GrepcViewProvider("grepc.webview.local", context.extensionUri, localRuleFactory);
+	const globalWebviewProvider = new GrepcViewProvider("grepc.webview.global", context.extensionUri, globalRuleFactory);
 	context.subscriptions.push(
-		vscode.window.registerWebviewViewProvider(GrepcViewProvider.viewType + ".local", webviewProvider),
-		vscode.window.registerWebviewViewProvider(GrepcViewProvider.viewType + ".global", webviewProvider),
+		vscode.window.registerWebviewViewProvider(localWebviewProvider.viewType, localWebviewProvider),
+		vscode.window.registerWebviewViewProvider(globalWebviewProvider.viewType, globalWebviewProvider),
 	);
 	// let timeout: NodeJS.Timeout | undefined = undefined;
 

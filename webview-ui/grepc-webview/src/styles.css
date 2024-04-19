@@ -32,3 +32,26 @@ h2 {
     cursor: pointer;
 }
 
+.rule-header, .decoration-header {
+    display: flex;
+    flex-direction: row;
+    text-transform: uppercase;
+    font-weight: bold;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 4px;
+}
+
+.rule-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 100%;
+    width: 100%;
+
+    border-bottom: 1px solid rgb(73, 73, 73);
+}
+
+.center {
+    justify-content: center;
+}

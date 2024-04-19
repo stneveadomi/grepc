@@ -1,7 +1,7 @@
 <div class="main-container">
-  <app-rule *ngFor="let r of rules"
+  <app-rule *ngFor="let r of ($rules | async)"
     [rule]="r">
   </app-rule>
+  <app-add-rule>
+  </app-add-rule>
 </div>
-
-<button (click)="logRules()">Log Rule Objects</button>
