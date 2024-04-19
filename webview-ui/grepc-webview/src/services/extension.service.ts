@@ -10,8 +10,7 @@ export class ExtensionService {
     public vscodeApi: any;
   
     constructor() {
-        console.log('Initializing extension service');
-        this.vscodeApi = (window as any)?.['acquireVsCodeApi']();
+        this.vscodeApi = (window as any)?.['acquireVsCodeApi']?.();
         console.log('vscode api: ', this.vscodeApi);
     }
 

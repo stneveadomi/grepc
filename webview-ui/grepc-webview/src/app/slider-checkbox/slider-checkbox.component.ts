@@ -1,11 +1,12 @@
 import { trigger, state, style, animate, transition, query } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-slider-checkbox',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   animations: [
     trigger('slider', [
       state('enabled', style({
@@ -23,6 +24,9 @@ import { Component } from '@angular/core';
   styleUrl: './slider-checkbox.component.css'
 })
 export class SliderCheckboxComponent {
+  @Input({required: true})
+  control!: FormControl;
+  
   sliderToggle = false;
   sliderClass = '';
 

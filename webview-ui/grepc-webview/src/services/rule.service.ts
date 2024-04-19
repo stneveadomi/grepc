@@ -45,7 +45,7 @@ export class RuleService {
   }
 
   public addRule(rule: Rule) {
-    this._ruleMap.set(rule.id, rule);
+    this._ruleMap.set(rule.id!, rule);
     this.pushRules();
   }
 

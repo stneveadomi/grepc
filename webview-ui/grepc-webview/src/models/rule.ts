@@ -1,23 +1,25 @@
 export interface Rule {
-    enabled: boolean;
-    expanded: boolean;
-    decorationExpanded: boolean;
-    id: string;
+    enabled: boolean | null;
+    expanded: boolean | null;
+    decorationExpanded: boolean | null;
+    id: string | null;
     
-    regularExpression: RegExp;
-    backgroundColor: string;
-    outline: string;
-    outlineColor: string;
-    outlineStyle: string;
-    outlineWidth: string;
-    border: string;
-    font: string;
-    textDecoration: string;
-    cursor: string;
-    color: string;
-    opacity: string;
-    gutterIcon: string;
-    isWholeLine: boolean;
+    regularExpression: RegExp | null;
+    includeFiles: string | null;
+    excludeFiles: string | null;
+    backgroundColor: string | null;
+    outline: string | null;
+    outlineColor: string | null;
+    outlineStyle: string | null;
+    outlineWidth: string | null;
+    border: string | null;
+    font: string | null;
+    textDecoration: string | null;
+    cursor: string | null;
+    color: string | null;
+    opacity: string | null;
+    gutterIcon: string | null;
+    isWholeLine: boolean | null;
 }
 
 export class Rule implements Rule {

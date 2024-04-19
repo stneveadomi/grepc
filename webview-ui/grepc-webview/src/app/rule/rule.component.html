@@ -1,158 +1,190 @@
 <div class="rule-container">
-    <header class="rule-header" (click)="toggleExpand($event)">
-        <div class="rule-header-container">
-            <div
-                (click)="toggleExpand($event)"
-                [ngClass]="this.rule.expanded ? 'open' : 'closed'" 
-                class="drop-down codicon codicon-chevron-right">
-            </div>
-            <span
-                *ngIf="!this.isEditing"
-                (click)="toggleExpand($event)"
-                (mouseenter)="showEditIcon = true"
-                (mouseleave)="showEditIcon = false"
-                class="rule-id center-vertical">
-                {{rule.id}}
+    <form [formGroup]="ruleForm">
+        <header class="rule-header" (click)="toggleExpand($event)">
+            <div class="rule-header-container">
                 <div
-                    (click)="toggleEdit()"
-                    [ngClass]="this.showEditIcon ? 'editing' : 'fixed'"
-                    class="codicon codicon-edit clickable">
+                    (click)="toggleExpand($event)"
+                    [ngClass]="this.rule.expanded ? 'open' : 'closed'" 
+                    class="drop-down codicon codicon-chevron-right">
                 </div>
-            </span>
-            <div *ngIf="this.isEditing">
-                <input
-                    class="rule-id-input"
-                    type="text"
-                    [(value)]="this.rule.id"/>
-                <div
-                    (click)="toggleEdit(); toggleShowEditIcon()"
-                    class="codicon codicon-close clickable">
-                </div>
-                <div
-                    (click)="updateTitle(); toggleEdit(); toggleShowEditIcon()"
-                    class="codicon codicon-check clickable">
-                </div>
-            </div>
-        </div>
-        
-        <div class="rule-header-controls center-vertical">
-            <div class="center-vertical control-gap">
-                <span *ngIf="rule.enabled" class="circle">
-                    {{occurences}}
-                </span>
-                <app-slider-checkbox></app-slider-checkbox>
-            </div>
-            <span 
-                class="delete-rule codicon codicon-trash"
-                (click)="deleteSelf()">
-            </span>
-        </div>
-    </header>
-
-    <content [@expand]="this.rule.expanded ? 'open' : 'closed'" class="rule-body">
-        <input type="text" class="regex-input" placeholder="Regular Expression"/>
-        <input type="text" name="include-files" placeholder="Include Files"/>
-        <input type="text" name="exclude-files" placeholder="Exclude Files"/>
-
-        <div class="decoration-container">
-            <header class="decoration-header" (click)="toggleDecorationExpanded($event)">
-                <div class="rule-header-container">
+                <span
+                    *ngIf="!this.isEditing"
+                    (click)="toggleExpand($event)"
+                    (mouseenter)="showEditIcon = true"
+                    (mouseleave)="showEditIcon = false"
+                    class="rule-id center-vertical">
+                    {{rule.id}}
                     <div
-                        (click)="toggleDecorationExpanded($event)"
-                        [ngClass]="this.rule.decorationExpanded ? 'open' : 'closed'" 
-                        class="drop-down codicon codicon-chevron-right">
+                        (click)="toggleEdit()"
+                        [ngClass]="this.showEditIcon ? 'editing' : 'fixed'"
+                        class="codicon codicon-edit clickable">
                     </div>
-    
-                    <span class="rule-id" (click)="toggleDecorationExpanded($event)">
-                        Decorations
+                </span>
+                <div *ngIf="this.isEditing">
+                    <input
+                        class="rule-id-input"
+                        type="text"
+                        formControlName="id"/>
+                    <div
+                        (click)="toggleEdit(); toggleShowEditIcon()"
+                        class="codicon codicon-close clickable">
+                    </div>
+                    <div
+                        (click)="updateTitle(); toggleEdit(); toggleShowEditIcon()"
+                        class="codicon codicon-check clickable">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="rule-header-controls center-vertical">
+                <div class="center-vertical control-gap">
+                    <span *ngIf="rule.enabled" class="circle">
+                        {{occurences}}
                     </span>
+                    <app-slider-checkbox
+                        [control]="this.ruleForm.controls['enabled']">
+                    </app-slider-checkbox>
                 </div>
+                <span 
+                    class="delete-rule codicon codicon-trash"
+                    (click)="deleteSelf()">
+                </span>
+            </div>
+        </header>
     
-            </header>
+        <content [@expand]="this.rule.expanded ? 'open' : 'closed'" class="rule-body">
+            <input
+                formControlName="regularExpression" 
+                type="text" class="regex-input" placeholder="Regular Expression"/>
+            <input
+                formControlName="includeFiles" 
+                type="text" name="include-files" placeholder="Include Files"/>
+            <input
+                formControlName="excludeFiles" 
+                type="text" name="exclude-files" placeholder="Exclude Files"/>
     
-            <content class="decoration-body" [@expand]="this.rule.decorationExpanded ? 'open' : 'closed'">
-                <div class="block">
-                    <label>
-                        background color:
-                    </label>   
-                    <input [value]="this.rule.backgroundColor"
-                    [style.background]="this.rule.backgroundColor"
-                    [(colorPicker)]="this.rule.backgroundColor"/>
-                </div>
-                <div class="input-label">
-                    <label>
-                        outline:
-                    </label>
-                    <input type="text" name="include-files" placeholder="Outline"/>
-                </div>
-                <div class="input-label">
-                    <label>
-                        outline color:
-                    </label>
-                    <input type="text" name="include-files" placeholder="Outline Color"
-                        [value]="this.rule.outlineColor"
-                        [style.background]="this.rule.outlineColor"
-                        [(colorPicker)]="this.rule.outlineColor"/>
-                </div>
-                <div class="input-label">
-                    <label>
-                        outline style:
-                    </label>
-                    <input type="text" name="include-files" placeholder="Outline Style"
-                        [(value)]="this.rule.outlineStyle"/>
-                </div>            
-                <div class="input-label">
-                    <label>
-                        outline width:
-                    </label>
-                    <input type="text" name="include-files" placeholder="Outline Width"
-                        [(value)]="this.rule.outlineWidth"/>
-                </div>            
-                <div class="input-label">
-                    <label>
-                        border:
-                    </label>
-                    <input type="text" name="include-files" placeholder="Border"
-                        [(value)]="this.rule.border"/>
-                </div>            
-                <div class="input-label">
-                    <label>
-                        font:
-                    </label>
-                    <input type="text" name="include-files" placeholder="Font"
-                        [(value)]="this.rule.font"/>
-                </div>            
-                <div class="input-label">
-                    <label>
-                        text decoration:
-                    </label>
-                    <input type="text" name="exclude-files" placeholder="Text Decoration"
-                        [(value)]="this.rule.textDecoration"/>
-                </div>            
-                <div class="input-label">
-                    <label>
-                        cursor:
-                    </label>
-                    <input type="text" name="include-files" placeholder="Cursor"
-                        [(value)]="this.rule.cursor"/>
-                </div>
-                <div class="input-label">
-                    <label>
-                        color:
-                    </label>
-                    <input type="text" name="include-files" placeholder="Color"
-                        [value]="this.rule.color"
-                        [style.background]="this.rule.color"
-                        [(colorPicker)]="this.rule.color"/>
-                </div>
-                <div class="input-label">
-                    <label>
-                        opacity:
-                    </label>
-                    <input type="text" name="include-files" placeholder="Opacity"
-                        [value]="this.rule.opacity"/>
-                </div>
-            </content>
-        </div>
-    </content>
+            <div class="decoration-container">
+                <header class="decoration-header" (click)="toggleDecorationExpanded($event)">
+                    <div class="rule-header-container">
+                        <div
+                            (click)="toggleDecorationExpanded($event)"
+                            [ngClass]="this.rule.decorationExpanded ? 'open' : 'closed'" 
+                            class="drop-down codicon codicon-chevron-right">
+                        </div>
+        
+                        <span class="rule-id" (click)="toggleDecorationExpanded($event)">
+                            Decorations
+                        </span>
+                    </div>
+        
+                </header>
+        
+                <content class="decoration-body" [@expand]="this.rule.decorationExpanded ? 'open' : 'closed'">
+                    <div class="block">
+                        <label>
+                            background color:
+                        </label>   
+                        <input
+                            formControlName="backgroundColor"
+                            [value]="this.rule.backgroundColor"
+                            [style.background]="this.rule.backgroundColor"
+                            [(colorPicker)]="this.rule.backgroundColor!"/>
+                    </div>
+                    <div class="input-label">
+                        <label>
+                            outline:
+                        </label>
+                        <input
+                            formControlName="outline" 
+                            type="text" name="outline" placeholder="Outline"/>
+                    </div>
+                    <div class="input-label">
+                        <label>
+                            outline color:
+                        </label>
+                        <input
+                            formControlName="outlineColor" 
+                            type="text" name="include-files" placeholder="Outline Color"
+                            [value]="this.rule.outlineColor"
+                            [style.background]="this.rule.outlineColor"
+                            [(colorPicker)]="this.rule.outlineColor!"/>
+                    </div>
+                    <div class="input-label">
+                        <label>
+                            outline style:
+                        </label>
+                        <input
+                            formControlName="outlineStyle" 
+                            type="text" name="include-files" placeholder="Outline Style"
+                            [(value)]="this.rule.outlineStyle"/>
+                    </div>            
+                    <div class="input-label">
+                        <label>
+                            outline width:
+                        </label>
+                        <input
+                            formControlName="outlineWidth" 
+                            type="text" name="include-files" placeholder="Outline Width"
+                            [(value)]="this.rule.outlineWidth"/>
+                    </div>            
+                    <div class="input-label">
+                        <label>
+                            border:
+                        </label>
+                        <input 
+                            formControlName="border"
+                            type="text" name="include-files" placeholder="Border"
+                            [(value)]="this.rule.border"/>
+                    </div>            
+                    <div class="input-label">
+                        <label>
+                            font:
+                        </label>
+                        <input
+                            formControlName="font" 
+                            type="text" name="include-files" placeholder="Font"
+                            [(value)]="this.rule.font"/>
+                    </div>            
+                    <div class="input-label">
+                        <label>
+                            text decoration:
+                        </label>
+                        <input 
+                            formControlName="textDecoration"
+                            type="text" name="exclude-files" placeholder="Text Decoration"
+                            [(value)]="this.rule.textDecoration"/>
+                    </div>            
+                    <div class="input-label">
+                        <label>
+                            cursor:
+                        </label>
+                        <input 
+                            formControlName="cursor"
+                            type="text" name="include-files" placeholder="Cursor"
+                            [(value)]="this.rule.cursor"/>
+                    </div>
+                    <div class="input-label">
+                        <label>
+                            color:
+                        </label>
+                        <input 
+                            formControlName="color"
+                            type="text" name="include-files" placeholder="Color"
+                            [value]="this.rule.color"
+                            [style.background]="this.rule.color"
+                            [(colorPicker)]="this.rule.color!"/>
+                    </div>
+                    <div class="input-label">
+                        <label>
+                            opacity:
+                        </label>
+                        <input 
+                            formControlName="opacity"
+                            type="text" name="include-files" placeholder="Opacity"
+                            [value]="this.rule.opacity"/>
+                    </div>
+                </content>
+            </div>
+        </content>
+    </form>
 </div>
