@@ -70,14 +70,17 @@ export class RuleComponent {
         switch(status) {
           case 'VALID':
             console.log('Rule form value: ', this.ruleForm.value);
+            //update everything except the ID
             let newRule = { ...this.rule, ...this.ruleForm.value};
             newRule.id = this.rule.id;
             this.rule = newRule;
+            this.ruleService.pushRulesToExtension();
             return;
            
           case 'INVALID':
           case 'PENDING':
           case 'DISABLED':
+            //explicit no op.
         }
       }
     });
@@ -112,8 +115,13 @@ export class RuleComponent {
 
   updateTitle() {
     if(this.ruleForm.controls.id.valid) {
-      this.rule.id = this.ruleForm?.value?.id ?? '';
+      try {
+        this.rule.id = this.ruleForm?.value?.id ?? '';
+        this.ruleService.updateRule(this.rule.id, this.rule);
+        this.ruleService.pushRulesToExtension();
+      } catch (exception) {
+        console.error('Unable to update rule.', exception);
+      }
     }
-    
   }
 }
