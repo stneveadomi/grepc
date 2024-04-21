@@ -4,7 +4,7 @@ export interface Rule {
     decorationExpanded: boolean | null;
     id: string | null;
     
-    regularExpression: RegExp | null;
+    regularExpression: string | null;
     includeFiles: string | null;
     excludeFiles: string | null;
     backgroundColor: string | null;
@@ -26,5 +26,24 @@ export class Rule implements Rule {
 
     constructor(id: string) {
         this.id = id;
+        this.enabled = false;
+        this.expanded = false;
+        this.decorationExpanded = false;
+        this.regularExpression = '';
+        this.includeFiles = '';
+        this.excludeFiles = '';
+        this.backgroundColor = '';
+        this.outline = '';
+        this.outlineColor = '';
+        this.outlineStyle = '';
+        this.outlineWidth = '';
+        this.border = '';
+        this.font = '';
+        this.textDecoration = '';
+        this.cursor = '';
+        this.color = '';
+        this.opacity = '';
+        this.gutterIcon = '';
+        this.isWholeLine = false;
     }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Rule } from '../models/rule';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, share, shareReplay } from 'rxjs';
 import { ExtensionService } from './extension.service';
 
 @Injectable({
@@ -8,23 +8,26 @@ import { ExtensionService } from './extension.service';
 })
 export class RuleService {
   private _ruleMap: Map<string, Rule> = new Map();
+  private _rulesArray: Rule[] = [];
   private _rules = new BehaviorSubject<Rule[]>([]);
+
 
   constructor(
     private extensionService: ExtensionService
-  ) {}
+  ) { }
   
-  public readonly $rules: Observable<Rule[]> = this._rules.asObservable();
+  public readonly $rules: Observable<Rule[]> = this._rules.asObservable().pipe(shareReplay(1));
 
   /**
    * This method is intended to be used from the message event to parse data from the extension.
    * This is indirectly triggered from any call to requestRules().
    * @param data string representing an Array.from(Map::entries) that can be converted to Map<string, Rule>
    */
-  public parseRules(data: string) {
+  public parseRules(mapData: string, arrayData: string) {
     try {
-      this._ruleMap = new Map(JSON.parse(data));
-      this._rules.next(this.getRules());
+      this._ruleMap = new Map(JSON.parse(mapData));
+      this._rulesArray = JSON.parse(arrayData);
+      this._rules.next(this._rulesArray);
     }
     catch (e) {
       console.error(`Unable to parse JSON map in pushRules().`, e);
@@ -38,7 +41,7 @@ export class RuleService {
   public pushRules() {
     console.log('Pushing new rules to extension', JSON.stringify(Array.from(this._ruleMap.entries())));
     this.pushRulesToExtension();
-    this._rules.next(this.getRules());
+    this._rules.next(this._rulesArray);
   }
 
   /**
@@ -47,7 +50,11 @@ export class RuleService {
    * Note: This is called by RuleService::pushRules()
    */
   public pushRulesToExtension() {
-    this.extensionService.postMessage({type: 'rules', data: JSON.stringify(Array.from(this._ruleMap.entries()))});
+    this.extensionService.postMessage({
+      type: 'rules', 
+      mapData: JSON.stringify(Array.from(this._ruleMap.entries())),
+      arrayData: JSON.stringify(this._rulesArray)
+    });
   }
 
   /**
@@ -60,20 +67,31 @@ export class RuleService {
   }
 
   /**
-   * get the current state of rules in Rule Service
-   * @returns Rule[] stored in the Rule Service Map
-   */
-  public getRules(): Rule[] {
-    return Array.from(this._ruleMap.values());
-  }
-
-  /**
    * This adds a rule to the local map while triggering $rules update and extension update.
    * @param rule rule to be added
    */
   public addRule(rule: Rule) {
     this._ruleMap.set(rule.id!, rule);
+    this._rulesArray.push(rule);
     this.pushRules();
+  }
+
+  public getRuleArray() {
+    return this._rulesArray;
+  }
+
+  /**
+   * Update the rule in the current map and array.
+   * @param rule rule to be updated by id in the map and array
+   */
+  public updateRule(rule: Rule) {
+    this._ruleMap.set(rule.id!, rule);
+    this._rulesArray = this._rulesArray.map(value => {
+      if(value.id === rule.id) {
+        return rule;
+      }
+      return value;
+    });
   }
 
   /**
@@ -82,15 +100,36 @@ export class RuleService {
    */
   public removeRule(id: string) {
     this._ruleMap.delete(id);
-    this.pushRules();
+    this._rulesArray = this._rulesArray.filter(rule => rule.id !== id);
+    this._rules.next(this._rulesArray);
   }
 
-  public updateRule(oldKey: string, rule: Rule) {
-    if(this._ruleMap.has(rule.id!)) {
-      throw new Error('Collision with rule id:' + rule?.id);
-    }
+  /**
+   * Given two rules, swap the positions of the rules in the ruleArray.
+   * This assumes ruleA and ruleB are in the rulesArray.
+   * @param ruleA 
+   * @param ruleB 
+   */
+  public swapPositions(ruleA: Rule, ruleB: Rule) {
+    const ruleAIndex = this._rulesArray.indexOf(ruleA);
+    const ruleBIndex = this._rulesArray.indexOf(ruleB);
+    console.log('Rules array before swap', JSON.stringify(this._rulesArray));
+    this._rulesArray[ruleAIndex] = ruleB;
+    this._rulesArray[ruleBIndex] = ruleA;
+    console.log('Rules array after swap', JSON.stringify(this._rulesArray));
+    this._rules.next(this._rulesArray);
+  }
 
+  public updateTitle(oldKey: string, newKey: string, rule: Rule) {
     this._ruleMap.delete(oldKey);
-    this._ruleMap.set(rule.id!, rule);
+    rule.id = newKey;
+    this._ruleMap.set(newKey, rule);
+    this._rulesArray = this._rulesArray.map(curRule => {
+      if(curRule.id === oldKey) {
+        curRule.id = rule.id;
+      }
+      return curRule;
+    });
+    console.log("updateTitle - updated rules array", this._rulesArray);
   }
 }

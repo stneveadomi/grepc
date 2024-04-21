@@ -48,10 +48,22 @@ h2 {
     flex-direction: column;
     min-width: 100%;
     width: 100%;
-
+    border-top: 1px solid rgb(73, 73, 73);
     border-bottom: 1px solid rgb(73, 73, 73);
 }
 
 .center {
     justify-content: center;
+}
+
+.gripper {
+    cursor: grab;
+}
+
+.grabbed * {
+    cursor: grabbing !important;
+}
+
+.grabbed {
+    cursor: grabbing !important;
 }

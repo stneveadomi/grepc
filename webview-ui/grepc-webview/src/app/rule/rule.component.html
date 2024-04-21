@@ -1,7 +1,13 @@
-<div class="rule-container">
+<div #container class="rule-container">
     <form [formGroup]="ruleForm">
         <header class="rule-header" (click)="toggleExpand($event)">
+
             <div class="rule-header-container">
+                <div
+                    (mousedown)="mouseDown()"
+                    [ngClass]="this.gripperClass"
+                    class="gripper codicon codicon-gripper">
+                </div>
                 <div
                     (click)="toggleExpand($event)"
                     [ngClass]="this.rule.expanded ? 'open' : 'closed'" 
@@ -38,10 +44,11 @@
             
             <div class="rule-header-controls center-vertical">
                 <div class="center-vertical control-gap">
-                    <span *ngIf="rule.enabled" class="circle">
+                    <span *ngIf="this.rule.enabled" class="circle">
                         {{occurences}}
                     </span>
                     <app-slider-checkbox
+                        [(value)]="!!this.rule.enabled"
                         [control]="this.ruleForm.controls['enabled']">
                     </app-slider-checkbox>
                 </div>
@@ -88,7 +95,8 @@
                             formControlName="backgroundColor"
                             [value]="this.rule.backgroundColor"
                             [style.background]="this.rule.backgroundColor"
-                            [(colorPicker)]="this.rule.backgroundColor!"/>
+                            [(colorPicker)]="this.rule.backgroundColor!"
+                            (colorPickerChange)="updateColorPicker('backgroundColor', $event)"/>
                     </div>
                     <div class="input-label">
                         <label>
@@ -107,7 +115,8 @@
                             type="text" name="include-files" placeholder="Outline Color"
                             [value]="this.rule.outlineColor"
                             [style.background]="this.rule.outlineColor"
-                            [(colorPicker)]="this.rule.outlineColor!"/>
+                            [(colorPicker)]="this.rule.outlineColor!"
+                            (colorPickerChange)="updateColorPicker('outlineColor', $event)"/>
                     </div>
                     <div class="input-label">
                         <label>
@@ -172,7 +181,8 @@
                             type="text" name="include-files" placeholder="Color"
                             [value]="this.rule.color"
                             [style.background]="this.rule.color"
-                            [(colorPicker)]="this.rule.color!"/>
+                            [(colorPicker)]="this.rule.color!"
+                            (colorPickerChange)="updateColorPicker('color', $event)"/>
                     </div>
                     <div class="input-label">
                         <label>

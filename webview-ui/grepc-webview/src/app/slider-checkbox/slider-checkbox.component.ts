@@ -1,6 +1,6 @@
 import { trigger, state, style, animate, transition, query } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -26,13 +26,15 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 export class SliderCheckboxComponent {
   @Input({required: true})
   control!: FormControl;
-  
-  sliderToggle = false;
-  sliderClass = '';
 
-  toggle(event: Event) {
-    if(event.target === event.currentTarget) {
-      this.sliderToggle = !this.sliderToggle;
-    }
+  @Input({required: true})
+  value!: boolean;
+
+  @Output()
+  valueChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  toggle() {
+    this.valueChange.emit(!this.control.value);
   }
+
 }

@@ -2,7 +2,7 @@
     [formControl]="control"
     type="checkbox" 
     class="slider-checkbox"
-    [ngClass]="this.sliderToggle ? 'enabled' : 'disabled'"
-    (click)="this.toggle($event)"
-    [@slider]="this.sliderToggle ? 'enabled' : 'disabled'"
+    (click)="toggle()"
+    [ngClass]="this.control.value ? 'enabled' : 'disabled'"
+    [@slider]="this.control.value ? 'enabled' : 'disabled'"
     value="Rule ID" />

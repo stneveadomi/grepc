@@ -31,7 +31,10 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
     }
 
     private _pushRules(webview: vscode.Webview) {
-        webview.postMessage({type: 'rules', data: JSON.stringify(Array.from(this._ruleFactory.getRules().entries()))});
+        webview.postMessage({type: 'rules', 
+            mapData: JSON.stringify(Array.from(this._ruleFactory.getRulesMap().entries())),
+            arrayData: JSON.stringify(this._ruleFactory.getRulesArray())
+        });
     }
 
     /**
@@ -65,12 +68,7 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         const polyfillsUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "webview-ui", "grepc-webview", "dist", "grepc-webview", "browser", "polyfills.js"));
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, "webview-ui", "grepc-webview", "dist", "grepc-webview", "browser", "main.js"));
         const nonce = getNonce();
-        // TODO: Fix this and update nonce.
-        //
-        //                <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
-        //                 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; font-src ${webview.cspSource}; style-src ${webview.cspSource}; img-src ${webview.cspSource} https:; script-src 'nonce-${nonce}';" />
-        // 
-
+        
         return /*html*/ `
             <!DOCTYPE html>
             <html lang="en">
@@ -108,12 +106,13 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
           case "rules":
             // Code that should run in response to the hello message command
             vscode.window.showInformationMessage("Updating Rules");
-            console.log('received message from webview:', message);
-            this._ruleFactory.parseRules(message?.data);
+            console.log('received rules from webview:', message);
+            this._ruleFactory.parseRules(message?.mapData, message?.arrayData);
             return;
           case "rulesRequest":
             //designed to send rules on startup to webviews
             //especially if they are reopened without the extension closing.
+            vscode.window.showInformationMessage("Sending rules to webview");
             console.log('received rulesRequest from webview:', message);
             this._pushRules(this.webview!);
             return;
