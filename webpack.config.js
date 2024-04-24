@@ -29,6 +29,7 @@ const extensionConfig = {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
     extensions: ['.ts', '.js'],
     mainFields: ['browser', 'module', 'main'],
+    modules: ['node_modules']
     // fallback: {
     //   assert: require.resolve('assert'),
     //   buffer: require.resolve('buffer'),
@@ -65,7 +66,7 @@ const extensionConfig = {
             loader: 'ts-loader',
             options: {
               compilerOptions: {
-                  "module": "es6" // override `tsconfig.json` so that TypeScript emits native JavaScript modules.
+                  //"module": "es6", // override `tsconfig.json` so that TypeScript emits native JavaScript modules.
               }
             }
           }

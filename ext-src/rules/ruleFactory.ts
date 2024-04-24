@@ -1,15 +1,21 @@
 import * as vscode from 'vscode';
 import { GlobalState } from '../utilities/types';
 import { Rule } from './rule';
+import { BehaviorSubject, Observable, Subject, shareReplay } from 'rxjs';
+import { GrepcViewProvider } from '../viewProviders/grepcViewProvider';
 
 export class RuleFactory {
     private readonly _isGlobalState;
 
     private localState: vscode.Memento | undefined = undefined;
     private globalState: GlobalState | undefined = undefined;
+    private _enabledRules = new Subject<Rule[]>();
 
+    private _grepcProvider: GrepcViewProvider | undefined = undefined;
     private static RULES_MAP_KEY_ID = 'rulesMap';
     private static RULES_ARRAY_KEY_ID = 'rulesArray';
+
+    public readonly $enabledRules: Observable<Rule[]> = this._enabledRules.asObservable().pipe(shareReplay(1));
 
     constructor(state: vscode.Memento | GlobalState, isGlobalState: boolean) {
         this._isGlobalState = isGlobalState;
@@ -18,6 +24,10 @@ export class RuleFactory {
         } else {
             this.localState = state;
         }
+    }
+
+    set grepcProvider(value: GrepcViewProvider) {
+        this._grepcProvider = value;
     }
 
     private getState() {
@@ -34,7 +44,9 @@ export class RuleFactory {
     }
 
     public getRulesArray(): Rule[] {
-        return this.getState()?.get<Rule[]>(RuleFactory.RULES_ARRAY_KEY_ID) ?? [];
+        const rulesArray = this.getState()?.get<Rule[]>(RuleFactory.RULES_ARRAY_KEY_ID) ?? [];
+        this._enabledRules.next(rulesArray.filter(rule => rule.enabled));
+        return rulesArray;
     }
 
     public addRule(rule: Rule) {
@@ -44,6 +56,7 @@ export class RuleFactory {
 
     public updateRules(rulesMap: Map<string, Rule>, rulesArray: Rule[]) {
         console.log('Updating rules in state:', Array.from(rulesMap.entries()));
+        this._enabledRules.next(rulesArray.filter(rule => rule.enabled));
         this.getState()?.update(RuleFactory.RULES_MAP_KEY_ID, Array.from(rulesMap.entries()));
         this.getState()?.update(RuleFactory.RULES_ARRAY_KEY_ID, rulesArray);
     }
@@ -55,6 +68,23 @@ export class RuleFactory {
         const rulesArray = this.getRulesArray().filter(val => val !== rule);
 
         this.updateRules(rulesMap, rulesArray);
+    }
+
+    pushOccurrences(rule: Rule, occurrences: number) {
+        console.log('push occurrences', JSON.stringify(rule), occurrences);
+        this._grepcProvider?.webview?.postMessage({
+            type: 'ruleOccurrences',
+            id: rule.id,
+            occurrences: occurrences
+        });
+    }
+
+    /**
+     * recast the current enabled rules for use in triggerUpdateDecorations.
+     * For more info, see DecorationTypeManager::enableDecorationDetection
+     */
+    recastEnabledRules() {
+        this.getRulesArray();
     }
 
     parseRules(mapData: string, arrayData: string) {

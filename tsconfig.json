@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"module": "Node16",
+		"moduleResolution": "Node16",
 		"target": "ES2022",
 		"lib": [
 			"ES2022"
@@ -17,10 +18,9 @@
 		"./ext-src",
 		"./node_modules/vscode/vscode.d.ts",
 		"./node_modules/vscode/lib/*",
-		"./node_modules/@vscode/codicons/*"
+		"./node_modules/rxjs/*"
 	],
 	"exclude": [
-		"./node_modules",
 		"./webview-ui"
 	],
 }

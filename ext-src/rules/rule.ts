@@ -12,6 +12,8 @@ export interface Rule {
     decorationExpanded: boolean;
     id: string;
     
+    occurrences: number | null;
+    
     regularExpression: RegExp;
     backgroundColor: string;
     outline: string;

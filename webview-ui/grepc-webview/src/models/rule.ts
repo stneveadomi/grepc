@@ -3,6 +3,8 @@ export interface Rule {
     expanded: boolean | null;
     decorationExpanded: boolean | null;
     id: string | null;
+
+    occurrences: number | null;
     
     regularExpression: string | null;
     includeFiles: string | null;
@@ -29,6 +31,7 @@ export class Rule implements Rule {
         this.enabled = false;
         this.expanded = false;
         this.decorationExpanded = false;
+        this.occurrences = 0;
         this.regularExpression = '';
         this.includeFiles = '';
         this.excludeFiles = '';

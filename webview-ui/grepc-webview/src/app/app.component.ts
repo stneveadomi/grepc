@@ -31,11 +31,20 @@ export class AppComponent implements OnInit {
   @HostListener("window:message", ['$event'])
   onPostMessage(event: MessageEvent) {
     //console.log('Received message event on webview', event);
-    if(event?.data?.type === 'rules')  {
-      console.log(
-        "Post message received: " + event?.data?.type + event?.data?.type 
-      );
-      this.ruleService.parseRules(event.data?.mapData, event.data?.arrayData);
+    switch(event?.data?.type) {
+      case 'rules':
+        console.log(
+          "Post message received: " + event?.data?.type + event?.data?.type 
+        );
+        this.ruleService.parseRules(event.data?.mapData, event.data?.arrayData);
+        break;
+      case 'ruleOccurrences':
+        console.log(
+          'ruleOccurrences event received.'
+        );
+        const id = event?.data?.id;
+        const occurences = event?.data?.occurrences;
+        this.ruleService.updateOccurrences(id, occurences);
     }
   }
 }

@@ -45,7 +45,7 @@
             <div class="rule-header-controls center-vertical">
                 <div class="center-vertical control-gap">
                     <span *ngIf="this.rule.enabled" class="circle">
-                        {{occurences}}
+                        {{ this.rule.occurrences }}
                     </span>
                     <app-slider-checkbox
                         [(value)]="!!this.rule.enabled"

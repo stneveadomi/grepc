@@ -44,6 +44,10 @@ export class RuleService {
     this._rules.next(this._rulesArray);
   }
 
+  public pushRulesLocally() {
+    this._rules.next(this._rulesArray);
+  }
+
   /**
    * This only pushes the current rules to the extension.
    * This does NOT update the $rules observable.
@@ -131,5 +135,15 @@ export class RuleService {
       return curRule;
     });
     console.log("updateTitle - updated rules array", this._rulesArray);
+  }
+
+  updateOccurrences(id: any, occurrences: any) {
+    console.log('updating occurrences on rule id:' + id, occurrences);
+    const rule = this._ruleMap.get(id);
+    if(rule) {
+      rule.occurrences = occurrences;
+      this.updateRule(rule);
+      this.pushRulesLocally();
+    }
   }
 }

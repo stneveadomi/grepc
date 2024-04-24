@@ -3,8 +3,7 @@ import { getNonce } from "../utilities/getNonce";
 import { RuleFactory } from '../rules/ruleFactory';
 
 export class GrepcViewProvider implements vscode.WebviewViewProvider {
-    public provider: GrepcViewProvider | undefined;
-    private webview: vscode.Webview | null = null;
+    public webview: vscode.Webview | null = null;
     private _disposables: vscode.Disposable[] = [];
 
     public constructor(

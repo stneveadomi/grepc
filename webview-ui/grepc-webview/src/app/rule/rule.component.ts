@@ -25,7 +25,6 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
   rule!: Rule;
 
   gripperClass = '';
-  occurences = 0;
   showEditIcon = false;
   isEditing = false;
   ruleForm = this.fb.group({
@@ -69,10 +68,15 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
       next: (status: FormControlStatus) => {
         switch(status) {
           case 'VALID':
-            let newRule = { ...this.rule, ...this.ruleForm.value};
+            console.log('form updated! Pushing to extension');
+            let newRule = {
+              ...this.rule,
+              ...this.ruleForm.value,
+            };
             newRule.id = this.rule.id;
+            console.log('new rule: ', newRule);
             this.ruleService.updateRule(newRule);
-            this.ruleService.pushRulesToExtension();
+            this.ruleService.pushRulesLocally();
             return;
            
           case 'INVALID':

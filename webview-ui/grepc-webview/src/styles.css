@@ -24,8 +24,9 @@ h2 {
 
     border-radius: 50%;
     background-color: rgb(73, 73, 73);
-    width: 16px;
     height: 16px;
+    min-width: 16px;
+    padding: 2px;
 }
 
 .clickable {
