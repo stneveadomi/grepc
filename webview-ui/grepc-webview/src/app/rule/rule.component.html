@@ -59,7 +59,7 @@
             </div>
         </header>
     
-        <content [@expand]="this.rule.expanded ? 'open' : 'closed'" class="rule-body">
+        <content [style.display]="getExpandedStyle(this.rule.expanded)" class="rule-body">
             <input
                 formControlName="regularExpression" 
                 type="text" class="regex-input" placeholder="Regular Expression"/>
@@ -86,7 +86,7 @@
         
                 </header>
         
-                <content class="decoration-body" [@expand]="this.rule.decorationExpanded ? 'open' : 'closed'">
+                <content class="decoration-body" [style.display]="getExpandedStyle(this.rule.decorationExpanded)">
                     <div class="block">
                         <label>
                             background color:

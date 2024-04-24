@@ -33,8 +33,6 @@ export class DragService {
         let draggedRuleComponent = (<RuleComponent> this._dragged);
         console.log('Swapping positions between the draggable and dragged: ', draggable, this._dragged);
         this.ruleService.swapPositions((<RuleComponent> draggable).rule, draggedRuleComponent.rule);
-        //force mouse up event as we have successfully swapped positions.
-        //draggedRuleComponent.mouseUp();
     };
 
     /**

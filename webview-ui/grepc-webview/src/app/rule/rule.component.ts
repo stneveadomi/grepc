@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Rule } from '../../models/rule';
 import { CommonModule, NgFor } from '@angular/common';
 import { AppComponent } from '../app.component';
@@ -16,16 +16,6 @@ import { DragService } from '../../services/drag.service';
   selector: 'app-rule',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, SliderCheckboxComponent, ColorPickerModule],
-  animations: [
-    trigger('expand', [
-      state('open', style({
-        display: 'flex'
-      })),
-      state('closed', style({
-        display: 'none'
-      })),
-    ])
-  ],
   templateUrl: './rule.component.html',
   styleUrl: './rule.component.css'
 })
@@ -33,8 +23,6 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
 
   @Input({required: true})
   rule!: Rule;
-
-  private mouseUpListener = null;
 
   gripperClass = '';
   occurences = 0;
@@ -75,15 +63,12 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
   }
 
   ngOnInit() {
-    //todo: Check if this actually does anything...
-    // this.ruleForm.patchValue(this.rule);
+    this.ruleForm.patchValue(this.rule);
+    console.log('ngOnInit run.');
     this.ruleForm.statusChanges.pipe(debounceTime(1000)).subscribe({
       next: (status: FormControlStatus) => {
         switch(status) {
           case 'VALID':
-            console.log('Rule form value: ', this.ruleForm.value);
-            //update everything except the ID
-            // LEFT OFF HERE, this may be the culprit on why ngClass isn't working.
             let newRule = { ...this.rule, ...this.ruleForm.value};
             newRule.id = this.rule.id;
             this.ruleService.updateRule(newRule);
@@ -113,10 +98,6 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
     this.ruleService.pushRules();
   }
 
-  startMouseY: number | undefined = undefined;
-  rowDiff: number | undefined = undefined;
-  RULE_DIV_SIZE = 30;
-
   /**
    * One shot callback for mouseup events. Used in correspondence with mouseDown()
    * Removes event listener.
@@ -124,33 +105,15 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
   mouseUp = () => {
     this.globalStyles.removeClass('grabbed');
     this.drag.disableDraggable();
-    // document.removeEventListener('mousemove', this.mouseMove);
     document.removeEventListener('mouseup', this.mouseUp);
   };
-
-  // mouseMove = (event: MouseEvent) => {
-  //   if(!this.startMouseY) {
-  //     this.startMouseY = event.pageY;
-  //     this.rowDiff = 0;
-  //   }
-
-  //   const diff = (event.pageY - this.startMouseY) / this.RULE_DIV_SIZE;
-  //   if(Math.abs(this.rowDiff! - diff) >= 1) {
-  //     this.rowDiff = Math.round(diff);
-  //     console.log('setting row diff to', this.rowDiff);
-  //   }
-  //   //console.log('mouse move event', event);
-  // };
 
   /**
    * This handles the "gripper" effect of dragging between rows.
    */
   mouseDown() {
-    //todo: on mouse down, close all expanded rules for consistency.
-    this.RULE_DIV_SIZE = document.getElementsByClassName('rule-header')[0]?.clientHeight ?? this.RULE_DIV_SIZE;
     this.globalStyles.addClass('grabbed');
     this.drag.enableDraggable(this);
-    // document.addEventListener('mousemove', this.mouseMove);
     document.addEventListener('mouseup', this.mouseUp);
   }
 
@@ -181,6 +144,10 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
 
   toggleShowEditIcon() {
     this.showEditIcon = !this.showEditIcon;
+  }
+
+  getExpandedStyle(isExpanded: boolean | null) {
+    return isExpanded ? 'flex' : 'none';
   }
 
   updateTitle() {
