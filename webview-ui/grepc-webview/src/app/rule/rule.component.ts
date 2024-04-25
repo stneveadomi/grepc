@@ -73,10 +73,15 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
               ...this.rule,
               ...this.ruleForm.value,
             };
+            //TODO: check if this is necessary.
+            // prevent rule reloading locally so focus is not lost on input form.
+            if(newRule.id !== this.rule.id) {
+              return;
+            }
             newRule.id = this.rule.id;
             console.log('new rule: ', newRule);
             this.ruleService.updateRule(newRule);
-            this.ruleService.pushRulesLocally();
+            this.ruleService.pushRules();
             return;
            
           case 'INVALID':

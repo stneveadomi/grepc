@@ -100,7 +100,7 @@ export class DecorationTypeManager {
         });
     };
 
-    public triggerUpdateDecorations = debounce(this._triggerUpdateDecorations, 500);
+    public triggerUpdateDecorations = debounce(this._triggerUpdateDecorations, 300);
 
     private _ruleToDecorationType = new Map<string, vscode.TextEditorDecorationType>();
     getTextEditorDecorationType(rule: Rule): vscode.TextEditorDecorationType {
