@@ -14,7 +14,10 @@ export interface Rule {
     
     occurrences: number | null;
     
-    regularExpression: RegExp;
+    regularExpression: string;
+    includedFiles: string;
+    excludedFiles: string;
+    
     backgroundColor: string;
     outline: string;
     outlineColor: string;

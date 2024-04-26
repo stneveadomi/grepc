@@ -72,6 +72,20 @@ export class DecorationTypeManager {
         }
 
         enabledRules.forEach(rule => {
+            if(rule.excludedFiles) {
+                const exclude = new RegExp(rule.excludedFiles);
+                if(exclude.test(activeEditor.document.fileName)) {
+                    ruleFactory.pushOccurrences(rule, 0);
+                    return;
+                }
+            }
+            if(rule.includedFiles) {
+                const include = new RegExp(rule.includedFiles);
+                if(!include.test(activeEditor.document.fileName)) {
+                    ruleFactory.pushOccurrences(rule, 0);
+                    return;
+                }
+            }
             const regEx = new RegExp(rule.regularExpression, 'g');
             const text = activeEditor.document.getText();
             const decorations: vscode.DecorationOptions[] = [];
@@ -101,6 +115,16 @@ export class DecorationTypeManager {
     };
 
     public triggerUpdateDecorations = debounce(this._triggerUpdateDecorations, 300);
+
+
+    clearDecorations(rule: Rule, activeEditor: vscode.TextEditor) {
+        if(this._ruleToDecorationType.has(rule.id)) {
+            this._activeEditor?.setDecorations(
+                this._ruleToDecorationType.get(rule.id)!,
+                []
+            );
+        }
+    }
 
     private _ruleToDecorationType = new Map<string, vscode.TextEditorDecorationType>();
     getTextEditorDecorationType(rule: Rule): vscode.TextEditorDecorationType {

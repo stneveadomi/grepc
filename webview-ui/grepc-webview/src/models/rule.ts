@@ -7,8 +7,9 @@ export interface Rule {
     occurrences: number | null;
     
     regularExpression: string | null;
-    includeFiles: string | null;
-    excludeFiles: string | null;
+    includedFiles: string | null;
+    excludedFiles: string | null;
+
     backgroundColor: string | null;
     outline: string | null;
     outlineColor: string | null;
@@ -33,8 +34,8 @@ export class Rule implements Rule {
         this.decorationExpanded = false;
         this.occurrences = 0;
         this.regularExpression = '';
-        this.includeFiles = '';
-        this.excludeFiles = '';
+        this.includedFiles = '';
+        this.excludedFiles = '';
         this.backgroundColor = '';
         this.outline = '';
         this.outlineColor = '';
