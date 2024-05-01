@@ -14,29 +14,31 @@
                     class="drop-down codicon codicon-chevron-right">
                 </div>
                 <span
-                    *ngIf="!this.isEditing"
+                    *ngIf="!this.isEditingTitle"
                     (click)="toggleExpand($event)"
                     (mouseenter)="showEditIcon = true"
                     (mouseleave)="showEditIcon = false"
                     class="rule-id center-vertical">
                     {{rule.id}}
                     <div
-                        (click)="toggleEdit()"
+                        (click)="toggleEditTitle()"
                         [ngClass]="this.showEditIcon ? 'editing' : 'fixed'"
                         class="codicon codicon-edit clickable">
                     </div>
                 </span>
-                <div *ngIf="this.isEditing">
+                <div *ngIf="this.isEditingTitle">
                     <input
                         class="rule-id-input"
                         type="text"
+                        (focus)="onFormFocus()"
+                        (blur)="onFormBlur()"
                         formControlName="id"/>
                     <div
-                        (click)="toggleEdit(); toggleShowEditIcon()"
+                        (click)="toggleEditTitle(); toggleShowEditIcon()"
                         class="codicon codicon-close clickable">
                     </div>
                     <div
-                        (click)="updateTitle(); toggleEdit(); toggleShowEditIcon()"
+                        (click)="updateTitle(); toggleEditTitle(); toggleShowEditIcon()"
                         class="codicon codicon-check clickable">
                     </div>
                 </div>
@@ -61,13 +63,19 @@
     
         <content [style.display]="getExpandedStyle(this.rule.expanded)" class="rule-body">
             <input
-                formControlName="regularExpression" 
+                formControlName="regularExpression"
+                (focus)="onFormFocus()"
+                (blur)="onFormBlur()"
                 type="text" class="regex-input" placeholder="Regular Expression"/>
             <input
-                formControlName="includedFiles" 
+                formControlName="includedFiles"
+                (focus)="onFormFocus()"
+                (blur)="onFormBlur()"
                 type="text" name="include-files" placeholder="Include Files"/>
             <input
-                formControlName="excludedFiles" 
+                formControlName="excludedFiles"
+                (focus)="onFormFocus()"
+                (blur)="onFormBlur()"
                 type="text" name="exclude-files" placeholder="Exclude Files"/>
     
             <div class="decoration-container">
@@ -93,6 +101,8 @@
                         </label>   
                         <input
                             formControlName="backgroundColor"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
                             [value]="this.rule.backgroundColor"
                             [style.background]="this.rule.backgroundColor"
                             [(colorPicker)]="this.rule.backgroundColor!"
@@ -104,6 +114,8 @@
                         </label>
                         <input
                             formControlName="outline" 
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
                             type="text" name="outline" placeholder="Outline"/>
                     </div>
                     <div class="input-label">
@@ -113,6 +125,8 @@
                         <input
                             formControlName="outlineColor" 
                             type="text" name="include-files" placeholder="Outline Color"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
                             [value]="this.rule.outlineColor"
                             [style.background]="this.rule.outlineColor"
                             [(colorPicker)]="this.rule.outlineColor!"
@@ -123,7 +137,9 @@
                             outline style:
                         </label>
                         <input
-                            formControlName="outlineStyle" 
+                            formControlName="outlineStyle"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
                             type="text" name="include-files" placeholder="Outline Style"
                             [(value)]="this.rule.outlineStyle"/>
                     </div>            
@@ -132,7 +148,9 @@
                             outline width:
                         </label>
                         <input
-                            formControlName="outlineWidth" 
+                            formControlName="outlineWidth"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
                             type="text" name="include-files" placeholder="Outline Width"
                             [(value)]="this.rule.outlineWidth"/>
                     </div>            
@@ -142,6 +160,8 @@
                         </label>
                         <input 
                             formControlName="border"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
                             type="text" name="include-files" placeholder="Border"
                             [(value)]="this.rule.border"/>
                     </div>            
@@ -150,7 +170,9 @@
                             font:
                         </label>
                         <input
-                            formControlName="font" 
+                            formControlName="font"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
                             type="text" name="include-files" placeholder="Font"
                             [(value)]="this.rule.font"/>
                     </div>            
@@ -160,6 +182,8 @@
                         </label>
                         <input 
                             formControlName="textDecoration"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
                             type="text" name="exclude-files" placeholder="Text Decoration"
                             [(value)]="this.rule.textDecoration"/>
                     </div>            
@@ -169,6 +193,8 @@
                         </label>
                         <input 
                             formControlName="cursor"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
                             type="text" name="include-files" placeholder="Cursor"
                             [(value)]="this.rule.cursor"/>
                     </div>
@@ -178,6 +204,8 @@
                         </label>
                         <input 
                             formControlName="color"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
                             type="text" name="include-files" placeholder="Color"
                             [value]="this.rule.color"
                             [style.background]="this.rule.color"
@@ -190,6 +218,8 @@
                         </label>
                         <input 
                             formControlName="opacity"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
                             type="text" name="include-files" placeholder="Opacity"
                             [value]="this.rule.opacity"/>
                     </div>

@@ -60,7 +60,7 @@ export class DecorationTypeManager {
     private lastActiveEditor: vscode.TextEditor | undefined = undefined;
 
     updateDecorations(enabledRules: Rule[], ruleFactory: RuleFactory) {
-		console.error('Running update decorations');
+		console.log('Running update decorations');
         let activeEditor = vscode.window.activeTextEditor;
 		if (!activeEditor) {
 			return;

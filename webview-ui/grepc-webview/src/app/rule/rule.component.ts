@@ -27,6 +27,7 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
   gripperClass = '';
   showEditIcon = false;
   isEditing = false;
+  isEditingTitle = false;
   ruleForm = this.fb.group({
     id: [''],
     enabled: [false],
@@ -51,6 +52,38 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
   @ViewChild('container')
   override containingElement!: ElementRef;
 
+  private STATUS_CHANGE_OBSERVER = {
+    next: (status: FormControlStatus) => {
+      switch(status) {
+        case 'VALID':
+          console.log('form updated! Pushing to extension');
+          if(this.isEditing) {
+            console.log('form is being edited. Waiting to update');
+            return;
+          }
+          let newRule = {
+            ...this.rule,
+            ...this.ruleForm.value,
+          };
+          //TODO: check if this is necessary.
+          // prevent rule reloading locally so focus is not lost on input form.
+          if(newRule.id !== this.rule.id) {
+            return;
+          }
+          newRule.id = this.rule.id;
+          console.log('new rule: ', newRule);
+          this.ruleService.updateRule(newRule);
+          this.ruleService.pushRules();
+          return;
+         
+        case 'INVALID':
+        case 'PENDING':
+        case 'DISABLED':
+          //explicit no op.
+      }
+    }
+  };
+
   constructor(
     private ruleService: RuleService,
     private globalStyles: GlobalStylesService,
@@ -64,40 +97,15 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
   ngOnInit() {
     this.ruleForm.patchValue(this.rule);
     console.log('ngOnInit run.');
-    this.ruleForm.statusChanges.pipe(debounceTime(1000)).subscribe({
-      next: (status: FormControlStatus) => {
-        switch(status) {
-          case 'VALID':
-            console.log('form updated! Pushing to extension');
-            let newRule = {
-              ...this.rule,
-              ...this.ruleForm.value,
-            };
-            //TODO: check if this is necessary.
-            // prevent rule reloading locally so focus is not lost on input form.
-            if(newRule.id !== this.rule.id) {
-              return;
-            }
-            newRule.id = this.rule.id;
-            console.log('new rule: ', newRule);
-            this.ruleService.updateRule(newRule);
-            this.ruleService.pushRules();
-            return;
-           
-          case 'INVALID':
-          case 'PENDING':
-          case 'DISABLED':
-            //explicit no op.
-        }
-      }
-    });
+    
+    this.ruleForm.statusChanges.pipe(debounceTime(1000)).subscribe(this.STATUS_CHANGE_OBSERVER);
   }
 
-  public ngAfterViewInit() {
+  ngAfterViewInit() {
     this.cdr.detectChanges();
   }
 
-  public ngOnDestroy(): void {
+  ngOnDestroy(): void {
     super.onDestroy();
   }
 
@@ -130,6 +138,14 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
     this.ruleForm.get(control)?.setValue(value);
   }
 
+  onFormFocus() {
+    this.isEditing = true;
+  }
+
+  onFormBlur() {
+    this.isEditing = false;
+  }
+
   toggleExpand(event?: Event) {
     console.log(event);
     if(event === undefined || event.target === event.currentTarget) {
@@ -147,8 +163,8 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
     this.ruleService.pushRulesToExtension();
   }
 
-  toggleEdit() {
-    this.isEditing = !this.isEditing;
+  toggleEditTitle() {
+    this.isEditingTitle = !this.isEditingTitle;
   }
 
   toggleShowEditIcon() {
