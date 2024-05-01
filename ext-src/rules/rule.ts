@@ -10,8 +10,11 @@ export interface Rule {
     enabled: boolean;
     expanded: boolean;
     decorationExpanded: boolean;
+    //uuid
     id: string;
-    
+    // custom name for rule.
+    title: string;
+
     occurrences: number | null;
     
     regularExpression: string;
@@ -19,16 +22,23 @@ export interface Rule {
     excludedFiles: string;
     
     backgroundColor: string;
+
     outline: string;
     outlineColor: string;
-    outlineStyle: string;
     outlineWidth: string;
+
     border: string;
-    font: string;
+    borderColor: string;
+    borderWidth: string;
+
+    fontStyle: string;
+    fontWeight: string;
+
     textDecoration: string;
+
     cursor: string;
+    
     color: string;
-    opacity: string;
-    gutterIcon: string;
+    
     isWholeLine: boolean;
 }

@@ -143,3 +143,7 @@ label {
     display: block;
     position: relative;
 }
+
+.ng-invalid {
+    border-color: red;
+}

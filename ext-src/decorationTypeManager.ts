@@ -95,7 +95,7 @@ export class DecorationTypeManager {
                 const endPos = activeEditor.document.positionAt(match.index + match[0].length);
                 const decoration = { 
                     range: new vscode.Range(startPos, endPos), 
-                    hoverMessage: 'Rule ID: ' + rule.id 
+                    hoverMessage: 'Rule: ' + rule.title 
                 };
                 decorations.push(decoration);
             }
@@ -140,9 +140,21 @@ export class DecorationTypeManager {
             backgroundColor: rule.backgroundColor ?? '',
             outline: rule.outline ?? '',
             outlineColor: rule.outlineColor ?? '',
+            outlineWidth: rule.outlineWidth ?? '',
+
             border: rule.border ?? '',
+            borderColor: rule.borderColor ?? '',
+            borderWidth: rule.borderWidth ?? '',
+
             color: rule.color ?? '',
-            //todo: add the rest appropriately.
+            
+            fontStyle: rule.fontStyle ?? '',
+            fontWeight: rule.fontWeight ?? '',
+
+            textDecoration: rule.textDecoration ?? '',
+
+            cursor: rule.cursor ?? '',
+            isWholeLine: rule.isWholeLine ?? false,
         });
 
         this._ruleToDecorationType.set(rule.id, decType);

@@ -6,7 +6,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { SliderCheckboxComponent } from '../slider-checkbox/slider-checkbox.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { RuleService } from '../../services/rule.service';
-import { FormBuilder, FormControlStatus, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControlStatus, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime } from 'rxjs';
 import { GlobalStylesService } from '../../services/global-styles.service';
 import { Draggable } from '../../utilities/draggable';
@@ -29,7 +29,9 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
   isEditing = false;
   isEditingTitle = false;
   ruleForm = this.fb.group({
-    id: [''],
+    title: ['',
+      [ Validators.min(1), Validators.required ]
+    ],
     enabled: [false],
     regularExpression: [''],
     includedFiles: [''],
@@ -37,15 +39,15 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
     backgroundColor: [''],
     outline: [''],
     outlineColor: [''],
-    outlineStyle: [''],
     outlineWidth: [''],
     border: [''],
-    font: [''],
+    borderColor: [''],
+    borderWidth: [''],
+    fontStyle: [''],
+    fontWeight: [''],
     textDecoration: [''],
     cursor: [''],
     color: [''],
-    opacity: [''],
-    gutterIcon: [''],
     isWholeLine: [false]
   });
 
@@ -58,6 +60,7 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
         case 'VALID':
           console.log('form updated! Pushing to extension');
           if(this.isEditing) {
+            console.log(this.isEditing);
             console.log('form is being edited. Waiting to update');
             return;
           }
@@ -65,12 +68,7 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
             ...this.rule,
             ...this.ruleForm.value,
           };
-          //TODO: check if this is necessary.
-          // prevent rule reloading locally so focus is not lost on input form.
-          if(newRule.id !== this.rule.id) {
-            return;
-          }
-          newRule.id = this.rule.id;
+
           console.log('new rule: ', newRule);
           this.ruleService.updateRule(newRule);
           this.ruleService.pushRules();
@@ -95,9 +93,23 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
   }
 
   ngOnInit() {
-    this.ruleForm.patchValue(this.rule);
-    console.log('ngOnInit run.');
     
+    console.log('ngOnInit run.');
+    this.ruleForm.controls.title.statusChanges.subscribe({
+      next: (status: FormControlStatus) => {
+        switch(status) {
+          case 'INVALID':
+          case 'PENDING':
+          case 'DISABLED':
+            // while not valid, editing title will be true.
+            this.isEditingTitle = true;
+            console.log('invalid status' + status);
+            return;
+          case 'VALID':
+        }
+      }
+    });
+    this.ruleForm.patchValue(this.rule);
     this.ruleForm.statusChanges.pipe(debounceTime(1000)).subscribe(this.STATUS_CHANGE_OBSERVER);
   }
 
@@ -139,11 +151,14 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
   }
 
   onFormFocus() {
+    console.log('formFocused: is editing = true');
     this.isEditing = true;
   }
 
   onFormBlur() {
+    console.log('formBlur: is editing = false');
     this.isEditing = false;
+    this.STATUS_CHANGE_OBSERVER.next(this.ruleForm.status);
   }
 
   toggleExpand(event?: Event) {
@@ -176,12 +191,13 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
   }
 
   updateTitle() {
-    if(this.ruleForm.controls.id.valid) {
+    if(this.ruleForm.controls.title.valid) {
       try {
-        console.log('Old rule id: ', this.rule.id);
+        console.log('Old rule title: ', this.rule.title);
         
-        this.ruleService.updateTitle(this.rule.id!, this.ruleForm?.value?.id ?? '', this.rule);
-        console.log('updateTitle() - updating rule id to ', this.ruleForm?.value?.id);
+        this.rule.title = this.ruleForm?.value?.title ?? '';
+        //this.ruleService.updateTitle(this.rule.title!, this.ruleForm?.value?.title ?? '', this.rule);
+        console.log('updateTitle() - updating rule title to ', this.ruleForm?.value?.title);
         
         console.log(JSON.stringify(this.ruleService.getRuleArray()));
         this.ruleService.pushRules();

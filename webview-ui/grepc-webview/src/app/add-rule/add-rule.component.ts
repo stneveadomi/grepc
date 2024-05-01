@@ -10,15 +10,12 @@ import { Rule } from '../../models/rule';
   styleUrl: './add-rule.component.css'
 })
 export class AddRuleComponent {
-
-  counter = 0;
-
   constructor(
     private ruleService: RuleService
   ) {}
 
   addEmptyRule() {
     console.log('Adding new rule.');
-    this.ruleService.addRule(new Rule(`Rule ${this.counter++}`));
+    this.ruleService.addRule(new Rule(''));
   }
 }

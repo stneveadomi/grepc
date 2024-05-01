@@ -19,7 +19,7 @@
                     (mouseenter)="showEditIcon = true"
                     (mouseleave)="showEditIcon = false"
                     class="rule-id center-vertical">
-                    {{rule.id}}
+                    {{rule.title}}
                     <div
                         (click)="toggleEditTitle()"
                         [ngClass]="this.showEditIcon ? 'editing' : 'fixed'"
@@ -32,7 +32,7 @@
                         type="text"
                         (focus)="onFormFocus()"
                         (blur)="onFormBlur()"
-                        formControlName="id"/>
+                        formControlName="title"/>
                     <div
                         (click)="toggleEditTitle(); toggleShowEditIcon()"
                         class="codicon codicon-close clickable">
@@ -101,12 +101,22 @@
                         </label>   
                         <input
                             formControlName="backgroundColor"
-                            (focus)="onFormFocus()"
-                            (blur)="onFormBlur()"
                             [value]="this.rule.backgroundColor"
                             [style.background]="this.rule.backgroundColor"
                             [(colorPicker)]="this.rule.backgroundColor!"
                             (colorPickerChange)="updateColorPicker('backgroundColor', $event)"/>
+                    </div>
+                    <div class="input-label">
+                        <label>
+                            color:
+                        </label>
+                        <input 
+                            formControlName="color"
+                            type="text" name="include-files" placeholder="Color"
+                            [value]="this.rule.color"
+                            [style.background]="this.rule.color"
+                            [(colorPicker)]="this.rule.color!"
+                            (colorPickerChange)="updateColorPicker('color', $event)"/>
                     </div>
                     <div class="input-label">
                         <label>
@@ -125,24 +135,11 @@
                         <input
                             formControlName="outlineColor" 
                             type="text" name="include-files" placeholder="Outline Color"
-                            (focus)="onFormFocus()"
-                            (blur)="onFormBlur()"
                             [value]="this.rule.outlineColor"
                             [style.background]="this.rule.outlineColor"
                             [(colorPicker)]="this.rule.outlineColor!"
                             (colorPickerChange)="updateColorPicker('outlineColor', $event)"/>
                     </div>
-                    <div class="input-label">
-                        <label>
-                            outline style:
-                        </label>
-                        <input
-                            formControlName="outlineStyle"
-                            (focus)="onFormFocus()"
-                            (blur)="onFormBlur()"
-                            type="text" name="include-files" placeholder="Outline Style"
-                            [(value)]="this.rule.outlineStyle"/>
-                    </div>            
                     <div class="input-label">
                         <label>
                             outline width:
@@ -162,20 +159,54 @@
                             formControlName="border"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="include-files" placeholder="Border"
+                            type="text" name="border" placeholder="Border"
                             [(value)]="this.rule.border"/>
-                    </div>            
+                    </div>     
                     <div class="input-label">
                         <label>
-                            font:
+                            border color:
                         </label>
-                        <input
-                            formControlName="font"
+                        <input 
+                            formControlName="borderColor"
+                            type="text" name="border-color" placeholder="Border Color"
+                            [value]="this.rule.borderColor"
+                            [style.background]="this.rule.borderColor"
+                            [(colorPicker)]="this.rule.borderColor!"
+                            (colorPickerChange)="updateColorPicker('borderColor', $event)"/>
+                    </div>  
+                    <div class="input-label">
+                        <label>
+                            border width:
+                        </label>
+                        <input 
+                            formControlName="borderWidth"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="include-files" placeholder="Font"
-                            [(value)]="this.rule.font"/>
-                    </div>            
+                            type="text" name="border-width" placeholder="Border Width"
+                            [(value)]="this.rule.borderWidth"/>
+                    </div>         
+                    <div class="input-label">
+                        <label>
+                            font style:
+                        </label>
+                        <input
+                            formControlName="fontStyle"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
+                            type="text" name="font-style" placeholder="Font Style"
+                            [(value)]="this.rule.fontStyle"/>
+                    </div>
+                    <div class="input-label">
+                        <label>
+                            font weight:
+                        </label>
+                        <input
+                            formControlName="fontWeight"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
+                            type="text" name="font-weight" placeholder="Font Weight"
+                            [(value)]="this.rule.fontWeight"/>
+                    </div>                
                     <div class="input-label">
                         <label>
                             text decoration:
@@ -184,7 +215,7 @@
                             formControlName="textDecoration"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="exclude-files" placeholder="Text Decoration"
+                            type="text" name="text-decoration" placeholder="Text Decoration"
                             [(value)]="this.rule.textDecoration"/>
                     </div>            
                     <div class="input-label">
@@ -195,33 +226,8 @@
                             formControlName="cursor"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="include-files" placeholder="Cursor"
+                            type="text" name="cursor" placeholder="Cursor"
                             [(value)]="this.rule.cursor"/>
-                    </div>
-                    <div class="input-label">
-                        <label>
-                            color:
-                        </label>
-                        <input 
-                            formControlName="color"
-                            (focus)="onFormFocus()"
-                            (blur)="onFormBlur()"
-                            type="text" name="include-files" placeholder="Color"
-                            [value]="this.rule.color"
-                            [style.background]="this.rule.color"
-                            [(colorPicker)]="this.rule.color!"
-                            (colorPickerChange)="updateColorPicker('color', $event)"/>
-                    </div>
-                    <div class="input-label">
-                        <label>
-                            opacity:
-                        </label>
-                        <input 
-                            formControlName="opacity"
-                            (focus)="onFormFocus()"
-                            (blur)="onFormBlur()"
-                            type="text" name="include-files" placeholder="Opacity"
-                            [value]="this.rule.opacity"/>
                     </div>
                 </content>
             </div>
