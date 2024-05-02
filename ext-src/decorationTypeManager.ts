@@ -90,7 +90,7 @@ export class DecorationTypeManager {
             const text = activeEditor.document.getText();
             const decorations: vscode.DecorationOptions[] = [];
             let match;
-            while((match = regEx.exec(text))) {
+            while((match = regEx.exec(text)) && decorations.length < 1000) {
                 const startPos = activeEditor.document.positionAt(match.index);
                 const endPos = activeEditor.document.positionAt(match.index + match[0].length);
                 const decoration = { 
