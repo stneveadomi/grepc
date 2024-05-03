@@ -14,6 +14,9 @@ export interface Rule {
     id: string;
     // custom name for rule.
     title: string;
+    
+    overviewRulerLane: vscode.OverviewRulerLane;
+    overviewRulerColor: string;
 
     occurrences: number | null;
     

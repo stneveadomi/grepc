@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { Rule } from '../../models/rule';
+import { OverviewRulerLane, Rule } from '../../models/rule';
 import { CommonModule, NgFor } from '@angular/common';
 import { AppComponent } from '../app.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -33,6 +33,8 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
       [ Validators.min(1), Validators.required ]
     ],
     enabled: [false],
+    overviewRulerColor: [''],
+    overviewRulerLane: [OverviewRulerLane.Full],
     regularExpression: [''],
     includedFiles: [''],
     excludedFiles: [''],
@@ -64,11 +66,12 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
             console.log('form is being edited. Waiting to update');
             return;
           }
+          
           let newRule = {
             ...this.rule,
             ...this.ruleForm.value,
           };
-
+          console.log('overview ruler lane:', this.rule.overviewRulerLane);
           console.log('new rule: ', newRule);
           this.ruleService.updateRule(newRule);
           this.ruleService.pushRules();

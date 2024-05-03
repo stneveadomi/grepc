@@ -229,6 +229,38 @@
                             type="text" name="cursor" placeholder="Cursor"
                             [(value)]="this.rule.cursor"/>
                     </div>
+                    <div class="input-label">
+                        <label>
+                            overview ruler color:
+                        </label>
+                        <input 
+                            formControlName="overviewRulerColor"
+                            type="text" name="overview-ruler-color" placeholder="Overview Ruler Color"
+                            [value]="this.rule.overviewRulerColor"
+                            [style.background]="this.rule.overviewRulerColor"
+                            [(colorPicker)]="this.rule.overviewRulerColor!"
+                            (colorPickerChange)="updateColorPicker('overviewRulerColor', $event)"/>
+                    </div>
+                    <div class="input-label">
+                        <label>
+                            overview ruler lane:
+                        </label>
+                        <select
+                            formControlName="overviewRulerLane">
+                            <option value="7" selected>Full</option>
+                            <option value="1">Left</option>
+                            <option value="2">Center</option>
+                            <option value="4">Right</option>
+                        </select>
+                    </div>
+                    <div class="input-label">
+                        <label>
+                            is whole line:
+                        </label>
+                        <input type="checkbox"
+                            
+                            formControlName="isWholeLine"/>
+                    </div>    
                 </content>
             </div>
         </content>

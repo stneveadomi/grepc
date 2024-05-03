@@ -6,6 +6,9 @@ export interface Rule {
     decorationExpanded: boolean | null;
     id: string;
     title: string | null;
+
+    overviewRulerLane: OverviewRulerLane | null;
+    overviewRulerColor: string | null;
     
     occurrences: number | null;
     
@@ -35,6 +38,25 @@ export interface Rule {
     isWholeLine: boolean | null;
 }
 
+export enum OverviewRulerLane {
+    /**
+     * The left lane of the overview ruler.
+     */
+    Left = 1,
+    /**
+     * The center lane of the overview ruler.
+     */
+    Center = 2,
+    /**
+     * The right lane of the overview ruler.
+     */
+    Right = 4,
+    /**
+     * All lanes of the overview ruler.
+     */
+    Full = 7
+}
+
 export class Rule implements Rule {
 
     constructor(title: string) {
@@ -43,6 +65,8 @@ export class Rule implements Rule {
         this.enabled = false;
         this.expanded = false;
         this.decorationExpanded = false;
+        this.overviewRulerColor = '';
+        this.overviewRulerLane = OverviewRulerLane.Full;
         this.occurrences = 0;
         this.regularExpression = '';
         this.includedFiles = '';

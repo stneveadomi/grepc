@@ -155,6 +155,8 @@ export class DecorationTypeManager {
 
             cursor: rule.cursor ?? '',
             isWholeLine: rule.isWholeLine ?? false,
+            overviewRulerColor: rule.overviewRulerColor ?? '',
+            overviewRulerLane: rule.overviewRulerLane ? Number(rule.overviewRulerLane) : vscode.OverviewRulerLane.Full
         });
 
         this._ruleToDecorationType.set(rule.id, decType);
