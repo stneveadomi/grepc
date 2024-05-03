@@ -1,8 +1,6 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { OverviewRulerLane, Rule } from '../../models/rule';
-import { CommonModule, NgFor } from '@angular/common';
-import { AppComponent } from '../app.component';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import { CommonModule } from '@angular/common';
 import { SliderCheckboxComponent } from '../slider-checkbox/slider-checkbox.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { RuleService } from '../../services/rule.service';
