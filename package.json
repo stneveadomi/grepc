@@ -14,10 +14,55 @@
   "contributes": {
     "commands": [
       {
-        "command": "grepc.highlightRule",
-        "title": "Highlight Rule #1"
+        "command": "grepc.addBlankRule",
+        "title": "Grepc: Create Blank Rule"
+      },
+      {
+        "command": "grepc.addTextRule",
+        "title": "Grepc: Create Rule From Selection"
+      },
+      {
+        "command": "grepc.removeRule",
+        "title": "Grepc: Remove Rule"
+      },
+      {
+        "command": "grepc.disableAllRules",
+        "title": "Grepc: Disable All Rules"
+      },
+      {
+        "command": "grepc.disableLocalRules",
+        "title": "Grepc: Disable Local Workspace Rules"
+      },
+      {
+        "command": "grepc.enableLocalRules",
+        "title": "Grepc: Enable Local Workspace Rules"
+      },
+      {
+        "command": "grepc.disableGlobalRules",
+        "title": "Grepc: Disable Global Workspace Rules"
+      },
+      {
+        "command": "grepc.enableGlobalRules",
+        "title": "Grepc: Enable Global Workspace Rules"
       }
     ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "grepc.addTextRule",
+          "when": "editorHasSelection"
+        }
+      ],
+      "editor/context": [
+        {"command": "grepc.addTextRule", "group": "grepc", "when": "editorHasSelection"},
+        {"command": "grepc.addBlankRule", "group": "grepc"},
+        {"command": "grepc.disableAllRules", "group": "grepc"},
+        {"command": "grepc.disableLocalRules", "group": "grepc"},
+        {"command": "grepc.enableLocalRules", "group": "grepc"},
+        {"command": "grepc.disableGlobalRules", "group": "grepc"},
+        {"command": "grepc.enableGlobalRules", "group": "grepc"}
+      ]
+    },
     "views": {
       "grepc-explorer": [
         {

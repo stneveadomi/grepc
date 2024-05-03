@@ -5,6 +5,7 @@ import { GrepcViewProvider } from './viewProviders/grepcViewProvider';
 import { RuleFactory } from './rules/ruleFactory';
 import { GlobalState } from './utilities/types';
 import { DecorationTypeManager } from './decorationTypeManager';
+import { CommandManager } from './commands/commandManager';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -30,6 +31,9 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.registerWebviewViewProvider(globalWebviewProvider.viewType, globalWebviewProvider),
 		dtTypeManager
 	);
+
+	const commandManager = new CommandManager(context.subscriptions);
+	commandManager.registerCommands();
 	
 	dtTypeManager.enableDecorationDetection();
 }
