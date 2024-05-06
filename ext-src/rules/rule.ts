@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { v4 as uuidv4 } from 'uuid';
 
 // export class Rule implements Rule {
 //     constructor(id: string) {
@@ -44,4 +45,34 @@ export interface Rule {
     color: string;
     
     isWholeLine: boolean;
+}
+
+export class Rule implements Rule {
+
+    constructor(title: string) {
+        this.id = uuidv4();
+        this.title = title;
+        this.enabled = false;
+        this.expanded = false;
+        this.decorationExpanded = false;
+        this.overviewRulerColor = '';
+        this.overviewRulerLane = OverviewRulerLane.Full;
+        this.occurrences = 0;
+        this.regularExpression = '';
+        this.includedFiles = '';
+        this.excludedFiles = '';
+        this.backgroundColor = '';
+        this.outline = '';
+        this.outlineColor = '';
+        this.outlineWidth = '';
+        this.border = '';
+        this.borderColor = '';
+        this.borderWidth = '';
+        this.fontStyle = '';
+        this.fontWeight = '400';
+        this.textDecoration = '';
+        this.cursor = '';
+        this.color = '';
+        this.isWholeLine = false;
+    }
 }

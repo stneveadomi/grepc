@@ -6,6 +6,8 @@ import { RuleFactory } from './rules/ruleFactory';
 import { GlobalState } from './utilities/types';
 import { DecorationTypeManager } from './decorationTypeManager';
 import { CommandManager } from './commands/commandManager';
+import { RuleFactoryMediator } from './rules/ruleFactoryMediator';
+import { LocationState } from './rules/locationState';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -13,8 +15,13 @@ export function activate(context: vscode.ExtensionContext) {
 	const logger = vscode.window.createOutputChannel('grepc');
 	logger.show();
 
-	const localRuleFactory = new RuleFactory(context.workspaceState, false);
-	const globalRuleFactory = new RuleFactory(<GlobalState> context.globalState, true);
+	const ruleFactoryMediator = new RuleFactoryMediator(context);
+	const localRuleFactory = ruleFactoryMediator.getRuleFactory(LocationState.LOCAL);
+	const globalRuleFactory = ruleFactoryMediator.getRuleFactory(LocationState.GLOBAL);
+	
+	if(!localRuleFactory || !globalRuleFactory) {
+		throw new Error('Unable to instantiate rule factories');
+	}
 
 	const dtTypeManager = new DecorationTypeManager(
 		[localRuleFactory, globalRuleFactory],
@@ -23,6 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const localWebviewProvider = new GrepcViewProvider("grepc.webview.local", context.extensionUri, localRuleFactory);
 	const globalWebviewProvider = new GrepcViewProvider("grepc.webview.global", context.extensionUri, globalRuleFactory);
 
+	
 	localRuleFactory.grepcProvider = localWebviewProvider;
 	globalRuleFactory.grepcProvider = globalWebviewProvider;
 
