@@ -56,7 +56,7 @@ export class Rule implements Rule {
         this.expanded = false;
         this.decorationExpanded = false;
         this.overviewRulerColor = '';
-        this.overviewRulerLane = OverviewRulerLane.Full;
+        this.overviewRulerLane = vscode.OverviewRulerLane.Full;
         this.occurrences = 0;
         this.regularExpression = '';
         this.includedFiles = '';

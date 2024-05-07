@@ -17,7 +17,7 @@ import { DragService } from '../../services/drag.service';
   templateUrl: './rule.component.html',
   styleUrl: './rule.component.css'
 })
-export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit, OnInit {
+export class RuleComponent extends Draggable implements OnDestroy, OnChanges, AfterViewInit, OnInit {
 
   @Input({required: true})
   rule!: Rule;
@@ -93,6 +93,14 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
     super(drag);
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    const change = changes['rule'];
+    if(change) {
+      console.log('rule.ngOnChanges -> patching new value', change.currentValue);
+      this.ruleForm.patchValue(change.currentValue);
+    }
+  }
+
   ngOnInit() {
     
     console.log('ngOnInit run.');
@@ -162,19 +170,20 @@ export class RuleComponent extends Draggable implements OnDestroy, AfterViewInit
     this.STATUS_CHANGE_OBSERVER.next(this.ruleForm.status);
   }
 
-  toggleExpand(event?: Event) {
-    console.log(event);
-    if(event === undefined || event.target === event.currentTarget) {
-      this.rule.expanded = !this.rule.expanded;
+  toggleExpand(event: Event) {
+    if(event.target !== event.currentTarget) {
+      return;
     }
+    this.rule.expanded = !this.rule.expanded;
     this.ruleService.updateRule(this.rule);
     this.ruleService.pushRulesToExtension();
   }
 
   toggleDecorationExpanded(event: Event) {
-    if(event.target === event.currentTarget) {
-      this.rule.decorationExpanded = !this.rule.decorationExpanded;
+    if(event.target !== event.currentTarget) {
+      return;
     }
+    this.rule.decorationExpanded = !this.rule.decorationExpanded;
     this.ruleService.updateRule(this.rule);
     this.ruleService.pushRulesToExtension();
   }

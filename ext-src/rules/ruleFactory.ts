@@ -49,9 +49,36 @@ export class RuleFactory {
         return rulesArray;
     }
 
-    public addRule(rule: Rule) {
-        const rules = this.getRulesMap();
-        rules.set(rule.id, rule);
+    disableRules() {
+        const rulesArray = this.getRulesArray().map(value => {
+            value.enabled = false;
+            return value;
+        });
+        const rulesMap = this.getRulesMap();
+        const newRulesMap = new Map();
+        rulesMap.forEach((value, key) => {
+            value.enabled = false;
+            newRulesMap.set(key, value);
+        });
+        this.updateRules(newRulesMap, rulesArray);
+    }
+
+    enableRules() {
+        const rulesArray = this.getRulesArray().map(value => {
+            value.enabled = true;
+            return value;
+        });
+        const rulesMap = this.getRulesMap();
+        const newRulesMap = new Map();
+        rulesMap.forEach((value, key) => {
+            value.enabled = true;
+            newRulesMap.set(key, value);
+        });
+        this.updateRules(newRulesMap, rulesArray);
+    }
+
+    public addRule(title: string, regEx: string) {
+        this._grepcProvider?.addRule(title, regEx);
     }
 
     public updateRules(rulesMap: Map<string, Rule>, rulesArray: Rule[]) {
@@ -59,6 +86,7 @@ export class RuleFactory {
         this._enabledRules.next(rulesArray.filter(rule => rule.enabled));
         this.getState()?.update(RuleFactory.RULES_MAP_KEY_ID, Array.from(rulesMap.entries()));
         this.getState()?.update(RuleFactory.RULES_ARRAY_KEY_ID, rulesArray);
+        this._grepcProvider?.pushRules();
     }
 
     public removeRule(id: string) {

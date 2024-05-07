@@ -26,13 +26,23 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         webviewView.onDidDispose(() => this.dispose(), null, this._disposables);
         webviewView.webview.html = this._getWebviewContent(webviewView.webview);
         this._setWebviewMessageListener(webviewView.webview);
-        this._pushRules(webviewView.webview);
+        this.pushRules();
     }
 
-    private _pushRules(webview: vscode.Webview) {
-        webview.postMessage({type: 'rules', 
+    pushRules() {
+        console.log('Pushing rules to webview');
+        this.webview?.postMessage({
+            type: 'rules', 
             mapData: JSON.stringify(Array.from(this._ruleFactory.getRulesMap().entries())),
             arrayData: JSON.stringify(this._ruleFactory.getRulesArray())
+        });
+    }
+
+    addRule(title: string, regEx: string) {
+        this.webview?.postMessage({
+            type: 'addRule',
+            title,
+            regEx
         });
     }
 
@@ -113,7 +123,7 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
             //especially if they are reopened without the extension closing.
             vscode.window.showInformationMessage("Sending rules to webview");
             console.log('received rulesRequest from webview:', message);
-            this._pushRules(this.webview!);
+            this.pushRules();
             return;
         }
       },

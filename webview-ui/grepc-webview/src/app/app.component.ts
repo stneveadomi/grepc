@@ -32,6 +32,12 @@ export class AppComponent implements OnInit {
   onPostMessage(event: MessageEvent) {
     //console.log('Received message event on webview', event);
     switch(event?.data?.type) {
+      case 'addRule':
+        console.log('addRule event received with data: ', event?.data);
+        let rule = new Rule(event?.data?.title);
+        rule.regularExpression = event?.data?.regEx ?? '';
+        this.ruleService.addRule(rule);
+        break;
       case 'rules':
         console.log(
           "Post message received: " + event?.data?.type + event?.data?.type 

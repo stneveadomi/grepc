@@ -40,7 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
 		dtTypeManager
 	);
 
-	const commandManager = new CommandManager(context.subscriptions);
+	const commandManager = new CommandManager(context.subscriptions, ruleFactoryMediator);
 	commandManager.registerCommands();
 	
 	dtTypeManager.enableDecorationDetection();

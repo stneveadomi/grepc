@@ -14,7 +14,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "grepc.addBlankRule",
+        "command": "grepc.addRule",
         "title": "Grepc: Create Blank Rule"
       },
       {
@@ -28,6 +28,10 @@
       {
         "command": "grepc.disableAllRules",
         "title": "Grepc: Disable All Rules"
+      },
+      {
+        "command": "grepc.enableAllRules",
+        "title": "Grepc: Enable All Rules"
       },
       {
         "command": "grepc.disableLocalRules",
@@ -54,13 +58,39 @@
         }
       ],
       "editor/context": [
-        {"command": "grepc.addTextRule", "group": "grepc", "when": "editorHasSelection"},
-        {"command": "grepc.addBlankRule", "group": "grepc"},
-        {"command": "grepc.disableAllRules", "group": "grepc"},
-        {"command": "grepc.disableLocalRules", "group": "grepc"},
-        {"command": "grepc.enableLocalRules", "group": "grepc"},
-        {"command": "grepc.disableGlobalRules", "group": "grepc"},
-        {"command": "grepc.enableGlobalRules", "group": "grepc"}
+        {
+          "command": "grepc.addTextRule",
+          "group": "grepc",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "grepc.addRule",
+          "group": "grepc"
+        },
+        {
+          "command": "grepc.disableAllRules",
+          "group": "grepc"
+        },
+        {
+          "command": "grepc.enableAllRules",
+          "group": "grepc"
+        },
+        {
+          "command": "grepc.disableLocalRules",
+          "group": "grepc"
+        },
+        {
+          "command": "grepc.enableLocalRules",
+          "group": "grepc"
+        },
+        {
+          "command": "grepc.disableGlobalRules",
+          "group": "grepc"
+        },
+        {
+          "command": "grepc.enableGlobalRules",
+          "group": "grepc"
+        }
       ]
     },
     "views": {
@@ -102,6 +132,7 @@
     "@types/jest": "^29.5.12",
     "@types/mocha": "^10.0.3",
     "@types/node": "^18.18.13",
+    "@types/uuid": "^9.0.8",
     "@types/vscode": "^1.84.0",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
@@ -117,6 +148,7 @@
   },
   "dependencies": {
     "debounce": "^2.0.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "uuid": "^9.0.1"
   }
 }

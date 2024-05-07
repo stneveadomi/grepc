@@ -5,7 +5,7 @@ import { GlobalState } from '../utilities/types';
 
 export class RuleFactoryMediator {
 
-    map: Map<LocationState, RuleFactory> = new Map<>();
+    map: Map<LocationState, RuleFactory> = new Map();
 
     constructor(context: vscode.ExtensionContext) {
         this.map.set(LocationState.LOCAL, new RuleFactory(context.workspaceState, false));
