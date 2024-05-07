@@ -3,6 +3,7 @@ import { GlobalState } from '../utilities/types';
 import { Rule } from './rule';
 import { BehaviorSubject, Observable, Subject, shareReplay } from 'rxjs';
 import { GrepcViewProvider } from '../viewProviders/grepcViewProvider';
+import { LocationState } from './locationState';
 
 export class RuleFactory {
     private readonly _isGlobalState;
@@ -17,7 +18,11 @@ export class RuleFactory {
 
     public readonly $enabledRules: Observable<Rule[]> = this._enabledRules.asObservable().pipe(shareReplay(1));
 
-    constructor(state: vscode.Memento | GlobalState, isGlobalState: boolean) {
+    constructor(
+        state: vscode.Memento | GlobalState, 
+        isGlobalState: boolean,
+        public readonly location: LocationState
+    ) {
         this._isGlobalState = isGlobalState;
         if(isGlobalState) {
             this.globalState = <GlobalState> state;
@@ -99,7 +104,7 @@ export class RuleFactory {
     }
 
     pushOccurrences(rule: Rule, occurrences: number) {
-        console.log('push occurrences', JSON.stringify(rule), occurrences);
+        //console.log('push occurrences', JSON.stringify(rule), occurrences);
         this._grepcProvider?.webview?.postMessage({
             type: 'ruleOccurrences',
             id: rule.id,

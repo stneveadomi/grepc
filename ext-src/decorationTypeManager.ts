@@ -3,18 +3,24 @@ import { Rule } from "./rules/rule";
 import { RuleFactory } from "./rules/ruleFactory";
 import * as vscode from 'vscode';
 import debounce from "debounce";
+import { LocationState } from "./rules/locationState";
 
 export class DecorationTypeManager {
 
     private _destroy = new Subject<void>();
+    private _decorationSet = new Set<vscode.TextEditorDecorationType>();
     private _subscriptions: Subscription[] = [];
     private _activeEditor: vscode.TextEditor | undefined = undefined;
     private _disposables: {dispose(): void}[] = [];
+    private _factoryToDecorations: Map<LocationState, Set<vscode.TextEditorDecorationType>> = new Map();
+    private _ruleToDecorationType = new Map<string, vscode.TextEditorDecorationType>();
 
     constructor(
         private _ruleFactories: RuleFactory[]
     ) {
-        
+        _ruleFactories.forEach(factory => {
+            this._factoryToDecorations.set(factory.location, new Set());
+        });
     }
 
     enableDecorationDetection() {
@@ -32,6 +38,7 @@ export class DecorationTypeManager {
         vscode.window.onDidChangeActiveTextEditor(editor => {
                 console.log('new active editor', editor);
                 this._activeEditor = editor;
+                this.clearAllDecorations();
                 if(editor) {
                     this.triggerUpdateDecorations();
                 } else {
@@ -43,6 +50,7 @@ export class DecorationTypeManager {
 
         vscode.workspace.onDidChangeTextDocument(event => {
                 console.log('new text document', event.document);
+                this.clearAllDecorations();
                 if(this._activeEditor && event.document === this._activeEditor.document) {
                     this.triggerUpdateDecorations();
                 }
@@ -65,11 +73,14 @@ export class DecorationTypeManager {
 		if (!activeEditor) {
 			return;
 		}
+
         if(activeEditor !== this.lastActiveEditor) {
             this.lastActiveEditor = activeEditor;
             // if a new active editor, clear the decoration type map.
             this._ruleToDecorationType.clear();
         }
+
+        this.clearDecorationsByFactory(ruleFactory);
 
         enabledRules.forEach(rule => {
             if(rule.excludedFiles) {
@@ -95,12 +106,14 @@ export class DecorationTypeManager {
                 const endPos = activeEditor.document.positionAt(match.index + match[0].length);
                 const decoration = { 
                     range: new vscode.Range(startPos, endPos), 
-                    hoverMessage: 'Rule: ' + rule.title 
+                    hoverMessage: `Rule: ${rule.title}`
                 };
                 decorations.push(decoration);
             }
             ruleFactory.pushOccurrences(rule, decorations.length);
             const textEditorDecorationType = this.getTextEditorDecorationType(rule);
+            this._factoryToDecorations.get(ruleFactory.location)?.add(textEditorDecorationType);
+
             activeEditor.setDecorations(
                 textEditorDecorationType, 
                 decorations
@@ -116,8 +129,21 @@ export class DecorationTypeManager {
 
     public triggerUpdateDecorations = debounce(this._triggerUpdateDecorations, 300);
 
+    clearAllDecorations() {
+        this._decorationSet.forEach(decorationType => {
+            this._activeEditor?.setDecorations(
+                decorationType,
+                []
+            );
+            if(!this._activeEditor) {
+                console.error('_active editor is undefined.', decorationType.key);
+            }
+        });
 
-    clearDecorations(rule: Rule, activeEditor: vscode.TextEditor) {
+        this._decorationSet.clear();
+    }
+
+    clearDecorations(rule: Rule) {
         if(this._ruleToDecorationType.has(rule.id)) {
             this._activeEditor?.setDecorations(
                 this._ruleToDecorationType.get(rule.id)!,
@@ -126,15 +152,19 @@ export class DecorationTypeManager {
         }
     }
 
-    private _ruleToDecorationType = new Map<string, vscode.TextEditorDecorationType>();
-    getTextEditorDecorationType(rule: Rule): vscode.TextEditorDecorationType {
-        // if rule decoration type exists, clear the decorations on it.
-        if(this._ruleToDecorationType.has(rule.id)) {
+    clearDecorationsByFactory(ruleFactory: RuleFactory) {
+        const setDecorations = this._factoryToDecorations.get(ruleFactory.location);
+        setDecorations?.forEach(decorationType => {
             this._activeEditor?.setDecorations(
-                this._ruleToDecorationType.get(rule.id)!,
+                decorationType,
                 []
             );
-        }
+        });
+    }
+
+    getTextEditorDecorationType(rule: Rule): vscode.TextEditorDecorationType {
+        // if rule decoration type exists, clear the decorations on it.
+        this.clearDecorations(rule);
 
         const decType = vscode.window.createTextEditorDecorationType({
             backgroundColor: rule.backgroundColor ?? '',
@@ -158,8 +188,9 @@ export class DecorationTypeManager {
             overviewRulerColor: rule.overviewRulerColor ?? '',
             overviewRulerLane: rule.overviewRulerLane ? Number(rule.overviewRulerLane) : vscode.OverviewRulerLane.Full
         });
-
+        
         this._ruleToDecorationType.set(rule.id, decType);
+        this._decorationSet.add(decType);
         return decType;
     }
     

@@ -75,4 +75,8 @@ export class Rule implements Rule {
         this.color = '';
         this.isWholeLine = false;
     }
+
+    valueOf() {
+        return this.id;
+    }
 }
