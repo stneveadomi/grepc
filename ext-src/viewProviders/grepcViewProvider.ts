@@ -25,6 +25,7 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         };
         webviewView.onDidDispose(() => this.dispose(), null, this._disposables);
         webviewView.webview.html = this._getWebviewContent(webviewView.webview);
+        console.log('resolveWebviewView called for ', this._ruleFactory.location);
         this._setWebviewMessageListener(webviewView.webview);
         this.pushRules();
     }
@@ -113,6 +114,7 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
 
         switch (type) {
           case "rules":
+            //TODO: Check that events are going to the right webview (local rule webview doesnt emit to global grepc view provider.)
             // Code that should run in response to the hello message command
             vscode.window.showInformationMessage("Updating Rules");
             console.log('received rules from webview:', message);

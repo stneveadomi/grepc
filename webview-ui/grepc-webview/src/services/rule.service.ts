@@ -25,6 +25,7 @@ export class RuleService {
    */
   public parseRules(mapData: string, arrayData: string) {
     try {
+      console.log('RuleService::parseRules -> ', mapData, arrayData);
       this._ruleMap = new Map(JSON.parse(mapData));
       this._rulesArray = JSON.parse(arrayData);
       this._rules.next(this._rulesArray);
@@ -39,6 +40,7 @@ export class RuleService {
    * This also triggers the $rules observable to cast the current set of rules.
    */
   public pushRules() {
+    console.log('RuleService::pushRules _rulesArray =', JSON.stringify(this._rulesArray));
     console.log('Pushing new rules to extension', JSON.stringify(Array.from(this._ruleMap.entries())));
     this.pushRulesToExtension();
     this._rules.next(this._rulesArray);
@@ -96,6 +98,7 @@ export class RuleService {
       }
       return value;
     });
+    console.log('updateRule this._rulesArray ', this._rulesArray);
   }
 
   /**
@@ -142,6 +145,7 @@ export class RuleService {
     const rule = this._ruleMap.get(id);
     if(rule) {
       rule.occurrences = occurrences;
+      console.log('rule.service updateOccurrences update rule', JSON.stringify(rule));
       this.updateRule(rule);
       this.pushRulesLocally();
     }

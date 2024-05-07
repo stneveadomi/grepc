@@ -20,6 +20,7 @@ export interface Rule {
     overviewRulerColor: string;
 
     occurrences: number | null;
+    maxOccurrences: number | null;
     
     regularExpression: string;
     includedFiles: string;
@@ -58,6 +59,7 @@ export class Rule implements Rule {
         this.overviewRulerColor = '';
         this.overviewRulerLane = vscode.OverviewRulerLane.Full;
         this.occurrences = 0;
+        this.maxOccurrences = 1000;
         this.regularExpression = '';
         this.includedFiles = '';
         this.excludedFiles = '';

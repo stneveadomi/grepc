@@ -42,6 +42,7 @@ export class AppComponent implements OnInit {
         console.log(
           "Post message received: " + event?.data?.type + event?.data?.type 
         );
+        console.log('event: ', event);
         this.ruleService.parseRules(event.data?.mapData, event.data?.arrayData);
         break;
       case 'ruleOccurrences':

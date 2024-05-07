@@ -11,6 +11,7 @@ export interface Rule {
     overviewRulerColor: string | null;
     
     occurrences: number | null;
+    maxOccurrences: number | null;
     
     regularExpression: string | null;
     includedFiles: string | null;
@@ -68,6 +69,7 @@ export class Rule implements Rule {
         this.overviewRulerColor = '';
         this.overviewRulerLane = OverviewRulerLane.Full;
         this.occurrences = 0;
+        this.maxOccurrences = 1000;
         this.regularExpression = '';
         this.includedFiles = '';
         this.excludedFiles = '';

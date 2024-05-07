@@ -34,6 +34,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
     overviewRulerColor: [''],
     overviewRulerLane: [OverviewRulerLane.Full],
     regularExpression: [''],
+    maxOccurrences: [1000],
     includedFiles: [''],
     excludedFiles: [''],
     backgroundColor: [''],
@@ -69,8 +70,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
             ...this.rule,
             ...this.ruleForm.value,
           };
-          console.log('overview ruler lane:', this.rule.overviewRulerLane);
-          console.log('new rule: ', newRule);
+          console.log('new rule: ', JSON.stringify(newRule));
           this.ruleService.updateRule(newRule);
           this.ruleService.pushRules();
           return;
@@ -102,8 +102,6 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   }
 
   ngOnInit() {
-    
-    console.log('ngOnInit run.');
     this.ruleForm.controls.title.statusChanges.subscribe({
       next: (status: FormControlStatus) => {
         switch(status) {

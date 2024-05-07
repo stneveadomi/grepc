@@ -44,12 +44,12 @@ export class RuleFactory {
     public getRulesMap(): Map<string, Rule> {
         let value = this.getState()?.get<[string, Rule][]>(RuleFactory.RULES_MAP_KEY_ID, []) ?? [];
         let map: Map<string, Rule> = new Map(value);
-        console.log('Loaded map of size:', map.size);
         return map;
     }
 
     public getRulesArray(): Rule[] {
         const rulesArray = this.getState()?.get<Rule[]>(RuleFactory.RULES_ARRAY_KEY_ID) ?? [];
+        console.log('getRulesArray() is called. updating $enabledRules');
         this._enabledRules.next(rulesArray.filter(rule => rule.enabled));
         return rulesArray;
     }
@@ -86,12 +86,28 @@ export class RuleFactory {
         this._grepcProvider?.addRule(title, regEx);
     }
 
+    /**
+     * ** Warning: This will push the rules to webview **
+     * @param rulesMap 
+     * @param rulesArray 
+     */
     public updateRules(rulesMap: Map<string, Rule>, rulesArray: Rule[]) {
         console.log('Updating rules in state:', Array.from(rulesMap.entries()));
         this._enabledRules.next(rulesArray.filter(rule => rule.enabled));
         this.getState()?.update(RuleFactory.RULES_MAP_KEY_ID, Array.from(rulesMap.entries()));
         this.getState()?.update(RuleFactory.RULES_ARRAY_KEY_ID, rulesArray);
         this._grepcProvider?.pushRules();
+    }
+    /**
+     * This method will purely only update the states without pushing the states to the webview.
+     * @param rulesMap 
+     * @param rulesArray 
+     */
+    public updateRulesLocally(rulesMap: Map<string, Rule>, rulesArray: Rule[]) {
+        console.log('Updating rules in state:', Array.from(rulesMap.entries()));
+        this._enabledRules.next(rulesArray.filter(rule => rule.enabled));
+        this.getState()?.update(RuleFactory.RULES_MAP_KEY_ID, Array.from(rulesMap.entries()));
+        this.getState()?.update(RuleFactory.RULES_ARRAY_KEY_ID, rulesArray);
     }
 
     public removeRule(id: string) {
@@ -126,7 +142,7 @@ export class RuleFactory {
             let parse = JSON.parse(mapData);
             let rulesMap: Map<string, Rule> = new Map<string, Rule>(parse);
             let rulesArray = JSON.parse(arrayData);
-            this.updateRules(rulesMap, rulesArray);
+            this.updateRulesLocally(rulesMap, rulesArray);
         }
         catch (e) {
             console.error(`Unable to parse JSON map in pushRules().`, e);

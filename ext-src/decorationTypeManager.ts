@@ -68,7 +68,7 @@ export class DecorationTypeManager {
     private lastActiveEditor: vscode.TextEditor | undefined = undefined;
 
     updateDecorations(enabledRules: Rule[], ruleFactory: RuleFactory) {
-		console.log('Running update decorations');
+		console.log('Running update decorations for', ruleFactory.location);
         let activeEditor = vscode.window.activeTextEditor;
 		if (!activeEditor) {
 			return;
@@ -101,7 +101,7 @@ export class DecorationTypeManager {
             const text = activeEditor.document.getText();
             const decorations: vscode.DecorationOptions[] = [];
             let match;
-            while((match = regEx.exec(text)) && decorations.length < 1000) {
+            while((match = regEx.exec(text)) && decorations.length < (rule.maxOccurrences ?? 1000)) {
                 const startPos = activeEditor.document.positionAt(match.index);
                 const endPos = activeEditor.document.positionAt(match.index + match[0].length);
                 const decoration = { 
