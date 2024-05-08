@@ -1,15 +1,18 @@
 {
   "name": "grepc",
   "displayName": "grepc",
-  "description": "Advanced regular expression text highlighting.",
+  "description": "Advanced regular expression text decoration.",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.84.0"
   },
+  "license": "MIT",
   "categories": [
-    "Other"
+    "Programming Languages", "Visualization", "Formatters"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
