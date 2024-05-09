@@ -7,6 +7,10 @@
     "vscode": "^1.84.0"
   },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stneveadomi/grepc.git"
+  },
   "categories": [
     "Programming Languages", "Visualization", "Formatters"
   ],
