@@ -1,28 +1,28 @@
-## **WARNING: ACTIVELY BEING DEVELOPED. NOT IN A STATE FOR REVIEW**
 # grepc 
-Grepc is my dream combination of regular expressions and text decoration. "grep + color"
+Grepc is a regular expression highlighter with easy customization. 
 
-
+**"grep + color"**
 
 ## Features
-TBD
+ - **Built in rule manager and decoration handler**
+ - Global and local rule storage for decorations.
+ - Adjust font style, color, background color, border, outline, and more as needed.
+ - Easy commands for creating, enabling, disabling, and removing rules for decoration.
 
-## Requirements
-
-TBD
-
-## Extension Settings
-
-TBD
+## Usage
+ - Simply open the tree view in the left hand bar.
+ - Optionally, use one of the following commands:
+```js
+'Grepc: Add rule (Locally/Globally)' // Add a rule by following the quick pick menus.
+```
 
 ## Known Issues
-
-TBD
+See the Issues section of the Github repository.
 
 ## Release Notes
 
-TBD
+## Contributing
 
-## Following extension guidelines
+## License
 
-TBD
+MIT @ Steven Neveadomi
