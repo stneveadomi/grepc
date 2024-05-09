@@ -1,12 +1,12 @@
 # grepc
 
+> **"grep + color"**
+
 <p align="center">
     <img src="media/grecs.png">
 </p>
 
 Grepc is a regular expression highlighter with easy customization.
-
-## **"grep + color"**
 
 ## Features
 
@@ -25,14 +25,13 @@ Grepc is a regular expression highlighter with easy customization.
 ```
 
 ## Demo
-
-![Example 1](media/Code_hRfd4iIgh6.gif)
+![Example 4](media/Code_PSyTYpsF5e.gif)
 
 ![Example 2](media/Code_IlBi9doiz1.gif)
 
 ![Example 3](media/Code_PMvUMJj9x3.gif)
 
-![Example 4](media/Code_PSyTYpsF5e.gif)
+![Example 1](media/Code_hRfd4iIgh6.gif)
 
 ## Known Issues
 
