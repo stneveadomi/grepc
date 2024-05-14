@@ -47,6 +47,9 @@
             </div>
             
             <div class="rule-header-controls center-vertical">
+                <app-decoration-preview
+                    [rule]="rule">
+                </app-decoration-preview>
                 <div class="center-vertical control-gap">
                     <span *ngIf="this.rule.enabled" class="circle">
                         {{ this.rule.occurrences }}
