@@ -9,11 +9,12 @@ import { debounceTime } from 'rxjs';
 import { GlobalStylesService } from '../../services/global-styles.service';
 import { Draggable } from '../../utilities/draggable';
 import { DragService } from '../../services/drag.service';
+import { DecorationPreviewComponent } from '../decoration-preview/decoration-preview.component';
 
 @Component({
   selector: 'app-rule',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SliderCheckboxComponent, ColorPickerModule],
+  imports: [CommonModule, ReactiveFormsModule, SliderCheckboxComponent, ColorPickerModule, DecorationPreviewComponent],
   templateUrl: './rule.component.html',
   styleUrl: './rule.component.css'
 })
@@ -105,6 +106,9 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
     if(change) {
       console.log('rule.ngOnChanges -> patching new value', change.currentValue);
       this.ruleForm.patchValue(change.currentValue);
+      if(!this.ruleForm.controls.title.value) {
+        this.isEditingTitle = true;
+      }
     }
   }
 
@@ -201,7 +205,6 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
         console.log('Old rule title: ', this.rule.title);
         
         this.rule.title = this.ruleForm?.value?.title ?? '';
-        //this.ruleService.updateTitle(this.rule.title!, this.ruleForm?.value?.title ?? '', this.rule);
         console.log('updateTitle() - updating rule title to ', this.ruleForm?.value?.title);
         
         console.log(JSON.stringify(this.ruleService.getRuleArray()));

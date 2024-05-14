@@ -1,0 +1,10 @@
+.preview-container {
+    height: 16px;
+    width: 16px;
+    border-radius: 4px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    outline: solid 1.5px #CCCCCC;
+}
