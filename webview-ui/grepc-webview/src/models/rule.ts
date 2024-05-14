@@ -87,4 +87,9 @@ export class Rule implements Rule {
         this.color = '';
         this.isWholeLine = false;
     }
+
+    // TODO: If this is a performance bottleneck, improve.
+    static equals(a: Rule, b: Rule): boolean {
+        return JSON.stringify(a) === JSON.stringify(b);
+    }
 }

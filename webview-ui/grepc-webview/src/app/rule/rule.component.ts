@@ -60,8 +60,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
       switch(status) {
         case 'VALID':
           console.log('form updated! Pushing to extension');
-          if(this.isEditing) {
-            console.log(this.isEditing);
+          if(this.isEditing || this.isEditingTitle) {
             console.log('form is being edited. Waiting to update');
             return;
           }
@@ -70,6 +69,14 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
             ...this.rule,
             ...this.ruleForm.value,
           };
+
+          if(Rule.equals(this.rule, newRule)) {
+            console.log('no change in rule. Waiting to update');
+            return;
+          }
+
+          // override title as only this::updateTitle should update title.
+          newRule.title = this.rule.title;
           console.log('new rule: ', JSON.stringify(newRule));
           this.ruleService.updateRule(newRule);
           this.ruleService.pushRules();
@@ -102,20 +109,6 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   }
 
   ngOnInit() {
-    this.ruleForm.controls.title.statusChanges.subscribe({
-      next: (status: FormControlStatus) => {
-        switch(status) {
-          case 'INVALID':
-          case 'PENDING':
-          case 'DISABLED':
-            // while not valid, editing title will be true.
-            this.isEditingTitle = true;
-            console.log('invalid status' + status);
-            return;
-          case 'VALID':
-        }
-      }
-    });
     this.ruleForm.patchValue(this.rule);
     this.ruleForm.statusChanges.pipe(debounceTime(1000)).subscribe(this.STATUS_CHANGE_OBSERVER);
   }
@@ -188,6 +181,10 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
 
   toggleEditTitle() {
     this.isEditingTitle = !this.isEditingTitle;
+    // if no longer editing title, reset form value for title.
+    if(!this.isEditingTitle) {
+      this.ruleForm.controls.title.setValue(this.rule.title);
+    }
   }
 
   toggleShowEditIcon() {
@@ -198,8 +195,8 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
     return isExpanded ? 'flex' : 'none';
   }
 
-  updateTitle() {
-    if(this.ruleForm.controls.title.valid) {
+  updateTitle(override = false) {
+    if(this.ruleForm.controls.title.valid || override) {
       try {
         console.log('Old rule title: ', this.rule.title);
         

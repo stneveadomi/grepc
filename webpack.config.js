@@ -9,7 +9,7 @@ const path = require('path');
 
 /** @type WebpackConfig */
 const extensionConfig = {
-  target: 'node', // VS Code extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
+  target: 'webworker', // VS Code extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
 	mode: 'none', // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
 
   entry: './ext-src/extension.ts', // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
@@ -29,7 +29,7 @@ const extensionConfig = {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
     extensions: ['.ts', '.js'],
     mainFields: ['browser', 'module', 'main'],
-    modules: ['node_modules']
+    //modules: ['node_modules']
     // fallback: {
     //   assert: require.resolve('assert'),
     //   buffer: require.resolve('buffer'),

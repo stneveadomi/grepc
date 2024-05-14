@@ -32,13 +32,15 @@
                         type="text"
                         (focus)="onFormFocus()"
                         (blur)="onFormBlur()"
+                        (keydown.enter)="updateTitle(); toggleEditTitle(); toggleShowEditIcon()"
+                        (keydown.escape)="toggleEditTitle(); toggleShowEditIcon()"
                         formControlName="title"/>
                     <div
                         (click)="toggleEditTitle(); toggleShowEditIcon()"
                         class="codicon codicon-close clickable">
                     </div>
                     <div
-                        (click)="updateTitle(); toggleEditTitle(); toggleShowEditIcon()"
+                        (click)="updateTitle(true); toggleEditTitle(); toggleShowEditIcon()"
                         class="codicon codicon-check clickable">
                     </div>
                 </div>

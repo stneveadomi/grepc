@@ -1,7 +1,6 @@
 .vscode/**
 .vscode-test/**
 out/**
-dist/**
 node_modules/**
 ext-src/**
 .gitignore
@@ -12,3 +11,4 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 **/*.map
 **/*.ts
+**/*.gif
