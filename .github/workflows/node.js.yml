@@ -59,4 +59,10 @@ jobs:
         node-version: 20.x
         cache: 'npm'
     - run: npm ci
-    - run: npx vsce package
+    - shell: pwsh
+      run: echo "target=${{ matrix.platform }}-${{ matrix.arch }}" >> $env:GITHUB_ENV
+    - run: npx vsce package --target ${{ env.target }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.target }}
+        path: "*.vsix"
