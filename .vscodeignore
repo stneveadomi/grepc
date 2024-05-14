@@ -12,3 +12,14 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/*.gif
+.github/**
+
+webview-ui/grepc-webview/.angular/**
+webview-ui/grepc-webview/.vscode/**
+webview-ui/grepc-webview/node_modules/**
+webview-ui/grepc-webview/src/**
+webview-ui/grepc-webview/.editorconfig
+webview-ui/grepc-webview/*.json
+webview-ui/grepc-webview/*.md
+webview-ui/grepc-webview/dist/grepc-webview/browser/index.html
+webview-ui/grepc-webview/dist/grepc-webview/browser/favicon.ico
