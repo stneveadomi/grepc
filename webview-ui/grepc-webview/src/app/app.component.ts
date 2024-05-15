@@ -34,8 +34,12 @@ export class AppComponent implements OnInit {
     switch(event?.data?.type) {
       case 'addRule':
         console.log('addRule event received with data: ', event?.data);
-        let rule = new Rule(event?.data?.title);
+        let rule = new Rule((<string> event?.data?.title).toUpperCase());
         rule.regularExpression = event?.data?.regEx ?? '';
+        if(rule.regularExpression) {
+          rule.enabled = true;
+        }
+        rule.backgroundColor = event?.data?.bgColor ?? '';
         this.ruleService.addRule(rule);
         break;
       case 'rules':

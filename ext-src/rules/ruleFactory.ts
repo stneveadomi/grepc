@@ -82,8 +82,8 @@ export class RuleFactory {
         this.updateRules(newRulesMap, rulesArray);
     }
 
-    public addRule(title: string, regEx: string) {
-        this._grepcProvider?.addRule(title, regEx);
+    public addRule(title: string, regEx: string | undefined, bgColor: string | undefined) {
+        this._grepcProvider?.addRule(title, regEx, bgColor);
     }
 
     /**

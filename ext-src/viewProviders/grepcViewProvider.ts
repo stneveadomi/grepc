@@ -39,11 +39,12 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         });
     }
 
-    addRule(title: string, regEx: string) {
+    addRule(title: string, regEx: string | undefined, bgColor: string | undefined) {
         this.webview?.postMessage({
             type: 'addRule',
             title,
-            regEx
+            regEx,
+            bgColor
         });
     }
 
