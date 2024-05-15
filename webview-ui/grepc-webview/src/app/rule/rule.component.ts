@@ -204,7 +204,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
       try {
         console.log('Old rule title: ', this.rule.title);
         
-        this.rule.title = this.ruleForm?.value?.title ?? '';
+        this.rule.title = this.ruleForm?.value?.title?.toUpperCase() ?? '';
         console.log('updateTitle() - updating rule title to ', this.ruleForm?.value?.title);
         
         console.log(JSON.stringify(this.ruleService.getRuleArray()));

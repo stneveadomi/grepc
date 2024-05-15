@@ -6,6 +6,11 @@ import { RuleFactoryMediator } from '../rules/ruleFactoryMediator';
 import { Rule } from '../rules/rule';
 
 export class CommandManager {
+
+    COLORS = [
+        "RED", "ORANGE", "YELLOW", "GREEN", "BLUE", "PURPLE", "VIOLET"
+    ];
+
     constructor(
         private subscriptions: { dispose(): any; }[],
         private rfm: RuleFactoryMediator
@@ -14,14 +19,14 @@ export class CommandManager {
     showLocationInput(title: string) {
         return vscode.window.showQuickPick([LocationState.LOCAL, LocationState.GLOBAL], {
             title,
-            
+            placeHolder: "Enter the rule location <WORKSPACE|GLOBAL> (MANDATORY)"
         });
     }
 
     showRuleTitleInput(title: string) {
         return vscode.window.showInputBox({
             title,
-            prompt: "Enter the title for the rule (not regex)",
+            prompt: "Enter the title for the rule (MANDATORY)",
             placeHolder: 'Rule 0',
         });
     }
@@ -31,6 +36,13 @@ export class CommandManager {
             title,
             prompt: "Enter the regular expression for the rule (optional)",
             placeHolder: '[a-z]{3}'
+        });
+    }
+
+    showBgColorInput(title: string) {
+        return vscode.window.showQuickPick(this.COLORS, {
+            title,
+            placeHolder: "Enter a background color for the rule (optional)"
         });
     }
 
@@ -49,14 +61,12 @@ export class CommandManager {
             }
 
             let regEx = await this.showRegExInput(inputTitle);
-            if(regEx === undefined) {
-                return;
-            }
 
-            vscode.window.showInformationMessage('Creating rule.');
+            let bgColor = await this.showBgColorInput(inputTitle);
 
-            console.log('getting rule factory');
-            this.rfm.getRuleFactory(<LocationState> location)?.addRule(title, regEx);
+            vscode.window.showInformationMessage(`Creating ${location === LocationState.GLOBAL ? 'global' : 'workspace'} rule "${title}"`);
+
+            this.rfm.getRuleFactory(<LocationState> location)?.addRule(title, regEx, bgColor);
         }),
         new Command('grepc.addTextRule', async () => {
             const inputTitle = 'Grepc: Add rule from selection';
@@ -70,6 +80,8 @@ export class CommandManager {
                 return;
             }
 
+            let bgColor = await this.showBgColorInput(inputTitle);
+
             let selection = vscode.window.activeTextEditor?.selection;
             let regEx = '';
             if(selection && window.activeTextEditor?.document) {
@@ -79,10 +91,9 @@ export class CommandManager {
                 }
             }
 
-            vscode.window.showInformationMessage('Creating rule.');
+            vscode.window.showInformationMessage(`Creating ${location === LocationState.GLOBAL ? 'global' : 'workspace'} rule "${title}"`);
 
-            console.log('getting rule factory');
-            this.rfm.getRuleFactory(<LocationState> location)?.addRule(title, regEx);
+            this.rfm.getRuleFactory(<LocationState> location)?.addRule(title, regEx, bgColor);
         }),
         new Command('grepc.removeRule', () => {}),
         new Command('grepc.disableAllRules', () => {
