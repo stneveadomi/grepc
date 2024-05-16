@@ -29,8 +29,8 @@
         "title": "Grepc: Create Rule From Selection"
       },
       {
-        "command": "grepc.removeRule",
-        "title": "Grepc: Remove Rule"
+        "command": "grepc.deleteRule",
+        "title": "Grepc: Delete Rule"
       },
       {
         "command": "grepc.disableAllRules",
@@ -72,6 +72,10 @@
         },
         {
           "command": "grepc.addRule",
+          "group": "grepc"
+        },
+        {
+          "command": "grepc.deleteRule",
           "group": "grepc"
         },
         {

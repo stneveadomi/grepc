@@ -111,10 +111,15 @@ export class RuleFactory {
     }
 
     public removeRule(id: string) {
+        console.log('Removing rule with id: ' + id);
         const rulesMap = this.getRulesMap();
         const rule = rulesMap.get(id);
+        if(!rule) {
+            console.error('Unable to find rule id in rule map: ' + id);
+            return;
+        }
         rulesMap.delete(id);
-        const rulesArray = this.getRulesArray().filter(val => val !== rule);
+        const rulesArray = this.getRulesArray().filter(val => val.id !== rule.id);
 
         this.updateRules(rulesMap, rulesArray);
     }

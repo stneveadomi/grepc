@@ -31,6 +31,18 @@ export class CommandManager {
         });
     }
 
+    showRulesInput(title: string, rules: Rule[]) {
+        return vscode.window.showQuickPick(rules.map((rule, index, array) => {
+            return <vscode.QuickPickItem & {id: string}> {
+                label: rule.title,
+                description: `Rule ${index}`,
+                id: rule.id
+            };
+        }), {
+            title,
+            placeHolder: 'Select a rule from below to delete:'
+        });
+    }
     showRegExInput(title: string) {
         return vscode.window.showInputBox({
             title,
@@ -95,7 +107,24 @@ export class CommandManager {
 
             this.rfm.getRuleFactory(<LocationState> location)?.addRule(title, regEx, bgColor);
         }),
-        new Command('grepc.removeRule', () => {}),
+        new Command('grepc.deleteRule', async () => {
+            const inputTitle = 'Which rule location do you want to delete from?';
+
+            let location = await this.showLocationInput(inputTitle);
+            if(!location) {
+                return;
+            }
+
+            let ruleFactory = this.rfm.getRuleFactory(<LocationState> location);
+            let currentRuleArray = ruleFactory!.getRulesArray();
+            let ruleToBeRemoved = await this.showRulesInput('Select a rule to be deleted:', currentRuleArray);
+            if(!ruleToBeRemoved) {
+                return;
+            }
+
+            window.showWarningMessage('Deleting rule: ' + ruleToBeRemoved.label);
+            ruleFactory?.removeRule(ruleToBeRemoved.id);
+        }),
         new Command('grepc.disableAllRules', () => {
             for(let ruleFactory of this.rfm.map.values()) {
                 ruleFactory.disableRules();
