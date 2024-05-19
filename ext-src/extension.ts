@@ -27,8 +27,8 @@ export function activate(context: vscode.ExtensionContext) {
 		[localRuleFactory, globalRuleFactory],
 	);
 
-	const localWebviewProvider = new GrepcViewProvider("grepc.webview.local", context.extensionUri, localRuleFactory);
-	const globalWebviewProvider = new GrepcViewProvider("grepc.webview.global", context.extensionUri, globalRuleFactory);
+	const localWebviewProvider = new GrepcViewProvider("grepc.webview.local", context.extensionUri, localRuleFactory, dtTypeManager);
+	const globalWebviewProvider = new GrepcViewProvider("grepc.webview.global", context.extensionUri, globalRuleFactory, dtTypeManager);
 
 	
 	localRuleFactory.grepcProvider = localWebviewProvider;

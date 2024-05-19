@@ -4,9 +4,9 @@ import { RuleFactory } from "./rules/ruleFactory";
 import * as vscode from 'vscode';
 import debounce from "debounce";
 import { LocationState } from "./rules/locationState";
+import { LineRange } from "./rules/line-range";
 
 export class DecorationTypeManager {
-
     private _destroy = new Subject<void>();
     private _decorationSet = new Set<vscode.TextEditorDecorationType>();
     private _subscriptions: Subscription[] = [];
@@ -14,6 +14,7 @@ export class DecorationTypeManager {
     private _disposables: {dispose(): void}[] = [];
     private _factoryToDecorations: Map<LocationState, Set<vscode.TextEditorDecorationType>> = new Map();
     private _ruleToDecorationType = new Map<string, vscode.TextEditorDecorationType>();
+    private _ruleToActiveOccurrences = new Map<string, vscode.Range[]>();
 
     constructor(
         private _ruleFactories: RuleFactory[]
@@ -86,31 +87,41 @@ export class DecorationTypeManager {
             if(rule.excludedFiles) {
                 const exclude = new RegExp(rule.excludedFiles);
                 if(exclude.test(activeEditor.document.fileName)) {
-                    ruleFactory.pushOccurrences(rule, 0);
+                    ruleFactory.pushOccurrences(rule, [], 0);
                     return;
                 }
             }
             if(rule.includedFiles) {
                 const include = new RegExp(rule.includedFiles);
                 if(!include.test(activeEditor.document.fileName)) {
-                    ruleFactory.pushOccurrences(rule, 0);
+                    ruleFactory.pushOccurrences(rule, [], 0);
                     return;
                 }
+            }
+            if(!rule.regularExpression) {
+                ruleFactory.pushOccurrences(rule, [], 0);
+                return;
             }
             const regEx = new RegExp(rule.regularExpression, 'g');
             const text = activeEditor.document.getText();
             const decorations: vscode.DecorationOptions[] = [];
+            const ranges: vscode.Range[] = [];
             let match;
+            let occurrence = 0;
             while((match = regEx.exec(text)) && decorations.length < (rule.maxOccurrences ?? 1000)) {
+                occurrence++;
                 const startPos = activeEditor.document.positionAt(match.index);
                 const endPos = activeEditor.document.positionAt(match.index + match[0].length);
+                const range = new vscode.Range(startPos, endPos);
                 const decoration = { 
-                    range: new vscode.Range(startPos, endPos), 
-                    hoverMessage: `Rule: ${rule.title}`
+                    range: range, 
+                    hoverMessage: `Rule: ${rule.title}\n #${occurrence}`
                 };
                 decorations.push(decoration);
+                ranges.push(range);
             }
-            ruleFactory.pushOccurrences(rule, decorations.length);
+            this._ruleToActiveOccurrences.set(rule.id, ranges);
+            ruleFactory.pushOccurrences(rule, DecorationTypeManager.toLineRanges(rule.id, ranges), decorations.length);
             const textEditorDecorationType = this.getTextEditorDecorationType(rule);
             this._factoryToDecorations.get(ruleFactory.location)?.add(textEditorDecorationType);
 
@@ -120,6 +131,28 @@ export class DecorationTypeManager {
             );
         });
 	}
+
+    private static toLineRanges(ruleId: string, ranges: vscode.Range[]): LineRange[] {
+        const occurrences: LineRange[] = [];
+        const activeEditor = vscode.window.activeTextEditor;
+        if(activeEditor) {
+            ranges.forEach((range, index) => {
+                const lineStart = activeEditor.document.lineAt(range.start.line).range.start;
+                const lineStartOffset = activeEditor.document.offsetAt(lineStart);
+                occurrences.push({
+                    ruleId,
+                    index,
+                    line: activeEditor.document.lineAt(range.start.line).text,
+                    lineNumber: range.start.line,
+                    startIndex: activeEditor.document.offsetAt(range.start) - lineStartOffset,
+                    endIndexExcl: activeEditor.document.offsetAt(range.end) - lineStartOffset,
+                    selectionNumber: index
+                });
+            });
+        }
+
+        return occurrences;
+    }
 
     private _triggerUpdateDecorations = () => {
         this._ruleFactories.forEach(ruleFactory => {
@@ -141,6 +174,7 @@ export class DecorationTypeManager {
         });
 
         this._decorationSet.clear();
+        this._ruleToActiveOccurrences.clear();
     }
 
     clearDecorations(rule: Rule) {
@@ -197,4 +231,13 @@ export class DecorationTypeManager {
     dispose(): void {
         throw new Error("Method not implemented.");
     }
+
+    jumpToLine(lineRange: LineRange) {
+        let range = this._ruleToActiveOccurrences.get(lineRange?.ruleId)?.[lineRange.index];
+        if(range) {
+            console.log('jumpToLine() - range found, jumping to.');
+            this._activeEditor?.revealRange(range);
+        }
+    }
+
 }

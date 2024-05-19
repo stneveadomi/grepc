@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import { getNonce } from "../utilities/getNonce";
 import { RuleFactory } from '../rules/ruleFactory';
+import { LineRange } from '../rules/line-range';
+import { DecorationTypeManager } from '../decorationTypeManager';
 
 export class GrepcViewProvider implements vscode.WebviewViewProvider {
     public webview: vscode.Webview | null = null;
@@ -9,7 +11,8 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
     public constructor(
         public readonly viewType: string,
         private readonly _extensionUri: vscode.Uri,
-        private readonly _ruleFactory: RuleFactory
+        private readonly _ruleFactory: RuleFactory,
+        private readonly _dtManager: DecorationTypeManager
     ) {}
 
     resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext<unknown>, token: vscode.CancellationToken): void | Thenable<void> {
@@ -128,11 +131,19 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
             console.log('received rulesRequest from webview:', message);
             this.pushRules();
             return;
+          case "jumpToLine":
+            //when a selection is made, a user can jump their cursor to it.
+            vscode.window.showInformationMessage("Jumping to rule");
+            this.jumpToLine(JSON.parse(message.data));
         }
       },
       undefined,
       this._disposables
     );
+  }
+
+  private jumpToLine(lineRange: LineRange) {
+    this._dtManager.jumpToLine(lineRange);
   }
 
 }

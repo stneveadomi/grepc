@@ -10,11 +10,13 @@ import { GlobalStylesService } from '../../services/global-styles.service';
 import { Draggable } from '../../utilities/draggable';
 import { DragService } from '../../services/drag.service';
 import { DecorationPreviewComponent } from '../decoration-preview/decoration-preview.component';
+import { OccurrencesComponent } from '../occurrences/occurrences.component';
+import { LineRange } from '../../models/line-range';
 
 @Component({
   selector: 'app-rule',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SliderCheckboxComponent, ColorPickerModule, DecorationPreviewComponent],
+  imports: [CommonModule, ReactiveFormsModule, SliderCheckboxComponent, ColorPickerModule, DecorationPreviewComponent, OccurrencesComponent],
   templateUrl: './rule.component.html',
   styleUrl: './rule.component.css'
 })
@@ -27,6 +29,9 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   showEditIcon = false;
   isEditing = false;
   isEditingTitle = false;
+
+  lineRanges: LineRange[] = [];
+  
   ruleForm = this.fb.group({
     title: ['',
       [ Validators.min(1), Validators.required ]
@@ -115,6 +120,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   ngOnInit() {
     this.ruleForm.patchValue(this.rule);
     this.ruleForm.statusChanges.pipe(debounceTime(1000)).subscribe(this.STATUS_CHANGE_OBSERVER);
+    this.ruleService.register(this.rule.id, this);
   }
 
   ngAfterViewInit() {
@@ -123,6 +129,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
 
   ngOnDestroy(): void {
     super.onDestroy();
+    this.ruleService.deregister(this.rule.id);
   }
 
   deleteSelf() {
@@ -152,6 +159,10 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
 
   updateColorPicker(control: string, value: string) {
     this.ruleForm.get(control)?.setValue(value);
+  }
+
+  updateOccurrences(ranges: LineRange[]) {
+    this.lineRanges = ranges;
   }
 
   onFormFocus() {

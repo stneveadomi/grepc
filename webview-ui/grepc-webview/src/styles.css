@@ -16,6 +16,12 @@ h2 {
     color: var(--vscode-debugIcon-breakpointDisabledForeground);
 }
 
+app-occurrence {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
 .circle {
     display: flex;
     align-items: center;
@@ -33,7 +39,7 @@ h2 {
     cursor: pointer;
 }
 
-.rule-header, .decoration-header {
+.rule-header, .decoration-header, .occurrences-header {
     display: flex;
     flex-direction: row;
     text-transform: uppercase;
@@ -42,6 +48,15 @@ h2 {
     align-items: center;
     flex-wrap: nowrap;
     padding: 4px;
+
+    border-top: 1px solid rgb(73, 73, 73);
+    border-bottom: 1px solid rgb(73, 73, 73);
+}
+
+.rule-id {
+    display: inline-flex;
+    gap: 0.25em;
+    max-width: 8em;
 }
 
 .rule-container {
@@ -49,12 +64,32 @@ h2 {
     flex-direction: column;
     min-width: 100%;
     width: 100%;
-    border-top: 1px solid rgb(73, 73, 73);
-    border-bottom: 1px solid rgb(73, 73, 73);
 }
 
 .center {
     justify-content: center;
+}
+
+.drop-down {
+    padding: 0 4px;
+    transition: all .1s;
+}
+
+.block {
+    display: block !important;
+    position: relative;
+}
+
+.fixed {
+    display: none !important;
+}
+
+.rule-header-container .open {
+    transform: rotate(90deg);
+}
+
+.rule-header-container .closed {
+    transform: rotate(0deg);
 }
 
 .gripper {
@@ -67,4 +102,23 @@ h2 {
 
 .grabbed {
     cursor: grabbing !important;
+}
+
+.ng-invalid {
+    border-color: red;
+}
+
+.codicon {
+    display: inline-flex;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+}
+
+.codicon[class*=codicon-] {
+    display: inline-flex;
+}
+
+.rule-header-container {
+    display: inline-flex;
 }

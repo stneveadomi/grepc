@@ -10,6 +10,7 @@
     align-content: flex-start;
     gap: 5px;
     overflow: hidden;
+    padding-top: 5px;
 }
 
 .decoration-body {
@@ -29,13 +30,6 @@
 .decoration-container {
     display: flex;
     flex-direction: column;
-    
-}
-
-.rule-id {
-    display: inline-flex;
-    gap: 0.25em;
-    max-width: 8em;
 }
 
 input[type='text'].rule-id-input {
@@ -54,21 +48,11 @@ input[type='text'].rule-id-input {
     gap: 1em;
 }
 
-.drop-down {
-    padding: 0 4px;
-    transition: all .1s;
-}
 
 .delete-rule {
     cursor: pointer;
 }
 
-.codicon {
-    display: inline-flex;
-    text-align: center;
-    align-items: center;
-    align-content: center;
-}
 
 .codicon-edit {
     font-size: 10pt;
@@ -78,18 +62,6 @@ input[type='text'].rule-id-input {
     text-align: center;
     align-items: center;
     align-content: center;
-}
-
-.fixed {
-    display: none;
-}
-
-.open {
-    transform: rotate(90deg);
-}
-
-.close {
-    transform: rotate(-90deg);
 }
 
 input[type='checkbox'] {
@@ -157,13 +129,4 @@ label {
         margin-left: 0;
         font-size: 14px;
     }
-}
-
-.block {
-    display: block;
-    position: relative;
-}
-
-.ng-invalid {
-    border-color: red;
 }

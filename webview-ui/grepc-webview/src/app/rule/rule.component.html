@@ -275,6 +275,12 @@
                     </div>    
                 </content>
             </div>
+
+            <app-occurrences
+                *ngIf="rule.enabled"
+                [lineRanges]="lineRanges"
+                [(rule)]="rule">
+            </app-occurrences>
         </content>
     </form>
 </div>

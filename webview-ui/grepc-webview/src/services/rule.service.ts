@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Rule } from '../models/rule';
 import { BehaviorSubject, Observable, Subject, share, shareReplay } from 'rxjs';
 import { ExtensionService } from './extension.service';
+import { LineRange } from '../models/line-range';
+import { RuleComponent } from '../app/rule/rule.component';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +13,21 @@ export class RuleService {
   private _rulesArray: Rule[] = [];
   private _rules = new BehaviorSubject<Rule[]>([]);
 
+  private _ruleIdToComponent: Map<string, RuleComponent> = new Map();
 
   constructor(
     private extensionService: ExtensionService
   ) { }
   
   public readonly $rules: Observable<Rule[]> = this._rules.asObservable().pipe(shareReplay(1));
+
+  public register(id: string, ruleComp: RuleComponent) {
+    this._ruleIdToComponent.set(id, ruleComp);
+  }
+
+  public deregister(id: string) {
+    this._ruleIdToComponent.delete(id);
+  }
 
   /**
    * This method is intended to be used from the message event to parse data from the extension.
@@ -140,14 +151,24 @@ export class RuleService {
     console.log("updateTitle - updated rules array", this._rulesArray);
   }
 
-  updateOccurrences(id: any, occurrences: any) {
+  updateOccurrences(id: string, ranges: LineRange[], occurrences: number) {
     console.log('updating occurrences on rule id:' + id, occurrences);
     const rule = this._ruleMap.get(id);
     if(rule) {
       rule.occurrences = occurrences;
+      this._ruleIdToComponent.get(rule.id)?.updateOccurrences(ranges);
       console.log('rule.service updateOccurrences update rule', JSON.stringify(rule));
       this.updateRule(rule);
       this.pushRulesLocally();
+    }
+  }
+
+  public jumpToLine(lineRange: LineRange) {
+    if(lineRange) {
+      this.extensionService.postMessage({
+        type: "jumpToLine",
+        data: JSON.stringify(lineRange)
+      });
     }
   }
 }
