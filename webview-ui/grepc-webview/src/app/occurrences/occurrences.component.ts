@@ -80,7 +80,9 @@ export class OccurrencesComponent implements OnChanges {
     }
     console.log('decrement(): updating index and line range.');
     this.occurrenceIndex--;
-    this.occurrenceIndex = Math.max(this.occurrenceIndex, 1);
+    if(this.occurrenceIndex <= 0) {
+      this.occurrenceIndex = this.rule.occurrences ?? 1;
+    }
     this.lineRange = this.lineRanges?.[this.occurrenceIndex - 1];
     console.log('new line range: ', JSON.stringify(this.lineRange));
   }
@@ -90,8 +92,14 @@ export class OccurrencesComponent implements OnChanges {
       return;
     }
     this.occurrenceIndex++;
-    this.occurrenceIndex = Math.min(this.occurrenceIndex, this.rule?.occurrences ?? this.occurrenceIndex);
+    if(this.occurrenceIndex > this.rule?.occurrences) {
+      this.occurrenceIndex = 1;
+    }
     this.lineRange = this.lineRanges?.[this.occurrenceIndex - 1];
+  }
+
+  processWheel(event: WheelEvent) {
+    console.log('wheel event', event);
   }
 
 }

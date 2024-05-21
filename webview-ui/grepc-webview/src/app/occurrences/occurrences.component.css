@@ -36,6 +36,20 @@
     align-items: center;
 }
 
+.occurrence-list {
+    margin-right: 15px;
+    min-height: 12em;
+    max-height: 18em;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    .occurrence-text {
+        margin-bottom: 5px;
+        width: 98%;
+        background-color: transparent;
+    }
+}
+
 .selection-text {
     padding-left: 4.5em;
     font-size: 11px;
