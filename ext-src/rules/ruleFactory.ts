@@ -4,6 +4,7 @@ import { Rule } from './rule';
 import { BehaviorSubject, Observable, Subject, shareReplay } from 'rxjs';
 import { GrepcViewProvider } from '../viewProviders/grepcViewProvider';
 import { LocationState } from './locationState';
+import { LineRange } from './line-range';
 
 export class RuleFactory {
     private readonly _isGlobalState;
@@ -124,11 +125,12 @@ export class RuleFactory {
         this.updateRules(rulesMap, rulesArray);
     }
 
-    pushOccurrences(rule: Rule, occurrences: number) {
-        //console.log('push occurrences', JSON.stringify(rule), occurrences);
+    pushOccurrences(rule: Rule, ranges: LineRange[], occurrences: number) {
+        console.log('push ranges: ', JSON.stringify(rule), JSON.stringify(ranges), occurrences);
         this._grepcProvider?.webview?.postMessage({
             type: 'ruleOccurrences',
             id: rule.id,
+            ranges: JSON.stringify(ranges),
             occurrences: occurrences
         });
     }

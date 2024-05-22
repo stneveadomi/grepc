@@ -1,0 +1,95 @@
+<header class="occurrences-header" (click)="toggleExpand($event)">
+    <div class="rule-header-container">
+        <div
+            (click)="toggleExpand($event)"
+            [ngClass]="this.rule.occurrencesExpanded ? 'open' : 'closed'" 
+            class="drop-down codicon codicon-chevron-right">
+        </div>
+
+        <span class="rule-id" (click)="toggleExpand($event)">
+            Occurrences
+        </span>
+    </div>
+
+</header>
+
+<content class="occurrences-body"
+    [style.display]="getExpandedStyle(this.rule.occurrencesExpanded)">
+    <div class="selection-text">
+        <span class="selection-title">
+            Selection:
+        </span>
+        {{ occurrenceIndex }} of {{ rule.occurrences }}
+    </div>
+    <div class="occurrence">
+        <div
+            title="Jump to line" 
+            (click)="jumpToLine()"
+            class="codicon codicon-target">
+        </div>
+        <div 
+            (wheel)="processWheel($event)"
+            class="up-or-down" >
+            <div
+                title="Previous selection" 
+                class="codicon codicon-arrow-small-up" 
+                (click)="decrement()"></div>
+            <div 
+                title="Next selection"
+                class="codicon codicon-arrow-small-down"
+                (click)="increment()"></div>
+        </div>
+        
+        <div *ngIf="lineRange"
+            (wheel)="processWheel($event)"
+            class="occurrence-text">
+            <div class="line-number">
+                {{ lineRange.lineNumber + 1 }}:
+            </div>
+            <div >
+                {{ lineRange.line?.substring(0, lineRange.startIndex) }} 
+                <span
+                    [style.border]="rule.border"
+                    [style.borderColor]="rule.borderColor"
+                    [style.borderWidth]="rule.borderWidth"
+                    [style.color]="rule.color"
+                    [style.fontWeight]="rule.fontWeight"
+                    [style.textDecoration]="rule.textDecoration"
+                    [style.cursor]="rule.cursor"
+                    [style.outline]="rule.outline"
+                    [style.outlineColor]="rule.outlineColor"
+                    [style.outlineWidth]="rule.outlineWidth"
+                    [style.backgroundColor]="rule.backgroundColor">{{lineRange.line?.substring(lineRange.startIndex, lineRange.endIndexExcl)}}</span>
+                {{ lineRange.line?.substring(lineRange.endIndexExcl) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="occurrence-list">
+        <div class="occurrence-text"
+            (click)="lineRange = line; occurrenceIndex = (index + 1)"
+
+            [style.backgroundColor]="line === lineRange ? 'rgb(73,73,73)' : 'transparent'"
+            *ngFor="let line of lineRanges; index as index;">
+            <div class="line-number">
+                {{ line.lineNumber + 1 }}:
+            </div>
+            <div >
+                {{ line.line?.substring(0, line.startIndex) }} 
+                <span
+                    [style.border]="rule.border"
+                    [style.borderColor]="rule.borderColor"
+                    [style.borderWidth]="rule.borderWidth"
+                    [style.color]="rule.color"
+                    [style.fontWeight]="rule.fontWeight"
+                    [style.textDecoration]="rule.textDecoration"
+                    [style.cursor]="rule.cursor"
+                    [style.outline]="rule.outline"
+                    [style.outlineColor]="rule.outlineColor"
+                    [style.outlineWidth]="rule.outlineWidth"
+                    [style.backgroundColor]="rule.backgroundColor">{{line.line?.substring(line.startIndex, line.endIndexExcl)}}</span>
+                {{ line.line?.substring(line.endIndexExcl) }}
+            </div>
+        </div>
+    </div>
+</content>

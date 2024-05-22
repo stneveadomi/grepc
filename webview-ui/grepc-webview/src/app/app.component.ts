@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-      this.ruleService.requestRules();
+    this.ruleService.requestRules();
   }
 
   @HostListener("window:message", ['$event'])
@@ -54,8 +54,9 @@ export class AppComponent implements OnInit {
           'ruleOccurrences event received.'
         );
         const id = event?.data?.id;
+        const ranges = event?.data?.ranges;
         const occurences = event?.data?.occurrences;
-        this.ruleService.updateOccurrences(id, occurences);
+        this.ruleService.updateOccurrences(id, JSON.parse(ranges), occurences);
     }
   }
 }

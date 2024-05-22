@@ -4,6 +4,7 @@ export interface Rule {
     enabled: boolean | null;
     expanded: boolean | null;
     decorationExpanded: boolean | null;
+    occurrencesExpanded: boolean | null;
     id: string;
     title: string | null;
 
@@ -66,6 +67,7 @@ export class Rule implements Rule {
         this.enabled = false;
         this.expanded = false;
         this.decorationExpanded = false;
+        this.occurrencesExpanded = false;
         this.overviewRulerColor = '';
         this.overviewRulerLane = OverviewRulerLane.Full;
         this.occurrences = 0;
