@@ -13,8 +13,7 @@
 
 </header>
 
-<content class="occurrences-body" 
-    (wheel)="processWheel($event)"
+<content class="occurrences-body"
     [style.display]="getExpandedStyle(this.rule.occurrencesExpanded)">
     <div class="selection-text">
         <span class="selection-title">
@@ -28,7 +27,9 @@
             (click)="jumpToLine()"
             class="codicon codicon-target">
         </div>
-        <div class="up-or-down" >
+        <div 
+            (wheel)="processWheel($event)"
+            class="up-or-down" >
             <div
                 title="Previous selection" 
                 class="codicon codicon-arrow-small-up" 
@@ -39,7 +40,9 @@
                 (click)="increment()"></div>
         </div>
         
-        <div *ngIf="lineRange" class="occurrence-text">
+        <div *ngIf="lineRange"
+            (wheel)="processWheel($event)"
+            class="occurrence-text">
             <div class="line-number">
                 {{ lineRange.lineNumber + 1 }}:
             </div>

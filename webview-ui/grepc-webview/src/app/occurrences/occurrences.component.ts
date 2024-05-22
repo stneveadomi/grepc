@@ -99,7 +99,10 @@ export class OccurrencesComponent implements OnChanges {
   }
 
   processWheel(event: WheelEvent) {
-    console.log('wheel event', event);
+    if(event.deltaY > 0) {
+      this.decrement();
+    } else {
+      this.increment();
+    }
   }
-
 }
