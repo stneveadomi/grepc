@@ -3,7 +3,7 @@
 > **"grep + color"**
 
 <p align="center">
-    <img src="media/grecs.png">
+    <img src="media/grepc-circle.png" alt-text="Grepc Icon">
 </p>
 
 Grepc is a regular expression highlighter with easy customization.
