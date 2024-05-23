@@ -44,7 +44,7 @@
       {
         "command": "grepc.enableGlobalRules",
         "title": "Grepc: Enable Global Workspace Rules"
-      }
+      },
       {
         "command": "grepc.disableAllRules",
         "title": "Grepc: Disable All Rules"
@@ -53,12 +53,10 @@
         "command": "grepc.disableLocalRules",
         "title": "Grepc: Disable Local Workspace Rules"
       },
-
       {
         "command": "grepc.disableGlobalRules",
         "title": "Grepc: Disable Global Workspace Rules"
-      },
-
+      }
     ],
     "menus": {
       "commandPalette": [
