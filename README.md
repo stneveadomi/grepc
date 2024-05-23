@@ -1,12 +1,12 @@
 # grepc
 
-> **"grep + color"**
+> **grep + color**
 
 <p align="center">
-    <img src="media/grepc-circle.png" alt-text="Grepc Icon">
+    <img src="media/grepc-circle.png" alt="Grepc Icon">
 </p>
 
-Grepc is a regular expression highlighter with easy customization.
+Grepc is an approachable regular expression highlighter with advanced customization.
 
 ## Features
 
@@ -18,10 +18,37 @@ Grepc is a regular expression highlighter with easy customization.
 ## Usage
 
 - Simply open the tree view in the left hand bar.
-- Optionally, use one of the following commands:
+- Optionally, use one of the following by right-clicking in the editor:
 
 ```js
-'Grepc: Add rule (Locally/Globally)' // Add a rule by following the quick pick menus.
+// Add a rule by following the quick pick menus.
+'Grepc: Create rule (Locally/Globally)' 
+```
+```js
+// Add a rule by selecting text to be the regex and then following the quick pick menus.
+'Grepc: Create rule from Selection (Locally/Globally)' 
+```
+```js
+ // Delete a rule by following the quick pick menus.
+'Grepc: Delete rule (Locally/Globally)'
+```
+```js
+'Grepc: Enable All Rules'
+```
+```js
+'Grepc: Enable Local Workspace Rules'
+```
+```js
+'Grepc: Enable Global Workspace Rules'
+```
+```js
+'Grepc: Disable All Rules'
+```
+```js
+'Grepc: Disable Local Workspace Rules'
+```
+```js
+'Grepc: Disable Global Workspace Rules'
 ```
 
 ## Demo
