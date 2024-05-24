@@ -15,6 +15,9 @@ export class RuleService {
 
   private _ruleIdToComponent: Map<string, RuleComponent> = new Map();
 
+  private _isAwaitingRulesResponse: Promise<void> | undefined  = undefined;
+  private _isAwaitingRulesResolveReject: {resolve: any, reject: any} | undefined = undefined;
+
   constructor(
     private extensionService: ExtensionService
   ) { }
@@ -40,9 +43,19 @@ export class RuleService {
       this._ruleMap = new Map(JSON.parse(mapData));
       this._rulesArray = JSON.parse(arrayData);
       this._rules.next(this._rulesArray);
+      console.log('Attempting to resolve promise.')
+      this._isAwaitingRulesResolveReject?.resolve();
     }
     catch (e) {
       console.error(`Unable to parse JSON map in pushRules().`, e);
+      console.log('Attempting to reject promise');
+      this._isAwaitingRulesResolveReject?.reject();
+    }
+    finally {
+      if(this._isAwaitingRulesResponse) {
+        console.log('Clearing awaitingRulesResponse');
+      }
+      this._isAwaitingRulesResponse = undefined;
     }
   }
 
@@ -81,6 +94,11 @@ export class RuleService {
   public requestRules() {
     console.log('Requesting rules from extension');
     this.extensionService.postMessage({type: 'rulesRequest'});
+    console.log('Creating promise for awaiting rules response');
+    this._isAwaitingRulesResponse = new Promise((resolve, reject) => {
+      // assign resolve and reject to be called by other members of this class.
+      this._isAwaitingRulesResolveReject = {resolve, reject};
+    });
   }
 
   /**
@@ -153,6 +171,20 @@ export class RuleService {
 
   updateOccurrences(id: string, ranges: LineRange[], occurrences: number) {
     console.log('updating occurrences on rule id:' + id, occurrences);
+    if(this._isAwaitingRulesResponse) {
+      console.log('Waiting for rules response to apply occurrences');
+      this._isAwaitingRulesResponse.then(_ => {
+        this._updateOccurrencesHelper(id, ranges, occurrences);
+      })
+      .catch(console.error);
+    }
+    else {
+      console.log('No rules response promise. Applying occurrences');
+      this._updateOccurrencesHelper(id, ranges, occurrences);
+    }
+  }
+
+  private _updateOccurrencesHelper(id: string, ranges: LineRange[], occurrences: number) {
     const rule = this._ruleMap.get(id);
     if(rule) {
       rule.occurrences = occurrences;
