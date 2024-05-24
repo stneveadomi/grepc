@@ -23,6 +23,8 @@ export class OccurrencesComponent implements OnChanges {
 
   // index by 1, eww.
   occurrenceIndex = !this.rule?.occurrences || this.rule.occurrences === 0 ? 0 : 1;
+
+  isListOpen = false;
   
   constructor(
     private ruleService: RuleService,
@@ -61,6 +63,13 @@ export class OccurrencesComponent implements OnChanges {
     this.rule.occurrencesExpanded = !this.rule.occurrencesExpanded;
     this.ruleService.updateRule(this.rule);
     this.ruleService.pushRulesToExtension();
+  }
+
+  toggleListExpand(event: Event) {
+    if(event.target !== event.currentTarget) {
+      return;
+    }
+    this.isListOpen = !this.isListOpen;
   }
 
   jumpToLine() {

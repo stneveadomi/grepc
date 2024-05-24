@@ -42,12 +42,34 @@
     max-height: 18em;
     overflow-y: scroll;
     overflow-x: hidden;
+    border: 1px solid rgb(73, 73, 73);
+    padding: 6px;
 
     .occurrence-text {
         margin-bottom: 5px;
         width: 98%;
         background-color: transparent;
     }
+}
+
+.occurrences-list-header {
+    border: solid 1px rgb(73,73,73);
+    display: inline-flex;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    width: 98%;
+    justify-content: flex-end;
+    flex-direction: row-reverse;
+}
+
+.open {
+    transform: rotate(90deg)
+}
+
+.closed {
+    transform: rotate(0deg);
 }
 
 .selection-text {
