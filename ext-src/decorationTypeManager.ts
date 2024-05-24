@@ -236,7 +236,7 @@ export class DecorationTypeManager {
         let range = this._ruleToActiveOccurrences.get(lineRange?.ruleId)?.[lineRange.index];
         if(range) {
             console.log('jumpToLine() - range found, jumping to.');
-            this._activeEditor?.revealRange(range);
+            this._activeEditor?.revealRange(range, vscode.TextEditorRevealType.AtTop);
         }
     }
 
