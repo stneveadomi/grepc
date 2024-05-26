@@ -124,7 +124,7 @@
         {
           "id": "grepc-explorer",
           "title": "Grepc",
-          "icon": "media/grepc-activity-bar.png"
+          "icon": "media/grepc-activity-bar.svg"
         }
       ]
     }
