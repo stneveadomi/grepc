@@ -49,14 +49,14 @@ export class AppComponent implements OnInit {
         console.log('event: ', event);
         this.ruleService.parseRules(event.data?.mapData, event.data?.arrayData);
         break;
-      case 'ruleOccurrences':
+      case 'ruleDecorationUpdate':
         console.log(
-          'ruleOccurrences event received.'
+          'ruleDecorationUpdate event received.'
         );
         const id = event?.data?.id;
         const ranges = event?.data?.ranges;
         const occurences = event?.data?.occurrences;
-        this.ruleService.updateOccurrences(id, JSON.parse(ranges), occurences);
+        this.ruleService.updateDecorations(id, JSON.parse(ranges), occurences);
     }
   }
 }

@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { GlobalState } from '../utilities/types';
 import { Rule } from './rule';
-import { BehaviorSubject, Observable, Subject, shareReplay } from 'rxjs';
+import { Observable, Subject, shareReplay } from 'rxjs';
 import { GrepcViewProvider } from '../viewProviders/grepcViewProvider';
 import { LocationState } from './locationState';
 import { LineRange } from './line-range';
@@ -36,6 +36,22 @@ export class RuleFactory {
         this._grepcProvider = value;
     }
 
+    private get rulesMap(): Map<string, Rule> {
+        return new Map<string, Rule>(this.getState()?.get<[string, Rule][]>(RuleFactory.RULES_MAP_KEY_ID, []) ?? []);
+    }
+
+    private set rulesMap(map: Map<string,Rule> | undefined) {
+        this.getState()?.update(RuleFactory.RULES_MAP_KEY_ID, Array.from(map?.entries() ?? []));
+    }
+
+    private get rulesArray(): Rule[] {
+        return this.getState()?.get<Rule[]>(RuleFactory.RULES_ARRAY_KEY_ID) ?? [];
+    }
+
+    private set rulesArray(array: Rule[] | undefined) {
+        this.getState()?.update(RuleFactory.RULES_ARRAY_KEY_ID, array);
+    }
+
     private getState() {
         return this._isGlobalState
             ? this.globalState
@@ -43,13 +59,11 @@ export class RuleFactory {
     }
 
     public getRulesMap(): Map<string, Rule> {
-        let value = this.getState()?.get<[string, Rule][]>(RuleFactory.RULES_MAP_KEY_ID, []) ?? [];
-        let map: Map<string, Rule> = new Map(value);
-        return map;
+        return  this.rulesMap;
     }
 
     public getRulesArray(): Rule[] {
-        const rulesArray = this.getState()?.get<Rule[]>(RuleFactory.RULES_ARRAY_KEY_ID) ?? [];
+        const rulesArray = this.rulesArray;
         console.log('getRulesArray() is called. updating $enabledRules');
         this._enabledRules.next(rulesArray.filter(rule => rule.enabled));
         return rulesArray;
@@ -111,6 +125,27 @@ export class RuleFactory {
         this.getState()?.update(RuleFactory.RULES_ARRAY_KEY_ID, rulesArray);
     }
 
+    /**
+     * updateRuleWithNoSideEffects - What this means is the rule will be updated <b>WITHOUT</b> triggering an $enableRules cast
+     * or without triggering a push to the webview. This is ideally only used when decorations are updated.
+     * @param rule 
+     */
+    public updateRuleWithNoSideEffects(rule: Rule) {
+        console.log('Updating rule with no side effects: ', rule.id);
+        let newRules = this.rulesMap;
+        newRules.set(rule.id, rule);
+        // calls setter with logic.
+        this.rulesMap = newRules;
+        // calls setter with logic
+        this.rulesArray = this.rulesArray.map(value => {
+            if(value.id === rule.id) {
+                return rule;
+            }
+            return value;
+        });
+
+    }
+
     public removeRule(id: string) {
         console.log('Removing rule with id: ' + id);
         const rulesMap = this.getRulesMap();
@@ -127,8 +162,13 @@ export class RuleFactory {
 
     pushOccurrences(rule: Rule, ranges: LineRange[], occurrences: number) {
         console.log('push ranges: ', JSON.stringify(rule), JSON.stringify(ranges), occurrences);
+        rule.lineRanges = ranges;
+        rule.occurrences = occurrences;
+        console.log('updating ruel with no side effects:', JSON.stringify(rule));
+        this.updateRuleWithNoSideEffects(rule);
+
         this._grepcProvider?.webview?.postMessage({
-            type: 'ruleOccurrences',
+            type: 'ruleDecorationUpdate',
             id: rule.id,
             ranges: JSON.stringify(ranges),
             occurrences: occurrences

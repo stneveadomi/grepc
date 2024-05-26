@@ -15,6 +15,7 @@ export class DecorationTypeManager {
     private _factoryToDecorations: Map<LocationState, Set<vscode.TextEditorDecorationType>> = new Map();
     private _ruleToDecorationType = new Map<string, vscode.TextEditorDecorationType>();
     private _ruleToActiveOccurrences = new Map<string, vscode.Range[]>();
+    private _oldEnabledRules: Rule[] = [];
 
     constructor(
         private _ruleFactories: RuleFactory[]
@@ -30,31 +31,40 @@ export class DecorationTypeManager {
                 ruleFactory.$enabledRules.subscribe({
                     next: (enabledRules: Rule[]) => {
                         console.log('updating decorations. enabledRule = ', enabledRules);
-                        this.updateDecorations(enabledRules, ruleFactory);
+                        if(this.isDecorationChangeInArray(enabledRules)) {
+                            console.log('decoration update is needed!');
+                            this.updateDecorations(enabledRules, ruleFactory);
+                            this._oldEnabledRules = enabledRules;
+                        } else {
+                            console.log('no decoration update needed');
+                        }
+                        
                     }
                 })
             );
         });
 
+        this._activeEditor = vscode.window.activeTextEditor;
         vscode.window.onDidChangeActiveTextEditor(editor => {
                 console.log('new active editor', editor);
-                this._activeEditor = editor;
+
                 this.clearAllDecorations();
+                // clear all decorations before switching to active editor.
+                this._activeEditor = editor;
+                
                 if(editor) {
                     this.triggerUpdateDecorations();
                 } else {
                     this._ruleToDecorationType.clear();
                 }
             },
+            this,
             this._disposables
         );
 
         vscode.workspace.onDidChangeTextDocument(event => {
                 console.log('new text document', event.document);
-                this.clearAllDecorations();
-                if(this._activeEditor && event.document === this._activeEditor.document) {
-                    this.triggerUpdateDecorations();
-                }
+                this.triggerUpdateDecorations();
             },
             this._disposables
         );
@@ -132,6 +142,47 @@ export class DecorationTypeManager {
         });
 	}
 
+    private isDecorationChangeInArray(enabledRules: Rule[]) {
+        if(enabledRules.length !== this._oldEnabledRules.length) {
+            return true;
+        }
+
+        for(let i = 0; i < enabledRules.length; i++) {
+            let element = enabledRules[i];
+            let matchingOldRule = this._oldEnabledRules[i];
+            if(!matchingOldRule || element.id !== matchingOldRule.id) {
+                // if different ids, than a reorder happened indicating redecorate.
+                return true;
+            }
+
+            //check all properties that correspond to needing a decoration update.
+            if(matchingOldRule.backgroundColor !== element.backgroundColor
+                || matchingOldRule.border !== element.border
+                || matchingOldRule.borderColor !== element.borderColor
+                || matchingOldRule.borderWidth !== element.borderWidth
+                || matchingOldRule.color !== element.color
+                || matchingOldRule.cursor !== element.cursor
+                || matchingOldRule.excludedFiles !== element.excludedFiles
+                || matchingOldRule.includedFiles !== element.includedFiles
+                || matchingOldRule.fontStyle !== element.fontStyle
+                || matchingOldRule.fontWeight !== element.fontWeight
+                || matchingOldRule.isWholeLine !== element.isWholeLine
+                || matchingOldRule.maxOccurrences !== element.maxOccurrences
+                || matchingOldRule.outline !== element.outline
+                || matchingOldRule.outlineColor !== element.outlineColor
+                || matchingOldRule.outlineWidth !== element.outlineWidth
+                || matchingOldRule.overviewRulerColor !== element.overviewRulerColor
+                || matchingOldRule.overviewRulerLane !== element.overviewRulerLane
+                || matchingOldRule.regularExpression !== element.regularExpression
+                || matchingOldRule.title !== element.title
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static toLineRanges(ruleId: string, ranges: vscode.Range[]): LineRange[] {
         const occurrences: LineRange[] = [];
         const activeEditor = vscode.window.activeTextEditor;
@@ -155,12 +206,13 @@ export class DecorationTypeManager {
     }
 
     private _triggerUpdateDecorations = () => {
+        this.clearAllDecorations();
         this._ruleFactories.forEach(ruleFactory => {
             ruleFactory.recastEnabledRules();
         });
     };
 
-    public triggerUpdateDecorations = debounce(this._triggerUpdateDecorations, 300);
+    public triggerUpdateDecorations = debounce(this._triggerUpdateDecorations, 300, {immediate: true});
 
     clearAllDecorations() {
         this._decorationSet.forEach(decorationType => {
@@ -169,7 +221,7 @@ export class DecorationTypeManager {
                 []
             );
             if(!this._activeEditor) {
-                console.error('_active editor is undefined.', decorationType.key);
+                console.log('_active editor is undefined.', decorationType.key);
             }
         });
 
@@ -235,8 +287,13 @@ export class DecorationTypeManager {
     jumpToLine(lineRange: LineRange) {
         let range = this._ruleToActiveOccurrences.get(lineRange?.ruleId)?.[lineRange.index];
         if(range) {
-            console.log('jumpToLine() - range found, jumping to.');
-            this._activeEditor?.revealRange(range, vscode.TextEditorRevealType.AtTop);
+            console.log('jumpToLine() - range found, jumping to in editor', this._activeEditor);
+            if(this._activeEditor) {
+                this._activeEditor.revealRange(range, vscode.TextEditorRevealType.AtTop);
+            } else {
+                console.error('Attempting to jump failed as active editor is nullish.');
+            }
+            
         }
     }
 
