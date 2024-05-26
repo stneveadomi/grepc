@@ -2,8 +2,6 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { GrepcViewProvider } from './viewProviders/grepcViewProvider';
-import { RuleFactory } from './rules/ruleFactory';
-import { GlobalState } from './utilities/types';
 import { DecorationTypeManager } from './decorationTypeManager';
 import { CommandManager } from './commands/commandManager';
 import { RuleFactoryMediator } from './rules/ruleFactoryMediator';
@@ -12,8 +10,6 @@ import { LocationState } from './rules/locationState';
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	const logger = vscode.window.createOutputChannel('grepc');
-	logger.show();
 
 	const ruleFactoryMediator = new RuleFactoryMediator(context);
 	const localRuleFactory = ruleFactoryMediator.getRuleFactory(LocationState.LOCAL);

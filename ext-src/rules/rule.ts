@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { v4 as uuidv4 } from 'uuid';
+import { LineRange } from './line-range';
 
 // export class Rule implements Rule {
 //     constructor(id: string) {
@@ -20,6 +21,7 @@ export interface Rule {
     overviewRulerColor: string;
 
     occurrences: number | null;
+    lineRanges: LineRange[] | null;
     maxOccurrences: number | null;
     
     regularExpression: string;
@@ -59,6 +61,7 @@ export class Rule implements Rule {
         this.overviewRulerColor = '';
         this.overviewRulerLane = vscode.OverviewRulerLane.Full;
         this.occurrences = 0;
+        this.lineRanges = [];
         this.maxOccurrences = 1000;
         this.regularExpression = '';
         this.includedFiles = '';

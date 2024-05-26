@@ -81,7 +81,7 @@
             <div class="occurrence-text clickable"
                 (click)="lineRange = line; occurrenceIndex = (index + 1); jumpToLine()"
                 [style.backgroundColor]="line === lineRange ? 'rgb(73,73,73)' : 'transparent'"
-                *ngFor="let line of lineRanges; index as index;">
+                *ngFor="let line of this.rule?.lineRanges ?? []; index as index;">
                 <div class="line-number">
                     {{ line.lineNumber + 1 }}:
                 </div>

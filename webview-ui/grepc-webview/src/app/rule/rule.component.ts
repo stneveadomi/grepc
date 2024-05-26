@@ -29,8 +29,6 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   showEditIcon = false;
   isEditing = false;
   isEditingTitle = false;
-
-  lineRanges: LineRange[] = [];
   
   ruleForm = this.fb.group({
     title: ['',
@@ -159,10 +157,6 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
 
   updateColorPicker(control: string, value: string) {
     this.ruleForm.get(control)?.setValue(value);
-  }
-
-  updateOccurrences(ranges: LineRange[]) {
-    this.lineRanges = ranges;
   }
 
   onFormFocus() {

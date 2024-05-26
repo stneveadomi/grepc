@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { LineRange } from './line-range';
 
 export interface Rule {
     enabled: boolean | null;
@@ -12,6 +13,7 @@ export interface Rule {
     overviewRulerColor: string | null;
     
     occurrences: number | null;
+    lineRanges: LineRange[] | null;
     maxOccurrences: number | null;
     
     regularExpression: string | null;
@@ -71,6 +73,7 @@ export class Rule implements Rule {
         this.overviewRulerColor = '';
         this.overviewRulerLane = OverviewRulerLane.Full;
         this.occurrences = 0;
+        this.lineRanges = [];
         this.maxOccurrences = 1000;
         this.regularExpression = '';
         this.includedFiles = '';
