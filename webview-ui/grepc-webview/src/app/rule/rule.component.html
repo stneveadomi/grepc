@@ -108,7 +108,7 @@
                             [value]="this.rule.backgroundColor"
                             [style.background]="this.rule.backgroundColor"
                             [(colorPicker)]="this.rule.backgroundColor!"
-                            (colorPickerChange)="updateColorPicker('backgroundColor', $event)"/>
+                            (colorPickerSelect)="updateColorPicker('backgroundColor', $event)"/>
                     </div>
                     <div class="input-label">
                         <label>
@@ -120,7 +120,7 @@
                             [value]="this.rule.color"
                             [style.background]="this.rule.color"
                             [(colorPicker)]="this.rule.color!"
-                            (colorPickerChange)="updateColorPicker('color', $event)"/>
+                            (colorPickerSelect)="updateColorPicker('color', $event)"/>
                     </div>
                     <div class="input-label">
                         <label>
@@ -142,7 +142,7 @@
                             [value]="this.rule.outlineColor"
                             [style.background]="this.rule.outlineColor"
                             [(colorPicker)]="this.rule.outlineColor!"
-                            (colorPickerChange)="updateColorPicker('outlineColor', $event)"/>
+                            (colorPickerSelect)="updateColorPicker('outlineColor', $event)"/>
                     </div>
                     <div class="input-label">
                         <label>
@@ -176,7 +176,7 @@
                             [value]="this.rule.borderColor"
                             [style.background]="this.rule.borderColor"
                             [(colorPicker)]="this.rule.borderColor!"
-                            (colorPickerChange)="updateColorPicker('borderColor', $event)"/>
+                            (colorPickerSelect)="updateColorPicker('borderColor', $event)"/>
                     </div>  
                     <div class="input-label">
                         <label>
@@ -243,13 +243,14 @@
                             [value]="this.rule.overviewRulerColor"
                             [style.background]="this.rule.overviewRulerColor"
                             [(colorPicker)]="this.rule.overviewRulerColor!"
-                            (colorPickerChange)="updateColorPicker('overviewRulerColor', $event)"/>
+                            (colorPickerSelect)="updateColorPicker('overviewRulerColor', $event)"/>
                     </div>
                     <div class="input-label">
                         <label>
                             overview ruler lane:
                         </label>
                         <select
+                            (blur)="onFormBlur()"
                             formControlName="overviewRulerLane">
                             <option value="7" selected>Full</option>
                             <option value="1">Left</option>
@@ -263,6 +264,7 @@
                         </label>
                         <input 
                             formControlName="maxOccurrences"
+                            (blur)="onFormBlur()"
                             type="number" name="max-occurrences" placeholder="1000"
                             />
                     </div>
@@ -271,6 +273,7 @@
                             Is Whole Line?
                         </label>
                         <input type="checkbox"
+                            (blur)="onFormBlur()"
                             formControlName="isWholeLine"/>
                     </div>    
                 </content>

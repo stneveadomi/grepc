@@ -60,7 +60,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   override containingElement!: ElementRef;
 
   private STATUS_CHANGE_OBSERVER = {
-    next: (status: FormControlStatus) => {
+  next: (status: FormControlStatus) => {
       switch(status) {
         case 'VALID':
           console.log('form updated! Pushing to extension');
@@ -157,6 +157,8 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
 
   updateColorPicker(control: string, value: string) {
     this.ruleForm.get(control)?.setValue(value);
+    this.ruleService.updateRule(this.rule);
+    this.ruleService.pushRules();
   }
 
   onFormFocus() {
