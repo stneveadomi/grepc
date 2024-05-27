@@ -121,7 +121,7 @@ export class RuleService {
    * @param rule rule to be updated by id in the map and array
    */
   public updateRule(rule: Rule) {
-    this._ruleMap.set(rule.id!, {...rule});
+    this._ruleMap.set(rule.id!, rule);
     this._rulesArray = this._rulesArray.map(value => {
       if(value.id === rule.id) {
         return rule;
@@ -155,19 +155,6 @@ export class RuleService {
     this._rulesArray[ruleBIndex] = ruleA;
     console.log('Rules array after swap', JSON.stringify(this._rulesArray));
     this._rules.next(this._rulesArray);
-  }
-
-  public updateTitle(oldKey: string, newKey: string, rule: Rule) {
-    this._ruleMap.delete(oldKey);
-    rule.id = newKey;
-    this._ruleMap.set(newKey, rule);
-    this._rulesArray = this._rulesArray.map(curRule => {
-      if(curRule.id === oldKey) {
-        curRule.id = rule.id;
-      }
-      return curRule;
-    });
-    console.log("updateTitle - updated rules array", this._rulesArray);
   }
 
   updateDecorations(id: string, ranges: LineRange[], occurrences: number) {

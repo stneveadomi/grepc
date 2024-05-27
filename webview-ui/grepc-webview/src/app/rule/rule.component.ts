@@ -32,7 +32,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   
   ruleForm = this.fb.group({
     title: ['',
-      [ Validators.min(1), Validators.required ]
+      [ Validators.minLength(1), Validators.maxLength(50), Validators.required ]
     ],
     enabled: [false],
     overviewRulerColor: [''],
@@ -213,8 +213,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
         
         this.rule.title = this.ruleForm?.value?.title?.toUpperCase() ?? '';
         console.log('updateTitle() - updating rule title to ', this.ruleForm?.value?.title);
-        
-        console.log(JSON.stringify(this.ruleService.getRuleArray()));
+        this.ruleService.updateRule(this.rule);
         this.ruleService.pushRules();
       } catch (exception) {
         console.error('Unable to update rule.', exception);
