@@ -121,3 +121,8 @@ app-occurrence {
 .rule-header-container {
     display: inline-flex;
 }
+
+.preview {
+    position: relative;
+    top: -1px;
+}
