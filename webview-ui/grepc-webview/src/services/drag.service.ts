@@ -56,5 +56,6 @@ export class DragService {
         this._registered.forEach(draggable => {
             draggable.disableDragDetection();
         });
+        this.ruleService.pushRulesToExtension();
     }
 }

@@ -32,7 +32,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   
   ruleForm = this.fb.group({
     title: ['',
-      [ Validators.min(1), Validators.required ]
+      [ Validators.minLength(1), Validators.maxLength(50), Validators.required ]
     ],
     enabled: [false],
     overviewRulerColor: [''],
@@ -60,7 +60,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   override containingElement!: ElementRef;
 
   private STATUS_CHANGE_OBSERVER = {
-    next: (status: FormControlStatus) => {
+  next: (status: FormControlStatus) => {
       switch(status) {
         case 'VALID':
           console.log('form updated! Pushing to extension');
@@ -117,7 +117,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
 
   ngOnInit() {
     this.ruleForm.patchValue(this.rule);
-    this.ruleForm.statusChanges.pipe(debounceTime(1000)).subscribe(this.STATUS_CHANGE_OBSERVER);
+    this.ruleForm.statusChanges.pipe(debounceTime(300)).subscribe(this.STATUS_CHANGE_OBSERVER);
     this.ruleService.register(this.rule.id, this);
   }
 
@@ -157,6 +157,8 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
 
   updateColorPicker(control: string, value: string) {
     this.ruleForm.get(control)?.setValue(value);
+    this.ruleService.updateRule(this.rule);
+    this.ruleService.pushRules();
   }
 
   onFormFocus() {
@@ -211,8 +213,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
         
         this.rule.title = this.ruleForm?.value?.title?.toUpperCase() ?? '';
         console.log('updateTitle() - updating rule title to ', this.ruleForm?.value?.title);
-        
-        console.log(JSON.stringify(this.ruleService.getRuleArray()));
+        this.ruleService.updateRule(this.rule);
         this.ruleService.pushRules();
       } catch (exception) {
         console.error('Unable to update rule.', exception);
