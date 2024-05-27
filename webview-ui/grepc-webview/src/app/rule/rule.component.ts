@@ -117,7 +117,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
 
   ngOnInit() {
     this.ruleForm.patchValue(this.rule);
-    this.ruleForm.statusChanges.pipe(debounceTime(1000)).subscribe(this.STATUS_CHANGE_OBSERVER);
+    this.ruleForm.statusChanges.pipe(debounceTime(300)).subscribe(this.STATUS_CHANGE_OBSERVER);
     this.ruleService.register(this.rule.id, this);
   }
 
