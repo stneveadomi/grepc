@@ -54,9 +54,7 @@ app-occurrence {
 }
 
 .rule-id {
-    display: inline-flex;
     gap: 0.25em;
-    max-width: 8em;
 }
 
 .rule-container {
@@ -106,6 +104,7 @@ app-occurrence {
 
 .ng-invalid {
     border-color: red !important;
+    outline-color: red !important;
 }
 
 .codicon {
