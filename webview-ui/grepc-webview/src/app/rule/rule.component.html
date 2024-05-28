@@ -108,6 +108,7 @@
                             [value]="this.rule.backgroundColor"
                             [style.background]="this.rule.backgroundColor"
                             [(colorPicker)]="this.rule.backgroundColor!"
+                            [cpPosition]="'bottom'"
                             (colorPickerSelect)="updateColorPicker('backgroundColor', $event)"/>
                     </div>
                     <div class="input-label">
@@ -243,6 +244,7 @@
                             [value]="this.rule.overviewRulerColor"
                             [style.background]="this.rule.overviewRulerColor"
                             [(colorPicker)]="this.rule.overviewRulerColor!"
+                            [cpPosition]="'top'"
                             (colorPickerSelect)="updateColorPicker('overviewRulerColor', $event)"/>
                     </div>
                     <div class="input-label">
