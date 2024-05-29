@@ -2,13 +2,17 @@
   "name": "grepc-webview",
   "type": "module",
   "version": "0.0.0",
+  "jest": {
+    "preset": "jest-preset-angular",
+    "setupFilesAfterEnv": ["<rootDir>/setup.jest.ts"]
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "build:production": "ng build --configuration production",
-    "test": "ng test",
+    "test": "jest",
     "clean": "rimraf dist"
   },
   "private": true,
