@@ -65,7 +65,7 @@
             </div>
         </header>
     
-        <content [style.display]="getExpandedStyle(this.rule.expanded)" class="rule-body">
+        <div [style.display]="getExpandedStyle(this.rule.expanded)" class="rule-body">
             <input
                 formControlName="regularExpression"
                 (focus)="onFormFocus()"
@@ -98,7 +98,7 @@
         
                 </header>
         
-                <content class="decoration-body" [style.display]="getExpandedStyle(this.rule.decorationExpanded)">
+                <div class="decoration-body" [style.display]="getExpandedStyle(this.rule.decorationExpanded)">
                     <div class="block">
                         <label>
                             background color:
@@ -278,13 +278,13 @@
                             (blur)="onFormBlur()"
                             formControlName="isWholeLine"/>
                     </div>    
-                </content>
+                </div>
             </div>
 
             <app-occurrences
                 *ngIf="rule.enabled"
                 [(rule)]="rule">
             </app-occurrences>
-        </content>
+        </div>
     </form>
 </div>
