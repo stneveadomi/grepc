@@ -13,6 +13,7 @@
     "watch": "ng build --watch --configuration development",
     "build:production": "ng build --configuration production",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "clean": "rimraf dist"
   },
   "private": true,
