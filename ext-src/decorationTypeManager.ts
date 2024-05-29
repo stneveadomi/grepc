@@ -34,11 +34,11 @@ export class DecorationTypeManager {
                 ruleFactory.$enabledRules.subscribe({
                     next: (enabledRules: Rule[]) => {
                         if(this.isDecorationChangeInArray(enabledRules)) {
-                            this.logger.debug('Decoration Detection: decoration update is needed!');
+                            this.logger.debug('[DTM] Decoration Detection: decoration update is needed!');
                             this.updateDecorations(enabledRules, ruleFactory);
                             this._oldEnabledRules = enabledRules;
                         } else {
-                            this.logger.debug('Decoration Detection: No decoration update needed');
+                            this.logger.debug('[DTM] Decoration Detection: No decoration update needed');
                         }
                         
                     }
@@ -82,7 +82,7 @@ export class DecorationTypeManager {
 
     updateDecorations(enabledRules: Rule[], ruleFactory: RuleFactory) {
         let activeEditor = vscode.window.activeTextEditor;
-        this.logger.debug(`Applying decorations to active editor: ${activeEditor?.document?.fileName}`);
+        this.logger.debug(`[DTM] Applying decorations to active editor: ${activeEditor?.document?.fileName}`);
 		if (!activeEditor) {
 			return;
 		}
@@ -94,11 +94,12 @@ export class DecorationTypeManager {
         }
 
         this.clearDecorationsByFactory(ruleFactory);
-
+        this.logger.debug(`[DTM] Applying ${enabledRules.length} rules to document: ${activeEditor.document.fileName}`);
         enabledRules.forEach(rule => {
             if(rule.excludedFiles) {
                 const exclude = new RegExp(rule.excludedFiles);
                 if(exclude.test(activeEditor.document.fileName)) {
+                    this.logger.debug(`[DTM] Decorations not applied for rule ${rule.title}. Document title does match exclude.`);
                     ruleFactory.pushOccurrences(rule, [], 0);
                     return;
                 }
@@ -106,6 +107,7 @@ export class DecorationTypeManager {
             if(rule.includedFiles) {
                 const include = new RegExp(rule.includedFiles);
                 if(!include.test(activeEditor.document.fileName)) {
+                    this.logger.debug(`[DTM] Decorations not applied for rule ${rule.title}. Document title does not match include.`);
                     ruleFactory.pushOccurrences(rule, [], 0);
                     return;
                 }
@@ -224,7 +226,7 @@ export class DecorationTypeManager {
             );
 
             if(!this._activeEditor) {
-                this.logger.debug('clearAllDecorations()::_active editor is undefined for key: ', decorationType.key);
+                this.logger.debug('[DTM] clearAllDecorations()::_active editor is undefined for key: ', decorationType.key);
             }
         });
 
@@ -290,11 +292,11 @@ export class DecorationTypeManager {
     jumpToLine(lineRange: LineRange) {
         let range = this._ruleToActiveOccurrences.get(lineRange?.ruleId)?.[lineRange.index];
         if(range) {
-            this.logger.debug('jumpToLine() - range found, jumping to in editor', this._activeEditor);
+            this.logger.debug('[DTM] jumpToLine() - range found, jumping to in editor', this._activeEditor);
             if(this._activeEditor) {
                 this._activeEditor.revealRange(range, vscode.TextEditorRevealType.AtTop);
             } else {
-                this.logger.error('Attempting to jump failed as active editor is nullish. Range:', range);
+                this.logger.error('[DTM] Attempting to jump failed as active editor is nullish. Range:', range);
             }
             
         }
