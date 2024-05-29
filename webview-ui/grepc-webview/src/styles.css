@@ -121,3 +121,14 @@ app-occurrence {
 .rule-header-container {
     display: inline-flex;
 }
+
+.preview {
+    position: relative;
+    top: -1px;
+}
+
+/* Chrome input type number - set spin button to less ugly color */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    filter: invert(99%) sepia(0%) saturate(1668%) hue-rotate(304deg) brightness(108%) contrast(60%);
+}
