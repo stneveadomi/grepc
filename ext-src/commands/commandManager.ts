@@ -13,8 +13,103 @@ export class CommandManager {
 
     constructor(
         private subscriptions: { dispose(): any; }[],
-        private rfm: RuleFactoryMediator
-    ) { }
+        private rfm: RuleFactoryMediator,
+        private logger: vscode.LogOutputChannel
+    ) {
+        this.commands = [
+            new Command('grepc.addRule', async () => {
+                const inputTitle = 'Grepc: Add new rule';
+                let location = await this.showLocationInput(inputTitle);
+                if(!location) {
+                    return;
+                }
+    
+                let title = await this.showRuleTitleInput(inputTitle);
+                if(!title) {
+                    return;
+                }
+    
+                let regEx = await this.showRegExInput(inputTitle);
+    
+                let bgColor = await this.showBgColorInput(inputTitle);
+    
+                const logMessage = `Creating ${location === LocationState.GLOBAL ? 'global' : 'workspace'} rule "${title}"`;
+                this.logger.info(logMessage)
+                vscode.window.showInformationMessage(logMessage);
+    
+                this.rfm.getRuleFactory(<LocationState> location)?.addRule(title, regEx, bgColor);
+            }, this.logger),
+            new Command('grepc.addTextRule', async () => {
+                const inputTitle = 'Grepc: Add rule from selection';
+                let location = await this.showLocationInput(inputTitle);
+                if(!location) {
+                    return;
+                }
+    
+                let title = await this.showRuleTitleInput(inputTitle);
+                if(!title) {
+                    return;
+                }
+    
+                let bgColor = await this.showBgColorInput(inputTitle);
+    
+                let selection = vscode.window.activeTextEditor?.selection;
+                let regEx = '';
+                if(selection && window.activeTextEditor?.document) {
+                    regEx = window.activeTextEditor.document.getText(new vscode.Range(selection.start, selection.end));
+                    if(regEx === undefined) {
+                        return;
+                    }
+                }
+    
+                const logMessage = `Creating ${location === LocationState.GLOBAL ? 'global' : 'workspace'} rule "${title}"`;
+                this.logger.info(logMessage)
+                vscode.window.showInformationMessage(logMessage);
+    
+                this.rfm.getRuleFactory(<LocationState> location)?.addRule(title, regEx, bgColor);
+            }, this.logger),
+            new Command('grepc.deleteRule', async () => {
+                const inputTitle = 'Which rule location do you want to delete from?';
+    
+                let location = await this.showLocationInput(inputTitle);
+                if(!location) {
+                    return;
+                }
+    
+                let ruleFactory = this.rfm.getRuleFactory(<LocationState> location);
+                let currentRuleArray = ruleFactory!.getRulesArray();
+                let ruleToBeRemoved = await this.showRulesInput('Select a rule to be deleted:', currentRuleArray);
+                if(!ruleToBeRemoved) {
+                    return;
+                }
+    
+                window.showWarningMessage('Deleting rule: ' + ruleToBeRemoved.label);
+                ruleFactory?.removeRule(ruleToBeRemoved.id);
+            }, this.logger),
+            new Command('grepc.disableAllRules', () => {
+                for(let ruleFactory of this.rfm.map.values()) {
+                    ruleFactory.disableRules();
+                }
+            }, this.logger),
+            new Command('grepc.enableAllRules', () => {
+                for(let ruleFactory of this.rfm.map.values()) {
+                    ruleFactory.enableRules();
+                }
+            }, this.logger),
+            new Command('grepc.disableLocalRules', () => {
+                this.rfm.getRuleFactory(LocationState.LOCAL)?.disableRules();
+            }, this.logger),
+            new Command('grepc.enableLocalRules', () => {
+                this.rfm.getRuleFactory(LocationState.LOCAL)?.enableRules();
+            }, this.logger),
+            new Command('grepc.disableGlobalRules', () => {
+                this.rfm.getRuleFactory(LocationState.GLOBAL)?.disableRules();
+            }, this.logger),
+            new Command('grepc.enableGlobalRules', () => {
+                this.rfm.getRuleFactory(LocationState.GLOBAL)?.enableRules();
+            }, this.logger),
+        ];
+    }
 
     showLocationInput(title: string) {
         return vscode.window.showQuickPick([LocationState.LOCAL, LocationState.GLOBAL], {
@@ -59,95 +154,7 @@ export class CommandManager {
     }
 
 
-    commands: Command[] = [
-        new Command('grepc.addRule', async () => {
-            const inputTitle = 'Grepc: Add new rule';
-            let location = await this.showLocationInput(inputTitle);
-            if(!location) {
-                return;
-            }
-
-            let title = await this.showRuleTitleInput(inputTitle);
-            if(!title) {
-                return;
-            }
-
-            let regEx = await this.showRegExInput(inputTitle);
-
-            let bgColor = await this.showBgColorInput(inputTitle);
-
-            vscode.window.showInformationMessage(`Creating ${location === LocationState.GLOBAL ? 'global' : 'workspace'} rule "${title}"`);
-
-            this.rfm.getRuleFactory(<LocationState> location)?.addRule(title, regEx, bgColor);
-        }),
-        new Command('grepc.addTextRule', async () => {
-            const inputTitle = 'Grepc: Add rule from selection';
-            let location = await this.showLocationInput(inputTitle);
-            if(!location) {
-                return;
-            }
-
-            let title = await this.showRuleTitleInput(inputTitle);
-            if(!title) {
-                return;
-            }
-
-            let bgColor = await this.showBgColorInput(inputTitle);
-
-            let selection = vscode.window.activeTextEditor?.selection;
-            let regEx = '';
-            if(selection && window.activeTextEditor?.document) {
-                regEx = window.activeTextEditor.document.getText(new vscode.Range(selection.start, selection.end));
-                if(regEx === undefined) {
-                    return;
-                }
-            }
-
-            vscode.window.showInformationMessage(`Creating ${location === LocationState.GLOBAL ? 'global' : 'workspace'} rule "${title}"`);
-
-            this.rfm.getRuleFactory(<LocationState> location)?.addRule(title, regEx, bgColor);
-        }),
-        new Command('grepc.deleteRule', async () => {
-            const inputTitle = 'Which rule location do you want to delete from?';
-
-            let location = await this.showLocationInput(inputTitle);
-            if(!location) {
-                return;
-            }
-
-            let ruleFactory = this.rfm.getRuleFactory(<LocationState> location);
-            let currentRuleArray = ruleFactory!.getRulesArray();
-            let ruleToBeRemoved = await this.showRulesInput('Select a rule to be deleted:', currentRuleArray);
-            if(!ruleToBeRemoved) {
-                return;
-            }
-
-            window.showWarningMessage('Deleting rule: ' + ruleToBeRemoved.label);
-            ruleFactory?.removeRule(ruleToBeRemoved.id);
-        }),
-        new Command('grepc.disableAllRules', () => {
-            for(let ruleFactory of this.rfm.map.values()) {
-                ruleFactory.disableRules();
-            }
-        }),
-        new Command('grepc.enableAllRules', () => {
-            for(let ruleFactory of this.rfm.map.values()) {
-                ruleFactory.enableRules();
-            }
-        }),
-        new Command('grepc.disableLocalRules', () => {
-            this.rfm.getRuleFactory(LocationState.LOCAL)?.disableRules();
-        }),
-        new Command('grepc.enableLocalRules', () => {
-            this.rfm.getRuleFactory(LocationState.LOCAL)?.enableRules();
-        }),
-        new Command('grepc.disableGlobalRules', () => {
-            this.rfm.getRuleFactory(LocationState.GLOBAL)?.disableRules();
-        }),
-        new Command('grepc.enableGlobalRules', () => {
-            this.rfm.getRuleFactory(LocationState.GLOBAL)?.enableRules();
-        }),
-    ];
+    commands: Command[];
 
     registerCommands() {
         this.commands.forEach(command => {

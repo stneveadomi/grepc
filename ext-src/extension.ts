@@ -10,21 +10,27 @@ import { LocationState } from './rules/locationState';
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	let logger = vscode.window.createOutputChannel('grepc', {log: true});
 
-	const ruleFactoryMediator = new RuleFactoryMediator(context);
+	logger.info('Initializing grepc extension.');
+	const initStart = Date.now();
+
+	const ruleFactoryMediator = new RuleFactoryMediator(context, logger);
 	const localRuleFactory = ruleFactoryMediator.getRuleFactory(LocationState.LOCAL);
 	const globalRuleFactory = ruleFactoryMediator.getRuleFactory(LocationState.GLOBAL);
 	
 	if(!localRuleFactory || !globalRuleFactory) {
+		logger.error('Unable to instantiate rule factories. Throwing error.');
 		throw new Error('Unable to instantiate rule factories');
 	}
 
 	const dtTypeManager = new DecorationTypeManager(
 		[localRuleFactory, globalRuleFactory],
+		logger
 	);
 
-	const localWebviewProvider = new GrepcViewProvider("grepc.webview.local", context.extensionUri, localRuleFactory, dtTypeManager);
-	const globalWebviewProvider = new GrepcViewProvider("grepc.webview.global", context.extensionUri, globalRuleFactory, dtTypeManager);
+	const localWebviewProvider = new GrepcViewProvider("grepc.webview.local", context.extensionUri, localRuleFactory, dtTypeManager, logger);
+	const globalWebviewProvider = new GrepcViewProvider("grepc.webview.global", context.extensionUri, globalRuleFactory, dtTypeManager, logger);
 
 	
 	localRuleFactory.grepcProvider = localWebviewProvider;
@@ -36,10 +42,12 @@ export function activate(context: vscode.ExtensionContext) {
 		dtTypeManager
 	);
 
-	const commandManager = new CommandManager(context.subscriptions, ruleFactoryMediator);
+	const commandManager = new CommandManager(context.subscriptions, ruleFactoryMediator, logger);
 	commandManager.registerCommands();
 	
 	dtTypeManager.enableDecorationDetection();
+
+	logger.info(`Grepc initialized in ${Date.now() - initStart} ms.`);
 }
 
 // This method is called when your extension is deactivated

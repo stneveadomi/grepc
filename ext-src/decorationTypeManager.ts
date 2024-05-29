@@ -18,7 +18,8 @@ export class DecorationTypeManager {
     private _oldEnabledRules: Rule[] = [];
 
     constructor(
-        private _ruleFactories: RuleFactory[]
+        private _ruleFactories: RuleFactory[],
+        private logger: vscode.LogOutputChannel
     ) {
         _ruleFactories.forEach(factory => {
             this._factoryToDecorations.set(factory.location, new Set());
@@ -27,16 +28,17 @@ export class DecorationTypeManager {
 
     enableDecorationDetection() {
 		this._ruleFactories.forEach(ruleFactory => {
+            this.logger.info(`${ruleFactory.rulesCount} ${ruleFactory.location === LocationState.GLOBAL ? 'global' : 'local'} rules loaded.`);
+            this.logger.info(`${ruleFactory.enabledRulesCount} ${ruleFactory.location === LocationState.GLOBAL ? 'global' : 'local'} rules enabled.`);
             this._subscriptions.push(
                 ruleFactory.$enabledRules.subscribe({
                     next: (enabledRules: Rule[]) => {
-                        console.log('updating decorations. enabledRule = ', enabledRules);
                         if(this.isDecorationChangeInArray(enabledRules)) {
-                            console.log('decoration update is needed!');
+                            this.logger.debug('Decoration Detection: decoration update is needed!');
                             this.updateDecorations(enabledRules, ruleFactory);
                             this._oldEnabledRules = enabledRules;
                         } else {
-                            console.log('no decoration update needed');
+                            this.logger.debug('Decoration Detection: No decoration update needed');
                         }
                         
                     }
@@ -45,9 +47,10 @@ export class DecorationTypeManager {
         });
 
         this._activeEditor = vscode.window.activeTextEditor;
+        if(this._activeEditor) {
+            this._triggerUpdateDecorations();
+        }
         vscode.window.onDidChangeActiveTextEditor(editor => {
-                console.log('new active editor', editor);
-
                 this.clearAllDecorations();
                 // clear all decorations before switching to active editor.
                 this._activeEditor = editor;
@@ -63,7 +66,6 @@ export class DecorationTypeManager {
         );
 
         vscode.workspace.onDidChangeTextDocument(event => {
-                console.log('new text document', event.document);
                 this.triggerUpdateDecorations();
             },
             this._disposables
@@ -79,8 +81,8 @@ export class DecorationTypeManager {
     private lastActiveEditor: vscode.TextEditor | undefined = undefined;
 
     updateDecorations(enabledRules: Rule[], ruleFactory: RuleFactory) {
-		console.log('Running update decorations for', ruleFactory.location);
         let activeEditor = vscode.window.activeTextEditor;
+        this.logger.debug(`Applying decorations to active editor: ${activeEditor?.document?.fileName}`);
 		if (!activeEditor) {
 			return;
 		}
@@ -220,8 +222,9 @@ export class DecorationTypeManager {
                 decorationType,
                 []
             );
+
             if(!this._activeEditor) {
-                console.log('_active editor is undefined.', decorationType.key);
+                this.logger.debug('clearAllDecorations()::_active editor is undefined for key: ', decorationType.key);
             }
         });
 
@@ -287,11 +290,11 @@ export class DecorationTypeManager {
     jumpToLine(lineRange: LineRange) {
         let range = this._ruleToActiveOccurrences.get(lineRange?.ruleId)?.[lineRange.index];
         if(range) {
-            console.log('jumpToLine() - range found, jumping to in editor', this._activeEditor);
+            this.logger.debug('jumpToLine() - range found, jumping to in editor', this._activeEditor);
             if(this._activeEditor) {
                 this._activeEditor.revealRange(range, vscode.TextEditorRevealType.AtTop);
             } else {
-                console.error('Attempting to jump failed as active editor is nullish.');
+                this.logger.error('Attempting to jump failed as active editor is nullish. Range:', range);
             }
             
         }

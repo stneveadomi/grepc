@@ -12,7 +12,8 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         public readonly viewType: string,
         private readonly _extensionUri: vscode.Uri,
         private readonly _ruleFactory: RuleFactory,
-        private readonly _dtManager: DecorationTypeManager
+        private readonly _dtManager: DecorationTypeManager,
+        private readonly _logger: vscode.LogOutputChannel
     ) {}
 
     resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext<unknown>, token: vscode.CancellationToken): void | Thenable<void> {
@@ -28,13 +29,11 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         };
         webviewView.onDidDispose(() => this.dispose(), null, this._disposables);
         webviewView.webview.html = this._getWebviewContent(webviewView.webview);
-        console.log('resolveWebviewView called for ', this._ruleFactory.location);
         this._setWebviewMessageListener(webviewView.webview);
         this.pushRules();
     }
 
     pushRules() {
-        console.log('Pushing rules to webview');
         this.webview?.postMessage({
             type: 'rules', 
             mapData: JSON.stringify(Array.from(this._ruleFactory.getRulesMap().entries())),
@@ -118,32 +117,24 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
 
         switch (type) {
           case "rules":
-            //TODO: Check that events are going to the right webview (local rule webview doesnt emit to global grepc view provider.)
-            // Code that should run in response to the hello message command
-            vscode.window.showInformationMessage("Updating Rules");
-            console.log('received rules from webview:', message);
+            this._logger.debug("Received rules event. Updating rules in storage.");
             this._ruleFactory.parseRules(message?.mapData, message?.arrayData);
             return;
           case "rulesRequest":
             //designed to send rules on startup to webviews
             //especially if they are reopened without the extension closing.
-            vscode.window.showInformationMessage("Sending rules to webview");
-            console.log('received rulesRequest from webview:', message);
+            this._logger.debug("Received rulesRequest event. Pushing rules to webview.");
             this.pushRules();
             return;
           case "jumpToLine":
             //when a selection is made, a user can jump their cursor to it.
-            vscode.window.showInformationMessage("Jumping to rule");
-            this.jumpToLine(JSON.parse(message.data));
+            const lineRange = JSON.parse(message.data);
+            this._logger.debug("Jumping to rule at line range:", lineRange);
+            this._dtManager.jumpToLine(lineRange);
         }
       },
       undefined,
       this._disposables
     );
   }
-
-  private jumpToLine(lineRange: LineRange) {
-    this._dtManager.jumpToLine(lineRange);
-  }
-
 }
