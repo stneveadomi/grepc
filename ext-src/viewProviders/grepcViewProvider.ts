@@ -131,6 +131,24 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
             const lineRange = JSON.parse(message.data);
             this._logger.debug("Jumping to rule at line range:", lineRange);
             this._dtManager.jumpToLine(lineRange);
+            return;
+          case "log":
+            switch(message.logLevel) {
+                case 'info':
+                    this._logger.info('[SPA] ' + message.data);
+                    break;
+                case 'debug':
+                    this._logger.debug('[SPA] ' + message.data);
+                    break;
+                case 'error':
+                    this._logger.error('[SPA] ' + message.data);
+                    break;
+                case 'warn':
+                    this._logger.warn('[SPA] ' + message.data);
+                    break;
+                default:
+                    this._logger.trace('[SPA] ' + message.data);
+            }
         }
       },
       undefined,

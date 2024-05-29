@@ -15,7 +15,8 @@ export class DecorationTypeManager {
     private _factoryToDecorations: Map<LocationState, Set<vscode.TextEditorDecorationType>> = new Map();
     private _ruleToDecorationType = new Map<string, vscode.TextEditorDecorationType>();
     private _ruleToActiveOccurrences = new Map<string, vscode.Range[]>();
-    private _oldEnabledRules: Rule[] = [];
+    private _factoryToOldEnabledRules: Map<LocationState, Rule[]> = new Map();
+    private _activeDecorations: Map<vscode.TextEditorDecorationType, vscode.DecorationOptions[]> = new Map();
 
     constructor(
         private _ruleFactories: RuleFactory[],
@@ -33,14 +34,15 @@ export class DecorationTypeManager {
             this._subscriptions.push(
                 ruleFactory.$enabledRules.subscribe({
                     next: (enabledRules: Rule[]) => {
-                        if(this.isDecorationChangeInArray(enabledRules)) {
+                        if(this.isDecorationChangeInArray(enabledRules, ruleFactory.location)) {
                             this.logger.debug('[DTM] Decoration Detection: decoration update is needed!');
+                            this.clearDecorationsByFactory(ruleFactory);
                             this.updateDecorations(enabledRules, ruleFactory);
-                            this._oldEnabledRules = enabledRules;
                         } else {
                             this.logger.debug('[DTM] Decoration Detection: No decoration update needed');
+                            //we could reapply all decorations here, if we wanted to.
                         }
-                        
+                        this._factoryToOldEnabledRules.set(ruleFactory.location, enabledRules);
                     }
                 })
             );
@@ -51,10 +53,12 @@ export class DecorationTypeManager {
             this._triggerUpdateDecorations();
         }
         vscode.window.onDidChangeActiveTextEditor(editor => {
+                this.logger.debug(`[DTM] Active text editor changed from ${this._activeEditor?.document.fileName} to ${editor?.document?.fileName}`);
                 this.clearAllDecorations();
                 // clear all decorations before switching to active editor.
                 this._activeEditor = editor;
-                
+                this._factoryToOldEnabledRules.clear();
+
                 if(editor) {
                     this.triggerUpdateDecorations();
                 } else {
@@ -65,7 +69,10 @@ export class DecorationTypeManager {
             this._disposables
         );
 
-        vscode.workspace.onDidChangeTextDocument(event => {
+        vscode.workspace.onDidChangeTextDocument((event: vscode.TextDocumentChangeEvent) => {
+                // Clear old enabled rules to force isDecorationChangeInArray to return true
+                // This forces updateDecorations to call.
+                this._factoryToOldEnabledRules.clear();
                 this.triggerUpdateDecorations();
             },
             this._disposables
@@ -95,7 +102,7 @@ export class DecorationTypeManager {
 
         this.clearDecorationsByFactory(ruleFactory);
         this.logger.debug(`[DTM] Applying ${enabledRules.length} rules to document: ${activeEditor.document.fileName}`);
-        enabledRules.forEach(rule => {
+        for(let rule of enabledRules) {
             if(rule.excludedFiles) {
                 const exclude = new RegExp(rule.excludedFiles);
                 if(exclude.test(activeEditor.document.fileName)) {
@@ -116,6 +123,7 @@ export class DecorationTypeManager {
                 ruleFactory.pushOccurrences(rule, [], 0);
                 return;
             }
+            this.logger.debug(`[DTM] Applying ${rule.title} to document: ${activeEditor.document.fileName}`);
             const regEx = new RegExp(rule.regularExpression, 'g');
             const text = activeEditor.document.getText();
             const decorations: vscode.DecorationOptions[] = [];
@@ -138,22 +146,33 @@ export class DecorationTypeManager {
             ruleFactory.pushOccurrences(rule, DecorationTypeManager.toLineRanges(rule.id, ranges), decorations.length);
             const textEditorDecorationType = this.getTextEditorDecorationType(rule);
             this._factoryToDecorations.get(ruleFactory.location)?.add(textEditorDecorationType);
+            this._activeDecorations.set(textEditorDecorationType, decorations);
 
+            this.logger.debug(`[DTM] Applying ${decorations.length} decorations from ${rule.title} to document: ${activeEditor.document.fileName}`);
             activeEditor.setDecorations(
                 textEditorDecorationType, 
                 decorations
             );
-        });
+        }
 	}
 
-    private isDecorationChangeInArray(enabledRules: Rule[]) {
-        if(enabledRules.length !== this._oldEnabledRules.length) {
+    applyActiveDecorations() {
+        if(this._activeEditor) {
+            this._activeDecorations.forEach((decorations, decorationType) => {
+                this._activeEditor?.setDecorations(decorationType, decorations);
+            });
+        }
+    }
+
+    private isDecorationChangeInArray(enabledRules: Rule[], location: LocationState) {
+        const oldEnabledRules = this._factoryToOldEnabledRules.get(location);
+        if(enabledRules.length !== oldEnabledRules?.length) {
             return true;
         }
 
         for(let i = 0; i < enabledRules.length; i++) {
             let element = enabledRules[i];
-            let matchingOldRule = this._oldEnabledRules[i];
+            let matchingOldRule = oldEnabledRules[i];
             if(!matchingOldRule || element.id !== matchingOldRule.id) {
                 // if different ids, than a reorder happened indicating redecorate.
                 return true;
@@ -210,7 +229,7 @@ export class DecorationTypeManager {
     }
 
     private _triggerUpdateDecorations = () => {
-        this.clearAllDecorations();
+        this.logger.debug('Triggering decoration update');
         this._ruleFactories.forEach(ruleFactory => {
             ruleFactory.recastEnabledRules();
         });
@@ -219,6 +238,7 @@ export class DecorationTypeManager {
     public triggerUpdateDecorations = debounce(this._triggerUpdateDecorations, 300, {immediate: true});
 
     clearAllDecorations() {
+        this.logger.debug('Clearing all decorations on active editor');
         this._decorationSet.forEach(decorationType => {
             this._activeEditor?.setDecorations(
                 decorationType,
@@ -231,11 +251,13 @@ export class DecorationTypeManager {
         });
 
         this._decorationSet.clear();
+        this._activeDecorations.clear();
         this._ruleToActiveOccurrences.clear();
     }
 
     clearDecorations(rule: Rule) {
         if(this._ruleToDecorationType.has(rule.id)) {
+            this.logger.debug(`[DTM] Clearing decorations on rule ${rule.title}`);
             this._activeEditor?.setDecorations(
                 this._ruleToDecorationType.get(rule.id)!,
                 []
@@ -245,12 +267,13 @@ export class DecorationTypeManager {
 
     clearDecorationsByFactory(ruleFactory: RuleFactory) {
         const setDecorations = this._factoryToDecorations.get(ruleFactory.location);
-        setDecorations?.forEach(decorationType => {
+        this.logger.debug(`[DTM] Clearing decorations on rule factory ${ruleFactory.location === LocationState.GLOBAL ? 'global' : 'local'}`);
+        for(let decorationType of setDecorations ?? []) {
             this._activeEditor?.setDecorations(
                 decorationType,
                 []
             );
-        });
+        }
     }
 
     getTextEditorDecorationType(rule: Rule): vscode.TextEditorDecorationType {
