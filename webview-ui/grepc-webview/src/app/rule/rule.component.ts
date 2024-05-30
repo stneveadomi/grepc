@@ -12,6 +12,7 @@ import { DragService } from '../../services/drag.service';
 import { DecorationPreviewComponent } from '../decoration-preview/decoration-preview.component';
 import { OccurrencesComponent } from '../occurrences/occurrences.component';
 import { LineRange } from '../../models/line-range';
+import { ExtensionService, LogLevel } from '../../services/extension.service';
 
 @Component({
   selector: 'app-rule',
@@ -63,9 +64,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   next: (status: FormControlStatus) => {
       switch(status) {
         case 'VALID':
-          console.log('form updated! Pushing to extension');
           if(this.isEditing || this.isEditingTitle) {
-            console.log('form is being edited. Waiting to update');
             return;
           }
           
@@ -75,13 +74,11 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
           };
 
           if(Rule.equals(this.rule, newRule)) {
-            console.log('no change in rule. Waiting to update');
             return;
           }
 
           // override title as only this::updateTitle should update title.
           newRule.title = this.rule.title;
-          console.log('new rule: ', JSON.stringify(newRule));
           this.ruleService.updateRule(newRule);
           this.ruleService.pushRules();
           return;
@@ -96,6 +93,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
 
   constructor(
     private ruleService: RuleService,
+    private extensionService: ExtensionService,
     private globalStyles: GlobalStylesService,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
@@ -107,7 +105,6 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   ngOnChanges(changes: SimpleChanges): void {
     const change = changes['rule'];
     if(change) {
-      console.log('rule.ngOnChanges -> patching new value', change.currentValue);
       this.ruleForm.patchValue(change.currentValue);
       if(!this.ruleForm.controls.title.value) {
         this.isEditingTitle = true;
@@ -131,7 +128,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   }
 
   deleteSelf() {
-    console.log('Deleting rule', this.rule.id);
+    this.extensionService.log(LogLevel.DEBUG, `Deleting rule ${this.rule.id}`);
     this.ruleService.removeRule(this.rule.id!);
     this.ruleService.pushRules();
   }
@@ -162,12 +159,10 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   }
 
   onFormFocus() {
-    console.log('formFocused: is editing = true');
     this.isEditing = true;
   }
 
   onFormBlur() {
-    console.log('formBlur: is editing = false');
     this.isEditing = false;
     this.STATUS_CHANGE_OBSERVER.next(this.ruleForm.status);
   }
@@ -209,14 +204,12 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   updateTitle(override = false) {
     if(this.ruleForm.controls.title.valid || override) {
       try {
-        console.log('Old rule title: ', this.rule.title);
-        
+        this.extensionService.log(LogLevel.DEBUG, `updateTitle() - updating rule title from ${this.rule.title} to ${this.ruleForm?.value?.title}`);
         this.rule.title = this.ruleForm?.value?.title?.toUpperCase() ?? '';
-        console.log('updateTitle() - updating rule title to ', this.ruleForm?.value?.title);
         this.ruleService.updateRule(this.rule);
         this.ruleService.pushRules();
       } catch (exception) {
-        console.error('Unable to update rule.', exception);
+        this.extensionService.log(LogLevel.ERROR, `Unable to update rule: ${exception}`);
       }
     }
   }

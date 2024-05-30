@@ -22,7 +22,8 @@ export class RuleFactory {
     constructor(
         state: vscode.Memento | GlobalState, 
         isGlobalState: boolean,
-        public readonly location: LocationState
+        public readonly location: LocationState,
+        private readonly logger: vscode.LogOutputChannel
     ) {
         this._isGlobalState = isGlobalState;
         if(isGlobalState) {
@@ -34,6 +35,14 @@ export class RuleFactory {
 
     set grepcProvider(value: GrepcViewProvider) {
         this._grepcProvider = value;
+    }
+
+    get rulesCount() {
+        return this.rulesArray.length;
+    }
+
+    get enabledRulesCount() {
+        return this.rulesArray.filter(rule => rule.enabled).length;
     }
 
     private get rulesMap(): Map<string, Rule> {
@@ -59,7 +68,7 @@ export class RuleFactory {
     }
 
     public getRulesMap(): Map<string, Rule> {
-        return  this.rulesMap;
+        return this.rulesMap;
     }
 
     public getRulesArray(): Rule[] {
@@ -107,7 +116,6 @@ export class RuleFactory {
      * @param rulesArray 
      */
     public updateRules(rulesMap: Map<string, Rule>, rulesArray: Rule[]) {
-        console.log('Updating rules in state:', Array.from(rulesMap.entries()));
         this._enabledRules.next(rulesArray.filter(rule => rule.enabled));
         this.getState()?.update(RuleFactory.RULES_MAP_KEY_ID, Array.from(rulesMap.entries()));
         this.getState()?.update(RuleFactory.RULES_ARRAY_KEY_ID, rulesArray);
@@ -119,7 +127,6 @@ export class RuleFactory {
      * @param rulesArray 
      */
     public updateRulesLocally(rulesMap: Map<string, Rule>, rulesArray: Rule[]) {
-        console.log('Updating rules in state:', Array.from(rulesMap.entries()));
         this._enabledRules.next(rulesArray.filter(rule => rule.enabled));
         this.getState()?.update(RuleFactory.RULES_MAP_KEY_ID, Array.from(rulesMap.entries()));
         this.getState()?.update(RuleFactory.RULES_ARRAY_KEY_ID, rulesArray);
@@ -131,7 +138,6 @@ export class RuleFactory {
      * @param rule 
      */
     public updateRuleWithNoSideEffects(rule: Rule) {
-        console.log('Updating rule with no side effects: ', rule.id);
         let newRules = this.rulesMap;
         newRules.set(rule.id, rule);
         // calls setter with logic.
@@ -147,11 +153,11 @@ export class RuleFactory {
     }
 
     public removeRule(id: string) {
-        console.log('Removing rule with id: ' + id);
+        this.logger.info('Removing rule with id: ' + id);
         const rulesMap = this.getRulesMap();
         const rule = rulesMap.get(id);
         if(!rule) {
-            console.error('Unable to find rule id in rule map: ' + id);
+            this.logger.error('Unable to find rule id in rule map to delete: ' + id);
             return;
         }
         rulesMap.delete(id);
@@ -161,10 +167,8 @@ export class RuleFactory {
     }
 
     pushOccurrences(rule: Rule, ranges: LineRange[], occurrences: number) {
-        console.log('push ranges: ', JSON.stringify(rule), JSON.stringify(ranges), occurrences);
         rule.lineRanges = ranges;
         rule.occurrences = occurrences;
-        console.log('updating ruel with no side effects:', JSON.stringify(rule));
         this.updateRuleWithNoSideEffects(rule);
 
         this._grepcProvider?.webview?.postMessage({
@@ -185,14 +189,13 @@ export class RuleFactory {
 
     parseRules(mapData: string, arrayData: string) {
         try {
-            console.log('parsing data:', mapData);
             let parse = JSON.parse(mapData);
             let rulesMap: Map<string, Rule> = new Map<string, Rule>(parse);
             let rulesArray = JSON.parse(arrayData);
             this.updateRulesLocally(rulesMap, rulesArray);
         }
         catch (e) {
-            console.error(`Unable to parse JSON map in pushRules().`, e);
+            this.logger.error(`parseRules:: Unable to parse JSON map.`, e, mapData, arrayData);
         }
     };
 }
