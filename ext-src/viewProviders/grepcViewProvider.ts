@@ -3,6 +3,7 @@ import { getNonce } from "../utilities/getNonce";
 import { RuleFactory } from '../rules/ruleFactory';
 import { LineRange } from '../rules/line-range';
 import { DecorationTypeManager } from '../decorationTypeManager';
+import { LocationState } from '../rules/locationState';
 
 export class GrepcViewProvider implements vscode.WebviewViewProvider {
     public webview: vscode.Webview | null = null;
@@ -27,6 +28,13 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
                 this._extensionUri
             ],
         };
+        this._ruleFactory.$enabledRules.subscribe({next: (enabledRules) => {
+            webviewView.badge = {
+                tooltip: `Active ${this._ruleFactory.location === LocationState.GLOBAL ? 'global' : 'local'} rules`,
+                value: enabledRules.length
+            };
+        }});
+        webviewView.badge = undefined;
         webviewView.onDidDispose(() => this.dispose(), null, this._disposables);
         webviewView.webview.html = this._getWebviewContent(webviewView.webview);
         this._setWebviewMessageListener(webviewView.webview);
