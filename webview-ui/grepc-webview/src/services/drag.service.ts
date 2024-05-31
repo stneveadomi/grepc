@@ -19,19 +19,16 @@ export class DragService {
     }
 
     register(element: Draggable) {
-        console.log('Registering: ', element);
         this._registered.add(element);
     }
 
     deregister(element: Draggable) {
-        console.log('Deregistering: ', element);
         this._registered.delete(element);
     }
 
     onEnter = (draggable: Draggable) => {
         // Cool little conversion to Rule.
         let draggedRuleComponent = (<RuleComponent> this._dragged);
-        console.log('Swapping positions between the draggable and dragged: ', draggable, this._dragged);
         this.ruleService.swapPositions((<RuleComponent> draggable).rule, draggedRuleComponent.rule);
     };
 

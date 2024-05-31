@@ -11,7 +11,6 @@ export class ExtensionService {
   
     constructor() {
         this.vscodeApi = (window as any)?.['acquireVsCodeApi']?.();
-        console.log('vscode api: ', this.vscodeApi);
     }
 
     postMessage(event: any) {

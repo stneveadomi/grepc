@@ -34,7 +34,7 @@ export class CommandManager {
                 let bgColor = await this.showBgColorInput(inputTitle);
     
                 const logMessage = `Creating ${location === LocationState.GLOBAL ? 'global' : 'workspace'} rule "${title}"`;
-                this.logger.info(logMessage)
+                this.logger.info(logMessage);
                 vscode.window.showInformationMessage(logMessage);
     
                 this.rfm.getRuleFactory(<LocationState> location)?.addRule(title, regEx, bgColor);
@@ -63,7 +63,7 @@ export class CommandManager {
                 }
     
                 const logMessage = `Creating ${location === LocationState.GLOBAL ? 'global' : 'workspace'} rule "${title}"`;
-                this.logger.info(logMessage)
+                this.logger.info(logMessage);
                 vscode.window.showInformationMessage(logMessage);
     
                 this.rfm.getRuleFactory(<LocationState> location)?.addRule(title, regEx, bgColor);
