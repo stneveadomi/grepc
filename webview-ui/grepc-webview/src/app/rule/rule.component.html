@@ -66,21 +66,39 @@
         </header>
     
         <div [style.display]="getExpandedStyle(this.rule.expanded)" class="rule-body">
-            <input
-                formControlName="regularExpression"
-                (focus)="onFormFocus()"
-                (blur)="onFormBlur()"
-                type="text" class="regex-input" placeholder="Regular Expression"/>
-            <input
-                formControlName="includedFiles"
-                (focus)="onFormFocus()"
-                (blur)="onFormBlur()"
-                type="text" name="include-files" placeholder="Include Files"/>
-            <input
-                formControlName="excludedFiles"
-                (focus)="onFormFocus()"
-                (blur)="onFormBlur()"
-                type="text" name="exclude-files" placeholder="Exclude Files"/>
+            <div class="control-body">
+                <div class="input-label">
+                    <label>
+                        regular expression: <a title="Regex Tester" href="https://regex101.com/" class="codicon codicon-info"></a>
+                    </label>
+                    <input
+                        formControlName="regularExpression"
+                        (focus)="onFormFocus()"
+                        (blur)="onFormBlur()"
+                        type="text" class="regex-input" placeholder="Regular Expression: [0-9]+, apple"/>
+                </div>
+                <div class="input-label">
+                    <label>
+                        included files:
+                    </label>
+                    <input
+                        formControlName="includedFiles"
+                        (focus)="onFormFocus()"
+                        (blur)="onFormBlur()"
+                        type="text" name="include-files" placeholder="Include Files: .*\.java"/>
+                </div>
+                <div class="input-label">
+                    <label>
+                        excluded files:
+                    </label>
+                    <input
+                        formControlName="excludedFiles"
+                        (focus)="onFormFocus()"
+                        (blur)="onFormBlur()"
+                        type="text" name="exclude-files" placeholder="Exclude Files: java, .*\.component\.*"/>
+                </div>
+            </div>
+
     
             <div class="decoration-container">
                 <header class="decoration-header clickable" (click)="toggleDecorationExpanded($event)">
@@ -101,7 +119,7 @@
                 <div class="decoration-body" [style.display]="getExpandedStyle(this.rule.decorationExpanded)">
                     <div class="block">
                         <label>
-                            background color:
+                            background color: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/background-color" class="codicon codicon-info"></a>
                         </label>   
                         <input
                             formControlName="backgroundColor"
@@ -113,11 +131,11 @@
                     </div>
                     <div class="input-label">
                         <label>
-                            color:
+                            color: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/color" class="codicon codicon-info"></a>
                         </label>
                         <input 
                             formControlName="color"
-                            type="text" name="include-files" placeholder="Color"
+                            type="text" name="include-files" 
                             [value]="this.rule.color"
                             [style.background]="this.rule.color"
                             [(colorPicker)]="this.rule.color!"
@@ -125,13 +143,14 @@
                     </div>
                     <div class="input-label">
                         <label>
-                            outline:
+                            outline: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/outline" class="codicon codicon-info"></a>
                         </label>
                         <input
                             formControlName="outline" 
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="outline" placeholder="Outline"/>
+                            type="text" name="outline" 
+                            placeholder="'solid 1px blue', 'dashed', 'dotted', 'double'"/>
                     </div>
                     <div class="input-label">
                         <label>
@@ -139,7 +158,7 @@
                         </label>
                         <input
                             formControlName="outlineColor" 
-                            type="text" name="include-files" placeholder="Outline Color"
+                            type="text" name="include-files"
                             [value]="this.rule.outlineColor"
                             [style.background]="this.rule.outlineColor"
                             [(colorPicker)]="this.rule.outlineColor!"
@@ -153,18 +172,20 @@
                             formControlName="outlineWidth"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="include-files" placeholder="Outline Width"
+                            type="text" name="include-files" 
+                            placeholder="'1px'"
                             [(value)]="this.rule.outlineWidth"/>
                     </div>            
                     <div class="input-label">
                         <label>
-                            border:
+                            border: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/border" class="codicon codicon-info"></a>
                         </label>
                         <input 
                             formControlName="border"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="border" placeholder="Border"
+                            type="text" name="border" 
+                            placeholder="'solid 1px red', 'ridge'"
                             [(value)]="this.rule.border"/>
                     </div>     
                     <div class="input-label">
@@ -173,7 +194,7 @@
                         </label>
                         <input 
                             formControlName="borderColor"
-                            type="text" name="border-color" placeholder="Border Color"
+                            type="text" name="border-color"
                             [value]="this.rule.borderColor"
                             [style.background]="this.rule.borderColor"
                             [(colorPicker)]="this.rule.borderColor!"
@@ -187,51 +208,52 @@
                             formControlName="borderWidth"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="border-width" placeholder="Border Width"
+                            type="text" name="border-width" placeholder="'1px'"
                             [(value)]="this.rule.borderWidth"/>
                     </div>         
                     <div class="input-label">
                         <label>
-                            font style:
+                            font style: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-style" class="codicon codicon-info"></a>
                         </label>
                         <input
                             formControlName="fontStyle"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="font-style" placeholder="Font Style"
+                            type="text" name="font-style" placeholder="'normal', 'italic', 'oblique'"
                             [(value)]="this.rule.fontStyle"/>
                     </div>
                     <div class="input-label">
                         <label>
-                            font weight:
+                            font weight: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight" class="codicon codicon-info"></a>
                         </label>
                         <input
                             formControlName="fontWeight"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="font-weight" placeholder="Font Weight"
+                            type="text" name="font-weight" placeholder="Font Weight (100-900): '700'"
                             [(value)]="this.rule.fontWeight"/>
                     </div>                
                     <div class="input-label">
                         <label>
-                            text decoration:
+                            text decoration: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration" class="codicon codicon-info"></a>
                         </label>
                         <input 
                             formControlName="textDecoration"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="text-decoration" placeholder="Text Decoration"
+                            type="text" name="text-decoration"
+                            placeholder="'dashed', 'double', 'wavy', 'underline'"
                             [(value)]="this.rule.textDecoration"/>
                     </div>            
                     <div class="input-label">
                         <label>
-                            cursor:
+                            cursor: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/cursor" class="codicon codicon-info"></a>
                         </label>
                         <input 
                             formControlName="cursor"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="cursor" placeholder="Cursor"
+                            type="text" name="cursor" placeholder="'pointer', 'grab', 'text', 'crosshair''"
                             [(value)]="this.rule.cursor"/>
                     </div>
                     <div class="input-label">
@@ -240,7 +262,8 @@
                         </label>
                         <input 
                             formControlName="overviewRulerColor"
-                            type="text" name="overview-ruler-color" placeholder="Overview Ruler Color"
+                            type="text" 
+                            name="overview-ruler-color" 
                             [value]="this.rule.overviewRulerColor"
                             [style.background]="this.rule.overviewRulerColor"
                             [(colorPicker)]="this.rule.overviewRulerColor!"

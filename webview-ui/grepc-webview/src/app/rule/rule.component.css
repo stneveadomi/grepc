@@ -2,7 +2,7 @@
     gap: 2em;
 }
 
-.rule-body, .decoration-body {
+.rule-body, .decoration-body, .control-body {
     flex-grow: 0;
     flex-shrink: 0;
     display: flex;
@@ -13,7 +13,11 @@
     padding-top: 5px;
 }
 
-.decoration-body {
+.codicon-info {
+    font-size: 6pt;
+}
+
+.decoration-body, .control-body {
     padding-left: 2em;
     margin-bottom: 1em;
     gap: 0;

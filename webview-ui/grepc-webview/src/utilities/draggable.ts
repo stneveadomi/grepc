@@ -30,12 +30,10 @@ export abstract class Draggable {
     }
 
     enableDragDetection() {
-        console.log('Enabling drag detection on element:', this.containingElement);
         this.containingElement?.nativeElement?.addEventListener('mouseenter', this.onEnter);
     }
 
     disableDragDetection() {
-        console.log('Disabling drag detection on element:', this.containingElement);
         this.containingElement?.nativeElement?.removeEventListener('mouseenter', this.onEnter);
     }
 
