@@ -39,6 +39,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
     overviewRulerColor: [''],
     overviewRulerLane: [OverviewRulerLane.Full],
     regularExpression: [''],
+    regularExpressionFlags: ['g'],
     maxOccurrences: [1000],
     includedFiles: [''],
     excludedFiles: [''],
