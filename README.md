@@ -13,7 +13,6 @@
 
 Grepc is an approachable regular expression highlighter with advanced customization for VS Code.
 
-
 ![Banner](media/demo-banner.gif)
 
 ## Features
