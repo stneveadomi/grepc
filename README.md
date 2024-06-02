@@ -47,7 +47,7 @@ Grepc is an approachable regular expression highlighter with advanced customizat
 
 The easiest way to install is through the VS Code Marketplace.
 
-Alternatively, you can install any version of grepc by going to the [releases](./releases) and downloading the specific .vsix file. From there, you can follow the instructions [here](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix).
+Alternatively, you can install any version of grepc by going to the [releases](https://github.com/stneveadomi/grepc/releases) and downloading the specific .vsix file. From there, you can follow the instructions [here](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix).
 
 ## Demo
 ![Example 4](media/Code_PSyTYpsF5e.gif)
@@ -62,7 +62,7 @@ Alternatively, you can install any version of grepc by going to the [releases](.
 
 ## Release Notes
 
-See [releases](./releases)
+See [releases](https://github.com/stneveadomi/grepc/releases)
 
 ## Contributing
 
