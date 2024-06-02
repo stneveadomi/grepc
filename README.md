@@ -55,6 +55,8 @@ Alternatively, you can install any version of grepc by going to the [releases](.
 
 ![Example 2](media/Code_IlBi9doiz1.gif)
 
+![Occurrences Example](media/occurrences-demo.gif)
+
 ![Example 3](media/Code_PMvUMJj9x3.gif)
 
 ![Example 1](media/Code_hRfd4iIgh6.gif)
