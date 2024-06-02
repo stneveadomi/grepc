@@ -197,6 +197,7 @@ export class DecorationTypeManager {
                 || matchingOldRule.overviewRulerColor !== element.overviewRulerColor
                 || matchingOldRule.overviewRulerLane !== element.overviewRulerLane
                 || matchingOldRule.regularExpression !== element.regularExpression
+                || matchingOldRule.textDecoration !== element.textDecoration
                 || matchingOldRule.title !== element.title
             ) {
                 return true;

@@ -13,12 +13,14 @@
 
 Grepc is an approachable regular expression highlighter with advanced customization for VS Code.
 
+![Banner](media/demo-banner.gif)
+
 ## Features
 
 - **Easily decorate text with any regular expression and save them as rules**
-- **Enable and disable these rules across workspaces or per file type**
-- **Share rules across multiple workspaces with global rules**
-- **Store workspace rules locally to keep some decoration rules specific**
+- **Enable and disable decoration rules across all files or per file type**
+- **Share rules across multiple workspaces or keep them workspace specific**
+- **Have overlapping rules? Drag & drop to change execution priority**
 - **See all matches of the current rule in an readable and approachable interface**
 - **Adjust font style, color, background color, border, outline, and more as needed.**
 - **Easy commands for creating, enabling, disabling, and removing rules for decoration.**
@@ -51,6 +53,8 @@ Alternatively, you can install any version of grepc by going to the [releases](.
 ![Example 4](media/Code_PSyTYpsF5e.gif)
 
 ![Example 2](media/Code_IlBi9doiz1.gif)
+
+![Occurrences Example](media/occurrences-demo.gif)
 
 ![Example 3](media/Code_PMvUMJj9x3.gif)
 
