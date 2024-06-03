@@ -1,21 +1,34 @@
 {
   "name": "grepc",
   "displayName": "grepc",
-  "description": "Advanced regular expression text decoration.",
-  "version": "0.2.0",
+  "description": "An approachable regular expression highlighter with advanced customization for VS Code.",
+  "icon": "media/GREPC-standard-circle-124.png",
+  "version": "1.0.0",
   "engines": {
     "vscode": "^1.84.0"
+  },
+  "galleryBanner": {
+    "color": "#000000",
+    "theme": "dark"
+  },
+  "publisher": "stneveadomi",
+  "sponsor": {
+    "url": "https://github.com/sponsors/stneveadomi"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/stneveadomi/grepc.git"
   },
+  "homepage": "https://github.com/stneveadomi/grepc",
   "categories": [
-    "Programming Languages", "Visualization", "Formatters"
+    "Visualization", "Programming Languages", "Formatters"
+  ],
+  "keywords": [
+    "highlight", "decoration", "organization", "search", "regex"
   ],
   "activationEvents": [
-    "onLanguage"
+    "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
