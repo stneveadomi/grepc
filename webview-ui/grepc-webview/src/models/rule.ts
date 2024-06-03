@@ -17,6 +17,7 @@ export interface Rule {
     maxOccurrences: number | null;
     
     regularExpression: string | null;
+    regularExpressionFlags: string | null;
     includedFiles: string | null;
     excludedFiles: string | null;
     
@@ -76,6 +77,7 @@ export class Rule implements Rule {
         this.lineRanges = [];
         this.maxOccurrences = 1000;
         this.regularExpression = '';
+        this.regularExpressionFlags = 'g';
         this.includedFiles = '';
         this.excludedFiles = '';
         this.backgroundColor = '';

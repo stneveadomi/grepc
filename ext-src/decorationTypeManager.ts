@@ -124,35 +124,41 @@ export class DecorationTypeManager {
                 return;
             }
             this.logger.debug(`[DTM] Applying ${rule.title} to document: ${activeEditor.document.fileName}`);
-            const regEx = new RegExp(rule.regularExpression, 'g');
-            const text = activeEditor.document.getText();
-            const decorations: vscode.DecorationOptions[] = [];
-            const ranges: vscode.Range[] = [];
-            let match;
-            let occurrence = 0;
-            while((match = regEx.exec(text)) && decorations.length < (rule.maxOccurrences ?? 1000)) {
-                occurrence++;
-                const startPos = activeEditor.document.positionAt(match.index);
-                const endPos = activeEditor.document.positionAt(match.index + match[0].length);
-                const range = new vscode.Range(startPos, endPos);
-                const decoration = { 
-                    range: range, 
-                    hoverMessage: `Rule: ${rule.title}\n #${occurrence}`
-                };
-                decorations.push(decoration);
-                ranges.push(range);
+            try {
+                const regEx = new RegExp(rule.regularExpression, rule.regularExpressionFlags || 'g');
+                const text = activeEditor.document.getText();
+                const decorations: vscode.DecorationOptions[] = [];
+                const ranges: vscode.Range[] = [];
+                let match;
+                let occurrence = 0;
+                while((match = regEx.exec(text)) && decorations.length < (rule.maxOccurrences ?? 1000)) {
+                    occurrence++;
+                    const startPos = activeEditor.document.positionAt(match.index);
+                    const endPos = activeEditor.document.positionAt(match.index + match[0].length);
+                    const range = new vscode.Range(startPos, endPos);
+                    const decoration = { 
+                        range: range, 
+                        hoverMessage: `Rule: ${rule.title}\n #${occurrence}`
+                    };
+                    decorations.push(decoration);
+                    ranges.push(range);
+                }
+                this._ruleToActiveOccurrences.set(rule.id, ranges);
+                ruleFactory.pushOccurrences(rule, DecorationTypeManager.toLineRanges(rule.id, ranges), decorations.length);
+                const textEditorDecorationType = this.getTextEditorDecorationType(rule);
+                this._factoryToDecorations.get(ruleFactory.location)?.add(textEditorDecorationType);
+                this._activeDecorations.set(textEditorDecorationType, decorations);
+    
+                this.logger.debug(`[DTM] Applying ${decorations.length} decorations from ${rule.title} to document: ${activeEditor.document.fileName}`);
+                activeEditor.setDecorations(
+                    textEditorDecorationType, 
+                    decorations
+                );
             }
-            this._ruleToActiveOccurrences.set(rule.id, ranges);
-            ruleFactory.pushOccurrences(rule, DecorationTypeManager.toLineRanges(rule.id, ranges), decorations.length);
-            const textEditorDecorationType = this.getTextEditorDecorationType(rule);
-            this._factoryToDecorations.get(ruleFactory.location)?.add(textEditorDecorationType);
-            this._activeDecorations.set(textEditorDecorationType, decorations);
-
-            this.logger.debug(`[DTM] Applying ${decorations.length} decorations from ${rule.title} to document: ${activeEditor.document.fileName}`);
-            activeEditor.setDecorations(
-                textEditorDecorationType, 
-                decorations
-            );
+            catch {
+                this.logger.debug(`[DTM] Invalid regular expression ${rule.regularExpression} for rule ${rule.title}. Pushing 0 occurrences to webview.`);
+                ruleFactory.pushOccurrences(rule, [], 0);
+            }
         }
 	}
 
@@ -197,6 +203,7 @@ export class DecorationTypeManager {
                 || matchingOldRule.overviewRulerColor !== element.overviewRulerColor
                 || matchingOldRule.overviewRulerLane !== element.overviewRulerLane
                 || matchingOldRule.regularExpression !== element.regularExpression
+                || matchingOldRule.regularExpressionFlags !== element.regularExpressionFlags
                 || matchingOldRule.textDecoration !== element.textDecoration
                 || matchingOldRule.title !== element.title
             ) {

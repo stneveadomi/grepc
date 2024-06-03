@@ -13,6 +13,7 @@ import { DecorationPreviewComponent } from '../decoration-preview/decoration-pre
 import { OccurrencesComponent } from '../occurrences/occurrences.component';
 import { LineRange } from '../../models/line-range';
 import { ExtensionService, LogLevel } from '../../services/extension.service';
+import { RegularExpressionValidator } from '../../utilities/form-validators';
 
 @Component({
   selector: 'app-rule',
@@ -38,8 +39,12 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
     enabled: [false],
     overviewRulerColor: [''],
     overviewRulerLane: [OverviewRulerLane.Full],
-    regularExpression: [''],
-    regularExpressionFlags: ['g'],
+    regularExpression: ['',
+      [ RegularExpressionValidator() ]
+    ],
+    regularExpressionFlags: ['g',
+      [ Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^[dgimsuvy]*$/i)]
+    ],
     maxOccurrences: [1000],
     includedFiles: [''],
     excludedFiles: [''],
