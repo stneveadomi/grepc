@@ -72,6 +72,14 @@ Feel free to review the current issues if interested in contributing.
 
 If interested in more information, reach out to @stneveadomi on GitHub.
 
+## Credits
+
+Created by Steven Neveadomi.
+
+Shout out to the following beta testers: Chelsey Jurado, Dominic Nappi
+
+Shout out to Brooke Thomson for designing the logos.
+
 ## License
 
 MIT @ Steven Neveadomi
