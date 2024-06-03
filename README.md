@@ -79,6 +79,7 @@ Created by Steven Neveadomi.
 Shout out to the following beta testers: Chelsey Jurado, Dominic Nappi
 
 Shout out to Brooke Thomson for designing the logos.
+You can see more of her work [here](https://brookehthomson.wixsite.com/portfolio)
 
 ## License
 
