@@ -112,9 +112,10 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
     const change = changes['rule'];
     if(change) {
       this.ruleForm.patchValue(change.currentValue);
-      if(!this.ruleForm.controls.title.value) {
-        this.isEditingTitle = true;
-      }
+    }
+
+    if(!this.ruleForm?.controls?.title?.valid || !this.rule?.title) {
+      this.isEditingTitle = true;
     }
   }
 
@@ -192,15 +193,15 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   }
 
   toggleEditTitle() {
+    if(!this.ruleForm.controls.title.valid) {
+      return;
+    }
+
     this.isEditingTitle = !this.isEditingTitle;
     // if no longer editing title, reset form value for title.
     if(!this.isEditingTitle) {
       this.ruleForm.controls.title.setValue(this.rule.title);
     }
-  }
-
-  toggleShowEditIcon() {
-    this.showEditIcon = !this.showEditIcon;
   }
 
   getExpandedStyle(isExpanded: boolean | null) {

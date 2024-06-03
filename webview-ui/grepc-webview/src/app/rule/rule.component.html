@@ -26,21 +26,21 @@
                         class="codicon codicon-edit clickable">
                     </div>
                 </span>
-                <div *ngIf="this.isEditingTitle">
+                <div *ngIf="this.isEditingTitle" class="edit-title-controls">
                     <input
                         class="rule-id-input"
                         type="text"
                         (focus)="onFormFocus()"
                         (blur)="onFormBlur()"
-                        (keydown.enter)="updateTitle(); toggleEditTitle(); toggleShowEditIcon()"
-                        (keydown.escape)="toggleEditTitle(); toggleShowEditIcon()"
+                        (keydown.enter)="updateTitle(); toggleEditTitle(); showEditIcon = false"
+                        (keydown.escape)="toggleEditTitle(); showEditIcon = false"
                         formControlName="title"/>
                     <div
-                        (click)="toggleEditTitle(); toggleShowEditIcon()"
+                        (click)="toggleEditTitle(); showEditIcon = false"
                         class="codicon codicon-close clickable">
                     </div>
                     <div
-                        (click)="updateTitle(); toggleEditTitle(); toggleShowEditIcon()"
+                        (click)="updateTitle(); toggleEditTitle(); showEditIcon = false"
                         class="codicon codicon-check clickable">
                     </div>
                 </div>
