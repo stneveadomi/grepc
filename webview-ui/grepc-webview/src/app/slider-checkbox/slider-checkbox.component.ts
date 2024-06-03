@@ -13,7 +13,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
         background: '#009b32cf',
       })),
       state('disabled', style({
-        background: '#313131',
+        background: 'var(--vscode-input-background)',
       })),
       transition('enabled <=> disabled', [
         animate('0.3s'),

@@ -108,7 +108,7 @@ export class DecorationTypeManager {
                 if(exclude.test(activeEditor.document.fileName)) {
                     this.logger.debug(`[DTM] Decorations not applied for rule ${rule.title}. Document title does match exclude.`);
                     ruleFactory.pushOccurrences(rule, [], 0);
-                    return;
+                    continue;
                 }
             }
             if(rule.includedFiles) {
@@ -116,12 +116,12 @@ export class DecorationTypeManager {
                 if(!include.test(activeEditor.document.fileName)) {
                     this.logger.debug(`[DTM] Decorations not applied for rule ${rule.title}. Document title does not match include.`);
                     ruleFactory.pushOccurrences(rule, [], 0);
-                    return;
+                    continue;
                 }
             }
             if(!rule.regularExpression) {
                 ruleFactory.pushOccurrences(rule, [], 0);
-                return;
+                continue;
             }
             this.logger.debug(`[DTM] Applying ${rule.title} to document: ${activeEditor.document.fileName}`);
             try {
