@@ -18,7 +18,7 @@
 }
 
 .decoration-body, .control-body {
-    padding-left: 2em;
+    padding: 0 2em;
     margin-bottom: 1em;
     gap: 0;
 
@@ -79,7 +79,7 @@ input[type='checkbox'] {
 input, select {
     background-color: var(--vscode-input-background);
     color: var(--vscode-input-foreground);
-    width: calc(100% - 88px);
+    width: 100%;
     height: 24px;
     position: relative;
     display: block;
@@ -133,4 +133,33 @@ label {
         margin-left: 0;
         font-size: 14px;
     }
+}
+
+.regex-input-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2em;
+    width: 100%;
+}
+
+.regex-column {
+    display: inline-flex;
+    flex-direction: column;
+
+    label {
+        margin: 0;
+    }
+}
+
+.regex-input {
+    width: 100%;
+}
+
+.regex-column.regex-input-column {
+    flex-basis: 90%;
+}
+
+.regex-column.flags-input-column {
+    flex-basis: 10%;
 }

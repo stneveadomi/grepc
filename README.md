@@ -42,7 +42,6 @@ Grepc is an approachable regular expression highlighter with advanced customizat
 | ```grepc.disableLocalRules``` | `Grepc: Disable Local Workspace Rules` | Disable local rules. |
 | ```grepc.disableGlobalRules``` | `Grepc: Disable Global Workspace Rules` | Disable global rules.|
 
-
 ## Installation
 
 The easiest way to install is through the VS Code Marketplace.
@@ -50,6 +49,7 @@ The easiest way to install is through the VS Code Marketplace.
 Alternatively, you can install any version of grepc by going to the [releases](https://github.com/stneveadomi/grepc/releases) and downloading the specific .vsix file. From there, you can follow the instructions [here](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix).
 
 ## Demo
+
 ![Example 4](media/Code_PSyTYpsF5e.gif)
 
 ![Example 2](media/Code_IlBi9doiz1.gif)

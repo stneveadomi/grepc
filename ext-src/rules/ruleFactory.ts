@@ -73,7 +73,8 @@ export class RuleFactory {
 
     public getRulesArray(): Rule[] {
         const rulesArray = this.rulesArray;
-        console.log('getRulesArray() is called. updating $enabledRules');
+        // Fix with issue #54
+        //console.log('getRulesArray() is called. updating $enabledRules');
         this._enabledRules.next(rulesArray.filter(rule => rule.enabled));
         return rulesArray;
     }

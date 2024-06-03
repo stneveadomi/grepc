@@ -67,15 +67,30 @@
     
         <div [style.display]="getExpandedStyle(this.rule.expanded)" class="rule-body">
             <div class="control-body">
-                <div class="input-label">
-                    <label>
-                        regular expression: <a title="Regex Tester" href="https://regex101.com/" class="codicon codicon-info"></a>
-                    </label>
-                    <input
-                        formControlName="regularExpression"
-                        (focus)="onFormFocus()"
-                        (blur)="onFormBlur()"
-                        type="text" class="regex-input" placeholder="Regular Expression: [0-9]+, apple"/>
+                <div class="input-label regex-input-row">
+
+                    <div class="regex-column regex-input-column">
+                        <label>
+                            regular expression: <a title="Regex Tester" href="https://regex101.com/" class="codicon codicon-info"></a>
+                        </label>
+                        <input
+                            formControlName="regularExpression"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
+                            type="text" class="regex-input" placeholder="Regular Expression: [0-9]+, apple"/>
+                    </div>
+                    <div class="regex-column flags-input-column">
+                        <label>
+                            flags: <a title="MDN Reference for Flags" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions#advanced_searching_with_flags" class="codicon codicon-info"></a>
+                        </label>
+                        <input
+                            formControlName="regularExpressionFlags"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
+                            type="text"
+                            class="regex-flags-input"
+                            placeholder="d,g,i,m,s,u,v,y"/>
+                    </div>
                 </div>
                 <div class="input-label">
                     <label>
