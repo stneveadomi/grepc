@@ -29,7 +29,8 @@ app-occurrence {
     align-items: flex-end;
 
     border-radius: 50%;
-    background-color: rgb(73, 73, 73);
+    background-color: var(--vscode-badge-background);
+    color: var(--vscode-badge-foreground);
     height: 16px;
     min-width: 16px;
     padding: 2px;
@@ -103,8 +104,8 @@ app-occurrence {
 }
 
 .ng-invalid {
-    border-color: red !important;
-    outline-color: red !important;
+    border: 1px solid red !important;
+    outline: 1px solid red !important;
 }
 
 .codicon {
