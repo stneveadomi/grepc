@@ -1,9 +1,30 @@
 # Change Log
 
-All notable changes to the "grepc" extension will be documented in this file.
+## [1.1.0]
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+### Added
 
-## [Unreleased]
+- Field validation for all rules. This includes a red border around the rule and the field itself when an invalid rule is input.
 
-- Initial release
+### Changed
+
+- Placeholders now feature better examples more in-line with VS Code conventions.
+- Placeholders will now only appear when the input field is focused on.
+
+## [1.0.1]
+
+### Added
+
+- Sponsor links to the github and marketplace page.
+
+### Changed
+
+- Fixed numerous light mode visual issues.
+
+### Removed
+
+- Left over onboarding files.
+
+## [1.0.0]
+
+- Initial release.
