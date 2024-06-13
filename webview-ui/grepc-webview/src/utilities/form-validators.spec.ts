@@ -1,11 +1,6 @@
 import { CSSValidator } from "./form-validators";
 
 describe('CSSValidators', () => {
-  
-    beforeEach(async () => {
-
-    });
-  
     describe.each([
         {attribute: 'color', value: 'blue', expected: true},
         {attribute: 'color', value: 'rgb(75,75,75)', expected: true},
