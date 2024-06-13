@@ -77,7 +77,7 @@
                             formControlName="regularExpression"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" class="regex-input" placeholder="Regular Expression: [0-9]+, apple"/>
+                            type="text" class="regex-input" placeholder="e.g. [0-9]+, apple, (?:apple|orange)"/>
                     </div>
                     <div class="regex-column flags-input-column">
                         <label>
@@ -89,7 +89,7 @@
                             (blur)="onFormBlur()"
                             type="text"
                             class="regex-flags-input"
-                            placeholder="d,g,i,m,s,u,v,y"/>
+                            placeholder="e.g. g, gd, gi, i"/>
                     </div>
                 </div>
                 <div class="input-label">
@@ -100,7 +100,7 @@
                         formControlName="includedFiles"
                         (focus)="onFormFocus()"
                         (blur)="onFormBlur()"
-                        type="text" name="include-files" placeholder="Include Files: .*\.java"/>
+                        type="text" name="include-files" placeholder="e.g. .*\.java, Test.java, py"/>
                 </div>
                 <div class="input-label">
                     <label>
@@ -110,7 +110,7 @@
                         formControlName="excludedFiles"
                         (focus)="onFormFocus()"
                         (blur)="onFormBlur()"
-                        type="text" name="exclude-files" placeholder="Exclude Files: java, .*\.component\.*"/>
+                        type="text" name="exclude-files" placeholder="e.g. java, .*\.component\.*"/>
                 </div>
             </div>
 
@@ -166,7 +166,7 @@
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
                             type="text" name="outline" 
-                            placeholder="'solid 1px blue', 'dashed', 'dotted', 'double'"/>
+                            placeholder="e.g. solid 1px blue, dashed, dotted, double"/>
                     </div>
                     <div class="input-label">
                         <label>
@@ -189,7 +189,7 @@
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
                             type="text" name="include-files" 
-                            placeholder="'1px'"
+                            placeholder="e.g. 1px, 2em, 1rem"
                             [(value)]="this.rule.outlineWidth"/>
                     </div>            
                     <div class="input-label">
@@ -198,10 +198,11 @@
                         </label>
                         <input 
                             formControlName="border"
+                            title="You can either put the entire border value in this input or for organization, across the following fields."
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
                             type="text" name="border" 
-                            placeholder="'solid 1px red', 'ridge'"
+                            placeholder="e.g. solid 1px red, ridge"
                             [(value)]="this.rule.border"/>
                     </div>     
                     <div class="input-label">
@@ -224,7 +225,7 @@
                             formControlName="borderWidth"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="border-width" placeholder="'1px'"
+                            type="text" name="border-width" placeholder="e.g. 1px, 2em, 3rem"
                             [(value)]="this.rule.borderWidth"/>
                     </div>         
                     <div class="input-label">
@@ -235,7 +236,7 @@
                             formControlName="fontStyle"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="font-style" placeholder="'normal', 'italic', 'oblique'"
+                            type="text" name="font-style" placeholder="e.g. normal, italic, oblique"
                             [(value)]="this.rule.fontStyle"/>
                     </div>
                     <div class="input-label">
@@ -246,7 +247,7 @@
                             formControlName="fontWeight"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="font-weight" placeholder="Font Weight (100-900): '700'"
+                            type="text" name="font-weight" placeholder="(100-900) e.g. 700, bold"
                             [(value)]="this.rule.fontWeight"/>
                     </div>                
                     <div class="input-label">
@@ -258,7 +259,7 @@
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
                             type="text" name="text-decoration"
-                            placeholder="'dashed', 'double', 'wavy', 'underline'"
+                            placeholder="e.g. dashed, double, wavy, underline"
                             [(value)]="this.rule.textDecoration"/>
                     </div>            
                     <div class="input-label">
@@ -269,7 +270,7 @@
                             formControlName="cursor"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="cursor" placeholder="'pointer', 'grab', 'text', 'crosshair''"
+                            type="text" name="cursor" placeholder="e.g. pointer, grab, text, crosshair"
                             [(value)]="this.rule.cursor"/>
                     </div>
                     <div class="input-label">
@@ -305,8 +306,10 @@
                         </label>
                         <input 
                             formControlName="maxOccurrences"
+                            title="This field limits the max amount of regex matches within a file for performance reasons. Increase at your own risk."
                             (blur)="onFormBlur()"
-                            type="number" name="max-occurrences" placeholder="1000"
+                            (focus)="onFormFocus()"
+                            type="number" name="max-occurrences" placeholder="e.g. 1000"
                             />
                     </div>
                     <div class="input-checkbox">
@@ -314,6 +317,7 @@
                             Is Whole Line?
                         </label>
                         <input type="checkbox"
+                            title="Check this to have the decoration apply for the whole line."
                             (blur)="onFormBlur()"
                             formControlName="isWholeLine"/>
                     </div>    

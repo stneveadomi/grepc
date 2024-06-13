@@ -47,6 +47,14 @@ input[type='text'].rule-id-input {
     text-transform: uppercase;
 }
 
+input:focus::placeholder {
+    opacity: 1;
+}
+
+input::placeholder {
+    opacity: 0;
+}
+
 .control-gap {
     gap: 1em;
 }
