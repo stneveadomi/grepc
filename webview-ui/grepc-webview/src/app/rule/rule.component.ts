@@ -13,7 +13,7 @@ import { DecorationPreviewComponent } from '../decoration-preview/decoration-pre
 import { OccurrencesComponent } from '../occurrences/occurrences.component';
 import { LineRange } from '../../models/line-range';
 import { ExtensionService, LogLevel } from '../../services/extension.service';
-import { RegularExpressionValidator } from '../../utilities/form-validators';
+import { CSSValidator, RegularExpressionValidator } from '../../utilities/form-validators';
 
 @Component({
   selector: 'app-rule',
@@ -46,20 +46,48 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
       [ Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^[dgimsuvy]*$/i)]
     ],
     maxOccurrences: [1000],
-    includedFiles: [''],
-    excludedFiles: [''],
-    backgroundColor: [''],
-    outline: [''],
-    outlineColor: [''],
-    outlineWidth: [''],
-    border: [''],
-    borderColor: [''],
-    borderWidth: [''],
-    fontStyle: [''],
-    fontWeight: [''],
-    textDecoration: [''],
-    cursor: [''],
-    color: [''],
+    includedFiles: ['',
+      [ RegularExpressionValidator() ]
+    ],
+    excludedFiles: ['',
+      [ RegularExpressionValidator() ]
+    ],
+    backgroundColor: ['',
+      [ CSSValidator.classValidator('background-color')]
+    ],
+    outline: ['',
+      [ CSSValidator.classValidator('outline')]
+    ],
+    outlineColor: ['',
+      [ CSSValidator.classValidator('outline-color') ]
+    ],
+    outlineWidth: ['',
+      [ CSSValidator.classValidator('outline-width') ]
+    ],
+    border: ['',
+      [ CSSValidator.classValidator('border') ]
+    ],
+    borderColor: ['',
+      [ CSSValidator.classValidator('border-color') ]
+    ],
+    borderWidth: ['',
+      [ CSSValidator.classValidator('border-width') ]
+    ],
+    fontStyle: ['',
+      [ CSSValidator.classValidator('font-style') ]
+    ],
+    fontWeight: ['',
+      [ CSSValidator.classValidator('font-weight') ]
+    ],
+    textDecoration: ['',
+      [ CSSValidator.classValidator('text-decoration') ]
+    ],
+    cursor: ['',
+      [ CSSValidator.classValidator('cursor') ]
+    ],
+    color: ['',
+      [ CSSValidator.classValidator('color') ]
+    ],
     isWholeLine: [false]
   });
 
