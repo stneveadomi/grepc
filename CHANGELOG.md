@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.1.1]
+
+### Changed
+
+- Bug Fix: Fixed occurrence text that was longer than view size being cut off.
+
 ## [1.1.0]
 
 ### Added

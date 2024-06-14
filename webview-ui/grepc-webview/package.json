@@ -1,7 +1,7 @@
 {
   "name": "grepc-webview",
   "type": "module",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "jest": {
     "preset": "jest-preset-angular",
     "setupFilesAfterEnv": ["<rootDir>/src/setup.jest.ts"]
