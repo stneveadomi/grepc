@@ -19,7 +19,8 @@
 .occurrence-text {
     background-color: var(--vscode-input-background);
     border-radius: 3px;
-    height: 2em;
+    min-height: 2em;
+    line-height: 2em;
     display: inline-flex;
     align-items: center;
     border: 1px solid rgb(73, 73, 73);
