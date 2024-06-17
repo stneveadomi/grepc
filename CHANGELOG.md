@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.1.2]
+
+### Removed
+
+- Removed coverage folder from package.
+- Removed unnecessary comments.
+
 ## [1.1.1]
 
 ### Changed
