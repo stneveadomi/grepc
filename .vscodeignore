@@ -18,6 +18,7 @@ webview-ui/grepc-webview/.angular/**
 webview-ui/grepc-webview/.vscode/**
 webview-ui/grepc-webview/node_modules/**
 webview-ui/grepc-webview/src/**
+webview-ui/grepc-webview/coverage/**
 webview-ui/grepc-webview/.editorconfig
 webview-ui/grepc-webview/*.json
 webview-ui/grepc-webview/*.md
