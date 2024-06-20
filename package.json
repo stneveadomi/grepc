@@ -1,8 +1,8 @@
 {
   "name": "grepc",
-  "displayName": "grepc",
+  "displayName": "grepc: Regex Highlighting",
   "description": "An approachable regular expression highlighter with advanced customization for VS Code.",
-  "icon": "media/GREPC-standard-circle-124.png",
+  "icon": "media/GREPC_enhanced-standard-circle-128.png",
   "version": "1.1.2",
   "engines": {
     "vscode": "^1.84.0"
@@ -22,10 +22,16 @@
   },
   "homepage": "https://github.com/stneveadomi/grepc",
   "categories": [
-    "Visualization", "Programming Languages", "Formatters"
+    "Visualization",
+    "Programming Languages",
+    "Formatters"
   ],
   "keywords": [
-    "highlight", "decoration", "organization", "search", "regex"
+    "highlight",
+    "decoration",
+    "organization",
+    "search",
+    "regex"
   ],
   "activationEvents": [
     "onStartupFinished"
@@ -35,40 +41,43 @@
     "commands": [
       {
         "command": "grepc.addRule",
-        "title": "Grepc: Create Blank Rule"
+        "title": "grepc: Create Blank Rule"
       },
       {
         "command": "grepc.addTextRule",
-        "title": "Grepc: Create Rule From Selection"
+        "title": "grepc: Create Rule From Selection"
       },
       {
         "command": "grepc.deleteRule",
-        "title": "Grepc: Delete Rule"
+        "title": "grepc: Delete Rule"
       },
-
       {
         "command": "grepc.enableAllRules",
-        "title": "Grepc: Enable All Rules"
+        "title": "grepc: Enable All Rules"
       },
       {
         "command": "grepc.enableLocalRules",
-        "title": "Grepc: Enable Local Workspace Rules"
+        "title": "grepc: Enable Local Workspace Rules"
       },
       {
         "command": "grepc.enableGlobalRules",
-        "title": "Grepc: Enable Global Workspace Rules"
+        "title": "grepc: Enable Global Workspace Rules"
       },
       {
         "command": "grepc.disableAllRules",
-        "title": "Grepc: Disable All Rules"
+        "title": "grepc: Disable All Rules"
       },
       {
         "command": "grepc.disableLocalRules",
-        "title": "Grepc: Disable Local Workspace Rules"
+        "title": "grepc: Disable Local Workspace Rules"
       },
       {
         "command": "grepc.disableGlobalRules",
-        "title": "Grepc: Disable Global Workspace Rules"
+        "title": "grepc: Disable Global Workspace Rules"
+      },
+      {
+        "command": "grepc.showWhatsNew",
+        "title": "grepc: Show What's New"
       }
     ],
     "menus": {
@@ -136,7 +145,7 @@
       "activitybar": [
         {
           "id": "grepc-explorer",
-          "title": "Grepc",
+          "title": "grepc",
           "icon": "media/grepc-activity-bar.svg"
         }
       ]
@@ -173,8 +182,10 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@types/showdown": "^2.0.6",
     "debounce": "^2.0.0",
     "rxjs": "^7.8.1",
+    "showdown": "^2.1.0",
     "uuid": "^9.0.1"
   }
 }

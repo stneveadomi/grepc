@@ -4,6 +4,7 @@ import { window } from 'vscode';
 import { LocationState } from '../rules/locationState';
 import { RuleFactoryMediator } from '../rules/ruleFactoryMediator';
 import { Rule } from '../rules/rule';
+import { WhatsNewWebview } from '../viewProviders/whatsNewViewProvider';
 
 export class CommandManager {
 
@@ -14,11 +15,12 @@ export class CommandManager {
     constructor(
         private subscriptions: { dispose(): any; }[],
         private rfm: RuleFactoryMediator,
-        private logger: vscode.LogOutputChannel
+        private whatsNewWebview: WhatsNewWebview,
+        private logger: vscode.LogOutputChannel,
     ) {
         this.commands = [
             new Command('grepc.addRule', async () => {
-                const inputTitle = 'Grepc: Add new rule';
+                const inputTitle = 'grepc: Add new rule';
                 let location = await this.showLocationInput(inputTitle);
                 if(!location) {
                     return;
@@ -40,7 +42,7 @@ export class CommandManager {
                 this.rfm.getRuleFactory(<LocationState> location)?.addRule(title, regEx, bgColor);
             }, this.logger),
             new Command('grepc.addTextRule', async () => {
-                const inputTitle = 'Grepc: Add rule from selection';
+                const inputTitle = 'grepc: Add rule from selection';
                 let location = await this.showLocationInput(inputTitle);
                 if(!location) {
                     return;
@@ -108,6 +110,9 @@ export class CommandManager {
             new Command('grepc.enableGlobalRules', () => {
                 this.rfm.getRuleFactory(LocationState.GLOBAL)?.enableRules();
             }, this.logger),
+            new Command('grepc.showWhatsNew', () => {
+                this.whatsNewWebview.showWebview();
+            }, this.logger) 
         ];
     }
 

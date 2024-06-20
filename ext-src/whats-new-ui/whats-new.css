@@ -1,0 +1,109 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@keyframes gradient {
+    0%{background-position: 10% 10%}
+    25%{background-position: 10% 90%}
+    50%{background-position: 90% 90%}
+    75%{background-position: 90% 10%}
+    100%{background-position: 10% 10%}
+}
+
+.banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 0 0 12px 11px;
+    box-shadow: 0px 0px 31px 1px #ffffff0d;
+    padding: 0 15px;
+    border: solid 1px;
+    animation-name: gradient;
+    animation-duration: 20s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    background: rgb(254,254,254);
+    background: radial-gradient(circle, rgba(254,254,254,1) 0%, rgba(149,37,124,1) 25%, rgba(101,48,124,1) 46%, rgba(51,108,111,1) 73%, rgba(0,0,0,1) 100%);
+    background-size: 500% 500%;
+
+    img {
+        width: 124px;
+        height: 124px;
+    }
+}
+
+.changelog, .about {
+    padding: 1%;
+    border: solid 2px white;
+    background-color: #ffffff0d;
+}
+
+.about {
+    height: fit-content;
+}
+
+.changelog {
+    width: 50vw;
+
+    ul {
+        padding-left: 5em;
+    }
+
+    h2 {
+        background: rgb(165 165 165 / 14%);
+        border: 1px solid rgb(90 90 90);
+        border-radius: 5px;
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-bottom: 5px;
+        width: fit-content;
+    }
+
+    h3 {
+        font-weight: 700;
+        color: white;
+        width: 53px;
+        text-align: center;
+        padding-left: 1em;
+        padding-right: 1em;
+        font-size: 13px;
+        margin-left: 1em;
+    }
+}
+
+.about {
+    width: 20vw;
+}
+
+.content {
+    display: flex;
+    gap: 5vw;
+}
+
+[id*="removed"] {
+    border-radius: 5px;
+    background-color: rgb(255 55 55 / 16%);
+    border: 1px solid rgb(255 0 0);
+}
+
+[id*="added"] {
+    border-radius: 5px;
+    background-color: rgb(95 255 55 / 16%);
+    border: 1px solid rgb(95, 255, 55);
+}
+
+[id*="changed"] {
+    border-radius: 5px;
+    background-color: rgb(242 255 0 / 22%);
+    border: 1px solid yellow;
+}
+
+h1 {
+    color: white;
+}
+
+a {
+    text-decoration: none;
+}

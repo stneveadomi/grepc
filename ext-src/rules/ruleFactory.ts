@@ -16,6 +16,7 @@ export class RuleFactory {
     private _grepcProvider: GrepcViewProvider | undefined = undefined;
     private static RULES_MAP_KEY_ID = 'rulesMap';
     private static RULES_ARRAY_KEY_ID = 'rulesArray';
+    public static STORED_VERSION_KEY_ID = 'version';
 
     public readonly $enabledRules: Observable<Rule[]> = this._enabledRules.asObservable().pipe(shareReplay(1));
 
@@ -28,6 +29,11 @@ export class RuleFactory {
         this._isGlobalState = isGlobalState;
         if(isGlobalState) {
             this.globalState = <GlobalState> state;
+            this.globalState.setKeysForSync([
+                RuleFactory.RULES_MAP_KEY_ID,
+                RuleFactory.RULES_ARRAY_KEY_ID,
+                RuleFactory.STORED_VERSION_KEY_ID
+            ]);
         } else {
             this.localState = state;
         }
