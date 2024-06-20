@@ -3,13 +3,15 @@
 > **grep + color**
 
 <p align="center">
-    <img src="media/GREPC-standard-circle-124.png" alt="Grepc Icon">
+    <img src="media/GREPC_enhanced-standard-circle-128.png" alt="grepc Icon">
 </p>
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/ritwickdey/vscode-live-server/)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/stneveadomi/grepc/)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/stneveadomi/grepc?color=green)
 ![GitHub Release Date](https://img.shields.io/github/release-date/stneveadomi/grepc)
 [![CI Tests](https://github.com/stneveadomi/grepc/actions/workflows/node.js.yml/badge.svg)](https://github.com/stneveadomi/grepc/actions/workflows/node.js.yml)
+![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/stneveadomi.grepc)
+![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/stars/stneveadomi.grepc)
 
 Grepc is an approachable regular expression highlighter with advanced customization for VS Code.
 
@@ -32,15 +34,16 @@ Grepc is an approachable regular expression highlighter with advanced customizat
 
 | Command | Title | Description |
 | ------- | ----- | ------------|
-| ```grepc.addRule``` | `Grepc: Create Blank Rule` | Add a rule to local or global rule managers through a series of menus. |
-| ```grepc.addTextRule``` | `Grepc: Create Rule From Selection` | Add a rule by selecting text to be the regex and then following the quick pick menus. |
-| ```grepc.deleteRule``` | `Grepc: Delete Rule` | Delete a rule from the workspace or global managers. |
-| ```grepc.enableAllRules``` | `Grepc: Enable All Rules` | Enable all rules in the workspace and global. |
-| ```grepc.enableLocalRules``` | `Grepc: Enable Local Workspace Rules` | Enable all local rules. |
-| ```grepc.enableGlobalRules``` | `Grepc: Enable Global Workspace Rules` | Enable all global rules. |
-| ```grepc.disableAllRules``` | `Grepc: Disable All Rules` | Disable all rules. |
-| ```grepc.disableLocalRules``` | `Grepc: Disable Local Workspace Rules` | Disable local rules. |
-| ```grepc.disableGlobalRules``` | `Grepc: Disable Global Workspace Rules` | Disable global rules.|
+| ```grepc.addRule``` | `grepc: Create Blank Rule` | Add a rule to local or global rule managers through a series of menus. |
+| ```grepc.addTextRule``` | `grepc: Create Rule From Selection` | Add a rule by selecting text to be the regex and then following the quick pick menus. |
+| ```grepc.deleteRule``` | `grepc: Delete Rule` | Delete a rule from the workspace or global managers. |
+| ```grepc.enableAllRules``` | `grepc: Enable All Rules` | Enable all rules in the workspace and global. |
+| ```grepc.enableLocalRules``` | `grepc: Enable Local Workspace Rules` | Enable all local rules. |
+| ```grepc.enableGlobalRules``` | `grepc: Enable Global Workspace Rules` | Enable all global rules. |
+| ```grepc.disableAllRules``` | `grepc: Disable All Rules` | Disable all rules. |
+| ```grepc.disableLocalRules``` | `grepc: Disable Local Workspace Rules` | Disable local rules. |
+| ```grepc.disableGlobalRules``` | `grepc: Disable Global Workspace Rules` | Disable global rules.|
+| ```grepc.showWhatsNew``` | `grepc: Show What's New` | Show what's new page that displays for each major and minor update. |
 
 ## Installation
 
