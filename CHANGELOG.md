@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Introduced a What's New page that shows on any major or minor update.
 - Added more badges to the README.
+- Introduced a walkthrough for grepc.
 
 ### Changed
 
