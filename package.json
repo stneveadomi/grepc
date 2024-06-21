@@ -38,6 +38,43 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "walkthroughs": [
+      {
+        "id": "grepc.walkthrough",
+        "title": "grepc: Walkthrough",
+        "description": "Showing the features of grepc and how to make rules in various ways.",
+        "steps": [
+          {
+            "id": "openlocalrules",
+            "title": "Open local rules",
+            "description": "Where are the local rules found?",
+            "media": { "markdown": "media/open-local-rules.md"},
+            "completionEvents": ["onView:grepc.webview.local"]
+          },
+          {
+            "id": "openglobalrules",
+            "title": "Open global rules",
+            "description": "Where are the global rules found?",
+            "media": { "markdown": "media/open-global-rules.md"},
+            "completionEvents": ["onView:grepc.webview.global"]
+          },
+          {
+            "id": "createablankrule",
+            "title": "Create a blank rule",
+            "description": "Run the command >grepc.addRule to create a new rule or click the button below.\n[Create blank rule](command:grepc.addRule)",
+            "media": { "markdown": "media/create-blank-rule.md"},
+            "completionEvents": ["onCommand:grepc.addRule"]
+          },
+          {
+            "id": "createrulefromselection",
+            "title": "Create a rule from selected text",
+            "description": "Select some text and right click to run the command grepc.addTextRule.",
+            "media": { "markdown": "media/create-rule-from-selection.md"},
+            "completionEvents": ["onCommand:grepc.addRule"]
+          }
+        ]
+      }
+    ],
     "commands": [
       {
         "command": "grepc.addRule",
