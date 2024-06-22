@@ -2,8 +2,8 @@
 export interface LineRange {
     ruleId: string;
     index: number;
-    line: string;
-    lineNumber: number;
+    lines: string[];
+    lineNumbers: number[];
 
     startIndex: number;
     endIndexExcl: number;

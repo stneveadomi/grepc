@@ -3,11 +3,12 @@ import { RuleService } from '../../services/rule.service';
 import { Rule } from '../../models/rule';
 import { CommonModule } from '@angular/common';
 import { LineRange } from '../../models/line-range';
+import { OccurrenceDisplayComponent } from '../occurrence-display/occurrence-display.component';
 
 @Component({
   selector: 'app-occurrences',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, OccurrenceDisplayComponent],
   templateUrl: './occurrences.component.html',
   styleUrl: './occurrences.component.css'
 })
@@ -28,10 +29,9 @@ export class OccurrencesComponent implements DoCheck {
   
   constructor(
     private ruleService: RuleService,
-  ) {
-  }
+  ) { }
 
-  lineRange: LineRange | undefined = this.rule?.lineRanges?.[this.occurrenceIndex];
+  selectedLineRange: LineRange | undefined = this.rule?.lineRanges?.[this.occurrenceIndex];
 
   ngDoCheck(): void {
     if(this.rule.occurrences !== this._oldOccurrences
@@ -41,11 +41,11 @@ export class OccurrencesComponent implements DoCheck {
       this._oldLineRanges = this.rule.lineRanges;
       if(!this.rule?.occurrences || this.rule.occurrences === 0) {
         this.occurrenceIndex = 0;
-        this.lineRange = undefined;
+        this.selectedLineRange = undefined;
         return;
       } else if(this.rule?.occurrences < this.occurrenceIndex) {
         this.occurrenceIndex = this.rule.occurrences;
-        this.lineRange = this.rule?.lineRanges?.[this.occurrenceIndex];
+        this.selectedLineRange = this.rule?.lineRanges?.[this.occurrenceIndex];
         return;
       }
 
@@ -55,7 +55,7 @@ export class OccurrencesComponent implements DoCheck {
       }
 
       if(this.occurrenceIndex !== 0) {
-        this.lineRange = this.rule?.lineRanges?.[this.occurrenceIndex - 1];
+        this.selectedLineRange = this.rule?.lineRanges?.[this.occurrenceIndex - 1];
       }
     }
   }
@@ -81,11 +81,11 @@ export class OccurrencesComponent implements DoCheck {
   }
 
   jumpToLine() {
-    if(!this.lineRange) {
+    if(!this.selectedLineRange) {
       return;
     }
 
-    this.ruleService.jumpToLine(this.lineRange);
+    this.ruleService.jumpToLine(this.selectedLineRange);
   }
 
   decrement() {
@@ -97,7 +97,7 @@ export class OccurrencesComponent implements DoCheck {
     if(this.occurrenceIndex <= 0) {
       this.occurrenceIndex = this.rule.occurrences ?? 1;
     }
-    this.lineRange = this.rule?.lineRanges?.[this.occurrenceIndex - 1];
+    this.selectedLineRange = this.rule?.lineRanges?.[this.occurrenceIndex - 1];
   }
 
   increment() {
@@ -109,7 +109,7 @@ export class OccurrencesComponent implements DoCheck {
     if(this.occurrenceIndex > this.rule?.occurrences) {
       this.occurrenceIndex = 1;
     }
-    this.lineRange = this.rule?.lineRanges?.[this.occurrenceIndex - 1];
+    this.selectedLineRange = this.rule?.lineRanges?.[this.occurrenceIndex - 1];
   }
 
   processWheel(event: WheelEvent) {
@@ -118,5 +118,11 @@ export class OccurrencesComponent implements DoCheck {
     } else {
       this.increment();
     }
+  }
+
+  select(lineRange: LineRange) {
+    this.selectedLineRange = lineRange;
+    this.occurrenceIndex = lineRange.index + 1;
+    this.jumpToLine();
   }
 }

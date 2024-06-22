@@ -2,8 +2,8 @@
 export interface LineRange {
     ruleId: string;
     index: number;
-    line: string | undefined;
-    lineNumber: number;
+    lines: string[] | undefined;
+    lineNumbers: number[];
 
     startIndex: number;
     endIndexExcl: number;

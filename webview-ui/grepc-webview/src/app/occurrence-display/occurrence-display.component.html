@@ -1,0 +1,38 @@
+<div class="occurrence-text clickable"
+    (click)="select()"
+    [style.backgroundColor]="isSelected && occurrenceIndex != -1 
+        ? 'rgb(73,73,73)' 
+        : isSelected && occurrenceIndex == -1
+            ? 'var(--vscode-input-background)'
+            : 'transparent'"
+    *ngIf="lineRange">
+    <div class="line"
+        *ngFor="let line of lineRange.lines; let i = index; let isFirst = first; let isLast = last">
+        <div class="line-number">
+            {{ lineRange.lineNumbers[i] + 1 }}:
+        </div>
+        <div>
+            {{ isFirst ? line?.substring(0, lineRange.startIndex) : '' }} 
+            <span
+                [style.border]="rule.border"
+                [style.borderColor]="rule.borderColor"
+                [style.borderWidth]="rule.borderWidth"
+                [style.color]="rule.color"
+                [style.fontWeight]="rule.fontWeight"
+                [style.textDecoration]="rule.textDecoration"
+                [style.cursor]="rule.cursor"
+                [style.outline]="rule.outline"
+                [style.outlineColor]="rule.outlineColor"
+                [style.outlineWidth]="rule.outlineWidth"
+                [style.backgroundColor]="rule.backgroundColor">
+                {{
+                    isFirst && isLast 
+                        ? line?.substring(lineRange.startIndex, lineRange.endIndexExcl) 
+                        : line
+                }}
+            </span>
+            {{ isLast ? line?.substring(lineRange.endIndexExcl) : '' }}
+        </div>
+    </div>
+
+</div>
