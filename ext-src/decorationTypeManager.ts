@@ -221,11 +221,16 @@ export class DecorationTypeManager {
             ranges.forEach((range, index) => {
                 const lineStart = activeEditor.document.lineAt(range.start.line).range.start;
                 const lineStartOffset = activeEditor.document.offsetAt(lineStart);
+                const lineNumbers = [];
+                for(let i = range.start.line; i <= range.end.line; i++) {
+                    lineNumbers.push(i);
+                }
+                const lines = lineNumbers.map(lineNumber => activeEditor.document.lineAt(lineNumber).text);
                 occurrences.push({
                     ruleId,
                     index,
-                    line: activeEditor.document.lineAt(range.start.line).text,
-                    lineNumber: range.start.line,
+                    lines,
+                    lineNumbers,
                     startIndex: activeEditor.document.offsetAt(range.start) - lineStartOffset,
                     endIndexExcl: activeEditor.document.offsetAt(range.end) - lineStartOffset,
                     selectionNumber: index

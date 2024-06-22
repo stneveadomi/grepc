@@ -16,25 +16,18 @@
     }
 }
 
-.occurrence-text {
-    background-color: var(--vscode-input-background);
-    border-radius: 3px;
-    min-height: 2em;
-    line-height: 2em;
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid rgb(73, 73, 73);
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    margin-right: 1em;
-}
-
 .occurrence {
     display: inline-flex;
     gap: 5px;
     align-items: center;
+}
+
+app-occurrence-display {
+    min-height: 2em;
+    line-height: 2em;
+    display: inline-flex;
+    width: 100%;
+    margin-right: 1em;
 }
 
 .occurrence-list {
@@ -45,12 +38,6 @@
     overflow-x: hidden;
     border: 1px solid rgb(73, 73, 73);
     padding: 6px;
-
-    .occurrence-text {
-        margin-bottom: 5px;
-        width: 98%;
-        background-color: transparent;
-    }
 }
 
 .occurrences-list-header {
@@ -94,9 +81,4 @@
 
 .up-or-down .codicon {
     font-size: 20px;
-}
-
-.line-number {
-    color: #b5cea8;
-    margin-right: 1em;
 }

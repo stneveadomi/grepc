@@ -133,3 +133,9 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
     filter: invert(99%) sepia(0%) saturate(1668%) hue-rotate(304deg) brightness(108%) contrast(60%);
 }
+
+.occurrence-list .occurrence-text {
+    margin-bottom: 5px;
+    width: 98%;
+    background-color: transparent;
+}

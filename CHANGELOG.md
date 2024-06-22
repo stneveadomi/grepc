@@ -12,11 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Introduced a What's New page that shows on any major or minor update.
 - Added more badges to the README.
 - Introduced a walkthrough for grepc.
+- Added appropriate support for multi-line regex.
 
 ### Changed
 
 - Updated icon for marketplace and README to appropriate 128x128 and larger icon size.
-- Updated displayName to more accurately reflect what extension is.
+- Updated displayName to more accurately reflect what extension does.
 
 ## [1.1.2]
 
