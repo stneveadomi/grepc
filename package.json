@@ -61,14 +61,14 @@
           {
             "id": "createablankrule",
             "title": "Create a blank rule",
-            "description": "Run the command >grepc.addRule to create a new rule or click the button below.\n[Create blank rule](command:grepc.addRule)",
+            "description": "Run the command \"grepc: Create Blank Rule\" to create a new rule or click the button below.\n[Create Blank Rule](command:grepc.addRule)",
             "media": { "markdown": "media/create-blank-rule.md"},
             "completionEvents": ["onCommand:grepc.addRule"]
           },
           {
             "id": "createrulefromselection",
             "title": "Create a rule from selected text",
-            "description": "Select some text and right click to run the command grepc.addTextRule.",
+            "description": "Select some text and right click to run the command \"grepc: Create Rule From Selection\".",
             "media": { "markdown": "media/create-rule-from-selection.md"},
             "completionEvents": ["onCommand:grepc.addRule"]
           }
