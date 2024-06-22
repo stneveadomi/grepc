@@ -32,6 +32,10 @@ body {
         width: 124px;
         height: 124px;
     }
+
+    h1 {
+        color: white;
+    }
 }
 
 .changelog, .about {
@@ -63,7 +67,6 @@ body {
 
     h3 {
         font-weight: 700;
-        color: white;
         width: 53px;
         text-align: center;
         padding-left: 1em;
@@ -100,9 +103,7 @@ body {
     border: 1px solid yellow;
 }
 
-h1 {
-    color: white;
-}
+
 
 a {
     text-decoration: none;

@@ -36,6 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(localWebviewProvider.viewType, localWebviewProvider),
 		vscode.window.registerWebviewViewProvider(globalWebviewProvider.viewType, globalWebviewProvider),
+		whatsNewWebviewProvider,
 		dtTypeManager
 	);
 
@@ -49,5 +50,4 @@ export function activate(context: vscode.ExtensionContext) {
 	logger.info(`Grepc initialized in ${Date.now() - initStart} ms.`);
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}
