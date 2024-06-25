@@ -50,13 +50,23 @@ export class DecorationTypeManager {
 
         this._activeEditor = vscode.window.activeTextEditor;
         if(this._activeEditor) {
-            this._triggerUpdateDecorations();
+            if(this._activeEditor.document.fileName === 'stneveadomi.grepc.grepc') {
+                this._activeEditor = undefined;
+            } else {
+                this._triggerUpdateDecorations();
+            }
         }
         vscode.window.onDidChangeActiveTextEditor(editor => {
                 this.logger.debug(`[DTM] Active text editor changed from ${this._activeEditor?.document.fileName} to ${editor?.document?.fileName}`);
                 this.clearAllDecorations();
                 // clear all decorations before switching to active editor.
                 this._activeEditor = editor;
+
+                // prevent decorating the grepc log, as this will cause an infinite loop... 
+                if(this._activeEditor && this._activeEditor.document.fileName === 'stneveadomi.grepc.grepc') {
+                    this._activeEditor = undefined;
+                }
+
                 this._factoryToOldEnabledRules.clear();
 
                 if(editor) {
