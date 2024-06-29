@@ -77,7 +77,7 @@ export class RuleService {
    * Note: This is called by RuleService::pushRules()
    */
   public pushRulesToExtension() {
-    this._clearOccurenceData();
+    this._clearOccurrenceData();
     this.extensionService.postMessage({
       type: 'rules', 
       mapData: JSON.stringify(Array.from(this._ruleMap.entries())),
@@ -90,7 +90,7 @@ export class RuleService {
    * This data does not need to be stored in the backend.
    * Note: This is called by RuleService::pushRulesToExtension()
    */
-  private _clearOccurenceData() {
+  private _clearOccurrenceData() {
     this._rulesArray.map(rule =>{ 
       rule.occurrences = 0;
       rule.lineRanges = [];
