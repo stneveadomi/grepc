@@ -174,10 +174,7 @@ export class RuleFactory {
     }
 
     pushOccurrences(rule: Rule, ranges: LineRange[], occurrences: number) {
-        rule.lineRanges = ranges;
-        rule.occurrences = occurrences;
         this.updateRuleWithNoSideEffects(rule);
-
         this._grepcProvider?.webview?.postMessage({
             type: 'ruleDecorationUpdate',
             id: rule.id,

@@ -77,10 +77,31 @@ export class RuleService {
    * Note: This is called by RuleService::pushRules()
    */
   public pushRulesToExtension() {
+    this._clearOccurenceData();
     this.extensionService.postMessage({
       type: 'rules', 
       mapData: JSON.stringify(Array.from(this._ruleMap.entries())),
       arrayData: JSON.stringify(this._rulesArray)
+    });
+  }
+
+  /**
+   * This is to clear occurance data in the rules array and map.
+   * This data does not need to be stored in the backend.
+   * Note: This is called by RuleService::pushRulesToExtension()
+   */
+  private _clearOccurenceData() {
+    this._rulesArray.map(rule =>{ 
+      rule.occurrences = 0;
+      rule.lineRanges = [];
+      return rule;
+    });
+
+    this._ruleMap.forEach(rule => {
+      if(rule) {
+        rule.occurrences = 0;
+        rule.lineRanges = [];
+      }
     });
   }
 
