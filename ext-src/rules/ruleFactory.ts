@@ -81,15 +81,37 @@ export class RuleFactory {
     }
 
     public getRulesMap(): Map<string, Rule> {
-        return new Map<string, Rule>(this.getState()?.get<[string, Rule][]>(RuleFactory.RULES_MAP_KEY_ID, []) ?? []);
+        const map = new Map<string, Rule>(this.getState()?.get<[string, Rule][]>(RuleFactory.RULES_MAP_KEY_ID, []) ?? []);
+        this.cleanOccurrenceData(...map.values());
+        return map;
     }
 
     public getRulesArray(): Rule[] {
-        return this.getState()?.get<Rule[]>(RuleFactory.RULES_ARRAY_KEY_ID) ?? [];
+        const array = this.getState()?.get<Rule[]>(RuleFactory.RULES_ARRAY_KEY_ID) ?? [];
+        this.cleanOccurrenceData(...array);
+        return array;
     }
 
     public getRule(id: string) {
         return this.getRulesMap().get(id);
+    }
+
+    /**
+     * This method is here for backwards compatibility.
+     * @param rules 
+     */
+    private cleanOccurrenceData(...rules: Rule[]) {
+        this.logger.debug(`[EXT] [${reverseMap(this.location)}] Cleaning occurrence data from rules.`);
+        for(const rule of rules) {
+            if(Object.hasOwn(rule, 'occurrences')) {
+                this.logger.info(`[EXT] [${reverseMap(this.location)}] Deleting property 'occurrences' from rule ID: ${rule.id}.`);
+                delete (rule as any).occurrences;
+            }
+            if(Object.hasOwn(rule, 'lineRanges')) {
+                this.logger.info(`[EXT] [${reverseMap(this.location)}] Deleting property 'lineRanges' from rule ID: ${rule.id}.`);
+                delete (rule as any).lineRanges;
+            }
+        }
     }
 
     async disableRules() {

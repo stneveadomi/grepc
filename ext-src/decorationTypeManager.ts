@@ -1,4 +1,4 @@
-import { Subject, Subscription } from "rxjs";
+import { Subject, Subscription, take } from "rxjs";
 import { Rule } from "./rules/rule";
 import { RuleFactory } from "./rules/ruleFactory";
 import * as vscode from 'vscode';
@@ -107,6 +107,9 @@ export class DecorationTypeManager {
         this.logger.debug(`[DTM] Applying decorations to active editor: ${this._activeEditor?.document?.fileName}`);
 		if (!this._activeEditor) {
             this.logger.error(`[DTM] Cannot apply decorations to falsey active editor`, this._activeEditor);
+            enabledRules.forEach(rule => {
+                ruleFactory.pushOccurrences(rule, [], 0);
+            });
 			return;
 		}
 
@@ -260,7 +263,8 @@ export class DecorationTypeManager {
     private _triggerUpdateDecorations = () => {
         this.logger.debug('[DTM] Triggering decoration update to all rule factories.');
         if(!this._activeEditor) {
-            this.logger.error('[DTM] Unable to trigger update decorations as _activeEditor is undefined.');
+            this.logger.error('[DTM] Unable to recast enabled rules as _activeEditor is undefined.');
+            this.pushEmptyOccurrenceData();
             return;
         }
 
@@ -270,6 +274,18 @@ export class DecorationTypeManager {
     };
 
     public triggerUpdateDecorations = debounce(this._triggerUpdateDecorations, 300, {immediate: true});
+
+    private pushEmptyOccurrenceData() {     
+        this._ruleFactories.forEach(ruleFactory => {
+            // take 1 and complete, this should be the last value sent as we shareReplay $enabledRules.
+            ruleFactory.$enabledRules.pipe(
+                take(1)
+            ).subscribe(enabledRules => {
+                enabledRules.forEach(rule => ruleFactory.pushOccurrences(rule, [], 0));
+            });
+            
+        });
+    }
 
     clearAllDecorations() {
         this.logger.debug('[DTM] Clearing all decorations on active editor');

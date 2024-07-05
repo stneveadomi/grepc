@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Rule } from '../models/rule';
+import { OccurrenceData, Rule } from '../models/rule';
 import { BehaviorSubject, Observable, Subject, share, shareReplay } from 'rxjs';
 import { ExtensionService, LogLevel } from './extension.service';
 import { LineRange } from '../models/line-range';
@@ -86,32 +86,11 @@ export class RuleService {
    * Note: This is called by RuleService::pushRules()
    */
   public pushRulesToExtension() {
-    this._clearOccurrenceData();
     this.logger.debug('pushing rule state to extension.');
     this.extensionService.postMessage({
       type: 'rules', 
       mapData: JSON.stringify(Array.from(this._ruleMap.entries())),
       arrayData: JSON.stringify(this._rulesArray)
-    });
-  }
-
-  /**
-   * This is to clear occurance data in the rules array and map.
-   * This data does not need to be stored in the backend.
-   * Note: This is called by RuleService::pushRulesToExtension()
-   */
-  private _clearOccurrenceData() {
-    this._rulesArray.map(rule =>{ 
-      rule.occurrences = 0;
-      rule.lineRanges = [];
-      return rule;
-    });
-
-    this._ruleMap.forEach(rule => {
-      if(rule) {
-        rule.occurrences = 0;
-        rule.lineRanges = [];
-      }
     });
   }
 
@@ -179,7 +158,8 @@ export class RuleService {
   public swapPositions(ruleA: Rule, ruleB: Rule) {
     const ruleAIndex = this._rulesArray.indexOf(ruleA);
     const ruleBIndex = this._rulesArray.indexOf(ruleB);
-    this.logger.debug( `Swapping positions of rule ${ruleA.title}:${ruleAIndex} and rule ${ruleB.title}:${ruleBIndex}`);
+    this.logger.debug(`Swapping positions of rule ${ruleA.title}:${ruleAIndex} and rule ${ruleB.title}:${ruleBIndex}`);
+
     this._rulesArray[ruleAIndex] = ruleB;
     this._rulesArray[ruleBIndex] = ruleA;
     this._rules.next(this._rulesArray);
@@ -199,12 +179,9 @@ export class RuleService {
   }
 
   private _updateOccurrencesHelper(id: string, ranges: LineRange[], occurrences: number) {
-    const rule = this._ruleMap.get(id);
-    if(rule) {
-      rule.occurrences = occurrences;
-      rule.lineRanges = ranges;
-      this.updateRule(rule);
-      this.pushRulesLocally();
+    const ruleComponent = this._ruleIdToComponent.get(id);
+    if(ruleComponent) {
+      ruleComponent.occurrenceData = new OccurrenceData(occurrences, ranges);
     }
   }
 

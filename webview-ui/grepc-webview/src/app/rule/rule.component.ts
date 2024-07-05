@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { OverviewRulerLane, Rule } from '../../models/rule';
+import { OccurrenceData, OverviewRulerLane, Rule } from '../../models/rule';
 import { CommonModule } from '@angular/common';
 import { SliderCheckboxComponent } from '../slider-checkbox/slider-checkbox.component';
 import { ColorPickerModule } from 'ngx-color-picker';
@@ -26,6 +26,8 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
 
   @Input({required: true})
   rule!: Rule;
+
+  occurrenceData: OccurrenceData = new OccurrenceData();
 
   gripperClass = '';
   showEditIcon = false;

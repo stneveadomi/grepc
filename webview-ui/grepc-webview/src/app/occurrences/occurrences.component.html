@@ -19,7 +19,7 @@
         <span class="selection-title">
             Selection:
         </span>
-        {{ occurrenceIndex }} of {{ rule.occurrences }}
+        {{ occurrenceIndex }} of {{ occurrenceData.occurrences }}
     </div>
     <div class="occurrence">
         <div
@@ -62,7 +62,7 @@
         <div class="occurrence-list" 
             [style.display]="isListOpen ? 'block' : 'none'">
             <app-occurrence-display
-                *ngFor="let lineRange of this.rule?.lineRanges ?? []; index as index"
+                *ngFor="let lineRange of this.occurrenceData?.lineRanges ?? []; index as index"
                 [lineRange]="lineRange"
                 [rule]="this.rule"
                 [occurrenceIndex]="index"
