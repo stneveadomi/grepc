@@ -72,6 +72,7 @@ export class DecorationTypeManager {
                 if(this._activeEditor) {
                     this.triggerUpdateDecorations();
                 } else {
+                    this.pushEmptyOccurrenceData();
                     this._ruleToDecorationType.clear();
                 }
             },
@@ -82,8 +83,12 @@ export class DecorationTypeManager {
         vscode.workspace.onDidChangeTextDocument((event: vscode.TextDocumentChangeEvent) => {
                 // Clear old enabled rules to force isDecorationChangeInArray to return true
                 // This forces updateDecorations to call.
-                this._factoryToOldEnabledRules.clear();
-                this.triggerUpdateDecorations();
+                if(event.document === this._activeEditor?.document) {
+                    this.logger.debug(`[DTM] Text document changed, triggering update decorations on ${event.document.fileName} because of reason: ${event.reason}`, event.contentChanges);
+                    this._factoryToOldEnabledRules.clear();
+                    this.triggerUpdateDecorations();
+                }
+
             },
             this._disposables
         );
@@ -285,6 +290,8 @@ export class DecorationTypeManager {
             });
             
         });
+        /* Clear active occurrences as we just pushed empty occurrence data. */
+        this._ruleToActiveOccurrences.clear(); 
     }
 
     clearAllDecorations() {
