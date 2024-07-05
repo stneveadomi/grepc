@@ -9,15 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Introduced a What's New page that shows on any major or minor update.
-- Added more badges to the README.
-- Introduced a walkthrough for grepc.
+- **Drag n Drop rules from workspace to global and vice versa!**
+  - *It was a struggle to get this working, including some crazy race conditions in TS (see the boolean lock in ruleFactory...)*
+  - *In a later story, we can move this to be a proper mutex lock.*
+- **Introduced a What's New page that shows on any major or minor update.**
+- **Introduced a walkthrough for grepc.**
 - Added appropriate support for multi-line regex.
+- Added more badges to the README.
 
 ### Changed
 
 - Updated icon for marketplace and README to appropriate 128x128 and larger icon size.
 - Updated displayName to more accurately reflect what extension does.
+- Refactored previous drag n drop to use HTML drag and drop instead of mouse events. [Obligatory](https://www.quirksmode.org/blog/archives/2009/09/the_html5_drag.html)  
+  - *This took me... a lot of time.*
+
+### Removed
+
+- getRulesArray() does not have side effects anymore :)
 
 ## [1.1.2]
 
