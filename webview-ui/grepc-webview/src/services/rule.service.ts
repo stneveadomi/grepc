@@ -160,12 +160,6 @@ export class RuleService {
     });
   }
 
-  public clearRules() {
-    this._rulesArray = [];
-    this._ruleMap = new Map();
-    this.pushRules();
-  }
-
   /**
    * This removes a rule from local map while triggering $rules update and extension update.
    * @param id rule to be removed
