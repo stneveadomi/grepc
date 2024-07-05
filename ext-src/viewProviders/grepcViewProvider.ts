@@ -17,7 +17,14 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         private readonly _dtManager: DecorationTypeManager,
         private readonly _dragService: DragService,
         private readonly _logger: vscode.LogOutputChannel,
-    ) {}
+    ) {
+        vscode.window.onDidChangeWindowState((event: vscode.WindowState) => {
+            if(event.focused) {
+                this._logger.debug(`[EXT] [${reverseMap(_ruleFactory.location)}] Window focused! Pushing rules to webview.`);
+                this.pushRules();
+            }
+        });
+    }
 
     resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext<unknown>, token: vscode.CancellationToken): void | Thenable<void> {
         this.webview = webviewView.webview;
