@@ -1,19 +1,19 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { OverviewRulerLane, Rule } from '../../models/rule';
+import { OccurrenceData, OverviewRulerLane, Rule } from '../../models/rule';
 import { CommonModule } from '@angular/common';
 import { SliderCheckboxComponent } from '../slider-checkbox/slider-checkbox.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { RuleService } from '../../services/rule.service';
-import { FormBuilder, FormControlStatus, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControlStatus, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime } from 'rxjs';
 import { GlobalStylesService } from '../../services/global-styles.service';
 import { Draggable } from '../../utilities/draggable';
 import { DragService } from '../../services/drag.service';
 import { DecorationPreviewComponent } from '../decoration-preview/decoration-preview.component';
 import { OccurrencesComponent } from '../occurrences/occurrences.component';
-import { LineRange } from '../../models/line-range';
-import { ExtensionService, LogLevel } from '../../services/extension.service';
+import { ExtensionService } from '../../services/extension.service';
 import { CSSValidator, RegularExpressionValidator } from '../../utilities/form-validators';
+import { LoggerService } from '../../services/logger.service';
 
 @Component({
   selector: 'app-rule',
@@ -27,10 +27,13 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   @Input({required: true})
   rule!: Rule;
 
+  occurrenceData: OccurrenceData = new OccurrenceData();
+
   gripperClass = '';
   showEditIcon = false;
   isEditing = false;
   isEditingTitle = false;
+  override dragData: string | undefined = undefined;
   
   ruleForm = this.fb.group({
     title: ['',
@@ -94,6 +97,9 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   @ViewChild('container')
   override containingElement!: ElementRef;
 
+  @ViewChild('container')
+  override droppableElement!: ElementRef;
+
   private STATUS_CHANGE_OBSERVER = {
   next: (status: FormControlStatus) => {
       switch(status) {
@@ -125,15 +131,20 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
     }
   };
 
+  override onDrop: (event: DragEvent) => void = () => {
+    this.drag.disableDraggable();
+  };
+
   constructor(
     private ruleService: RuleService,
     private extensionService: ExtensionService,
     private globalStyles: GlobalStylesService,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
+    logger: LoggerService,
     drag: DragService
   ) {
-    super(drag);
+    super(drag, logger);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -148,6 +159,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   }
 
   ngOnInit() {
+    this.dragData = this.rule.id;
     this.ruleForm.patchValue(this.rule);
     this.ruleForm.statusChanges.pipe(debounceTime(300)).subscribe(this.STATUS_CHANGE_OBSERVER);
     this.ruleService.register(this.rule.id, this);
@@ -163,28 +175,9 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   }
 
   deleteSelf() {
-    this.extensionService.log(LogLevel.DEBUG, `Deleting rule ${this.rule.id}`);
+    this.logger.info(`Deleting rule ${this.rule.id}`);
     this.ruleService.removeRule(this.rule.id!);
     this.ruleService.pushRules();
-  }
-
-  /**
-   * One shot callback for mouseup events. Used in correspondence with mouseDown()
-   * Removes event listener.
-   */
-  mouseUp = () => {
-    this.globalStyles.removeClass('grabbed');
-    this.drag.disableDraggable();
-    document.removeEventListener('mouseup', this.mouseUp);
-  };
-
-  /**
-   * This handles the "gripper" effect of dragging between rows.
-   */
-  mouseDown() {
-    this.globalStyles.addClass('grabbed');
-    this.drag.enableDraggable(this);
-    document.addEventListener('mouseup', this.mouseUp);
   }
 
   updateColorPicker(control: string, value: string) {
@@ -239,12 +232,12 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   updateTitle(override = false) {
     if(this.ruleForm.controls.title.valid || override) {
       try {
-        this.extensionService.log(LogLevel.DEBUG, `updateTitle() - updating rule title from ${this.rule.title} to ${this.ruleForm?.value?.title}`);
+        this.logger.debug(`updateTitle() - updating rule title from ${this.rule.title} to ${this.ruleForm?.value?.title}`);
         this.rule.title = this.ruleForm?.value?.title?.toUpperCase() ?? '';
         this.ruleService.updateRule(this.rule);
         this.ruleService.pushRules();
       } catch (exception) {
-        this.extensionService.log(LogLevel.ERROR, `Unable to update rule: ${exception}`);
+        this.logger.error(`Unable to update rule: ${exception}`);
       }
     }
   }

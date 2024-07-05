@@ -1,6 +1,6 @@
 import { Component, DoCheck, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { RuleService } from '../../services/rule.service';
-import { Rule } from '../../models/rule';
+import { OccurrenceData, Rule } from '../../models/rule';
 import { CommonModule } from '@angular/common';
 import { LineRange } from '../../models/line-range';
 import { OccurrenceDisplayComponent } from '../occurrence-display/occurrence-display.component';
@@ -16,6 +16,9 @@ export class OccurrencesComponent implements DoCheck {
   @Input({required: true})
   rule!: Rule;
 
+  @Input({required: true})
+  occurrenceData!: OccurrenceData;
+
   @Output()
   ruleChange = new EventEmitter<Rule>();
 
@@ -23,7 +26,7 @@ export class OccurrencesComponent implements DoCheck {
   private _oldOccurrences: number | null = null;
 
   // index by 1, eww.
-  occurrenceIndex = !this.rule?.occurrences || this.rule.occurrences === 0 ? 0 : 1;
+  occurrenceIndex = !this.occurrenceData?.occurrences || this.occurrenceData.occurrences === 0 ? 0 : 1;
 
   isListOpen = false;
   
@@ -31,31 +34,31 @@ export class OccurrencesComponent implements DoCheck {
     private ruleService: RuleService,
   ) { }
 
-  selectedLineRange: LineRange | undefined = this.rule?.lineRanges?.[this.occurrenceIndex];
+  selectedLineRange: LineRange | undefined = this.occurrenceData?.lineRanges?.[this.occurrenceIndex];
 
   ngDoCheck(): void {
-    if(this.rule.occurrences !== this._oldOccurrences
-      || JSON.stringify(this.rule.lineRanges) !== JSON.stringify(this._oldLineRanges)
+    if(this.occurrenceData.occurrences !== this._oldOccurrences
+      || JSON.stringify(this.occurrenceData.lineRanges) !== JSON.stringify(this._oldLineRanges)
     ) {
-      this._oldOccurrences = this.rule.occurrences;
-      this._oldLineRanges = this.rule.lineRanges;
-      if(!this.rule?.occurrences || this.rule.occurrences === 0) {
+      this._oldOccurrences = this.occurrenceData.occurrences;
+      this._oldLineRanges = this.occurrenceData.lineRanges;
+      if(!this.occurrenceData?.occurrences || this.occurrenceData.occurrences === 0) {
         this.occurrenceIndex = 0;
         this.selectedLineRange = undefined;
         return;
-      } else if(this.rule?.occurrences < this.occurrenceIndex) {
-        this.occurrenceIndex = this.rule.occurrences;
-        this.selectedLineRange = this.rule?.lineRanges?.[this.occurrenceIndex];
+      } else if(this.occurrenceData?.occurrences < this.occurrenceIndex) {
+        this.occurrenceIndex = this.occurrenceData.occurrences;
+        this.selectedLineRange = this.occurrenceData?.lineRanges?.[this.occurrenceIndex];
         return;
       }
 
       // If occurrences is updated and occurrence index is 0, update to 1.
-      if(this.occurrenceIndex === 0 && this.rule?.occurrences > 0) {
+      if(this.occurrenceIndex === 0 && this.occurrenceData?.occurrences > 0) {
         this.occurrenceIndex = 1;
       }
 
       if(this.occurrenceIndex !== 0) {
-        this.selectedLineRange = this.rule?.lineRanges?.[this.occurrenceIndex - 1];
+        this.selectedLineRange = this.occurrenceData?.lineRanges?.[this.occurrenceIndex - 1];
       }
     }
   }
@@ -89,27 +92,27 @@ export class OccurrencesComponent implements DoCheck {
   }
 
   decrement() {
-    if(!this.rule?.occurrences || this.rule.occurrences === 0) {
+    if(!this.occurrenceData?.occurrences || this.occurrenceData.occurrences === 0) {
       return;
     }
 
     this.occurrenceIndex--;
     if(this.occurrenceIndex <= 0) {
-      this.occurrenceIndex = this.rule.occurrences ?? 1;
+      this.occurrenceIndex = this.occurrenceData.occurrences ?? 1;
     }
-    this.selectedLineRange = this.rule?.lineRanges?.[this.occurrenceIndex - 1];
+    this.selectedLineRange = this.occurrenceData?.lineRanges?.[this.occurrenceIndex - 1];
   }
 
   increment() {
-    if(!this.rule?.occurrences || this.rule.occurrences === 0) {
+    if(!this.occurrenceData?.occurrences || this.occurrenceData.occurrences === 0) {
       return;
     }
     
     this.occurrenceIndex++;
-    if(this.occurrenceIndex > this.rule?.occurrences) {
+    if(this.occurrenceIndex > this.occurrenceData?.occurrences) {
       this.occurrenceIndex = 1;
     }
-    this.selectedLineRange = this.rule?.lineRanges?.[this.occurrenceIndex - 1];
+    this.selectedLineRange = this.occurrenceData?.lineRanges?.[this.occurrenceIndex - 1];
   }
 
   processWheel(event: WheelEvent) {

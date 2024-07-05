@@ -4,7 +4,9 @@
   "version": "1.1.2",
   "jest": {
     "preset": "jest-preset-angular",
-    "setupFilesAfterEnv": ["<rootDir>/src/setup.jest.ts"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setup.jest.ts"
+    ]
   },
   "scripts": {
     "ng": "ng",
@@ -28,6 +30,7 @@
     "@angular/platform-browser": "^18.0.0",
     "@angular/platform-browser-dynamic": "^18.0.0",
     "@angular/router": "^18.0.0",
+    "@types/node": "^20.14.9",
     "@vscode/codicons": "^0.0.35",
     "ngx-color-picker": "^16.0.0",
     "rimraf": "^5.0.5",

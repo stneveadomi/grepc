@@ -1,10 +1,11 @@
-<div #container class="rule-container">
+<div #container [draggable]="isDraggable" class="rule-container">
     <form [formGroup]="ruleForm">
         <header class="rule-header" (click)="toggleExpand($event)">
 
             <div class="rule-header-container">
                 <div
-                    (mousedown)="mouseDown()"
+                    (mousedown)="enableDraggable()"
+                    (mouseup)="disableDraggable()"
                     [ngClass]="this.gripperClass"
                     class="gripper codicon codicon-gripper">
                 </div>
@@ -52,7 +53,7 @@
                 </app-decoration-preview>
                 <div class="center-vertical control-gap">
                     <span *ngIf="this.rule.enabled" class="circle">
-                        {{ this.rule.occurrences }}
+                        {{ this.occurrenceData.occurrences }}
                     </span>
                     <app-slider-checkbox
                         [control]="this.ruleForm.controls['enabled']">
@@ -326,6 +327,7 @@
 
             <app-occurrences
                 *ngIf="rule.enabled"
+                [occurrenceData]="this.occurrenceData"
                 [(rule)]="rule">
             </app-occurrences>
         </div>

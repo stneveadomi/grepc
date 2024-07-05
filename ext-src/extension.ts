@@ -5,6 +5,7 @@ import { CommandManager } from './commands/commandManager';
 import { RuleFactoryMediator } from './rules/ruleFactoryMediator';
 import { LocationState } from './rules/locationState';
 import { WhatsNewWebview } from './viewProviders/whatsNewViewProvider';
+import { DragService } from './dragService';
 
 export function activate(context: vscode.ExtensionContext) {
 	let logger = vscode.window.createOutputChannel('grepc', {log: true});
@@ -26,12 +27,18 @@ export function activate(context: vscode.ExtensionContext) {
 		logger
 	);
 
-	const localWebviewProvider = new GrepcViewProvider("grepc.webview.local", context.extensionUri, localRuleFactory, dtTypeManager, logger);
-	const globalWebviewProvider = new GrepcViewProvider("grepc.webview.global", context.extensionUri, globalRuleFactory, dtTypeManager, logger);
-	const whatsNewWebviewProvider = new WhatsNewWebview("grepc.webview.whats-new", context, logger);
+	const dragService = new DragService(ruleFactoryMediator, logger);
+	
+	const localWebviewProvider = new GrepcViewProvider("grepc.webview.local", context.extensionUri, localRuleFactory, dtTypeManager, dragService, logger);
+	const globalWebviewProvider = new GrepcViewProvider("grepc.webview.global", context.extensionUri, globalRuleFactory, dtTypeManager, dragService, logger);
+	
+	dragService.register(LocationState.LOCAL, localWebviewProvider);
+	dragService.register(LocationState.GLOBAL, globalWebviewProvider);
 	
 	localRuleFactory.grepcProvider = localWebviewProvider;
 	globalRuleFactory.grepcProvider = globalWebviewProvider;
+
+	const whatsNewWebviewProvider = new WhatsNewWebview("grepc.webview.whats-new", context, logger);
 
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(localWebviewProvider.viewType, localWebviewProvider),

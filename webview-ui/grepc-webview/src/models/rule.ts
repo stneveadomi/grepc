@@ -11,9 +11,7 @@ export interface Rule {
 
     overviewRulerLane: OverviewRulerLane | null;
     overviewRulerColor: string | null;
-    
-    occurrences: number | null;
-    lineRanges: LineRange[] | null;
+
     maxOccurrences: number | null;
     
     regularExpression: string | null;
@@ -41,6 +39,16 @@ export interface Rule {
     color: string | null;
     
     isWholeLine: boolean | null;
+}
+
+export class OccurrenceData {
+    occurrences: number | null;
+    lineRanges: LineRange[] | null;
+
+    constructor(occurrences: number | null = 0, lineRanges: LineRange[] | null = []) {
+        this.occurrences = occurrences;
+        this.lineRanges = lineRanges;
+    }
 }
 
 export enum OverviewRulerLane {
@@ -73,8 +81,6 @@ export class Rule implements Rule {
         this.occurrencesExpanded = false;
         this.overviewRulerColor = '';
         this.overviewRulerLane = OverviewRulerLane.Full;
-        this.occurrences = 0;
-        this.lineRanges = [];
         this.maxOccurrences = 1000;
         this.regularExpression = '';
         this.regularExpressionFlags = 'g';

@@ -3,7 +3,7 @@ import { GlobalState } from '../utilities/types';
 import { Rule } from './rule';
 import { Observable, Subject, shareReplay } from 'rxjs';
 import { GrepcViewProvider } from '../viewProviders/grepcViewProvider';
-import { LocationState } from './locationState';
+import { LocationState, reverseMap } from './locationState';
 import { LineRange } from './line-range';
 
 export class RuleFactory {
@@ -19,6 +19,11 @@ export class RuleFactory {
     public static STORED_VERSION_KEY_ID = 'version';
 
     public readonly $enabledRules: Observable<Rule[]> = this._enabledRules.asObservable().pipe(shareReplay(1));
+    /**
+     * locked serves as pseudo mutual exclusion lock to prevent race conditions when we are updating rule state.
+     * This hopefully serves to prevent any strange behavior.
+     */
+    public locked = false;
 
     constructor(
         state: vscode.Memento | GlobalState, 
@@ -44,27 +49,29 @@ export class RuleFactory {
     }
 
     get rulesCount() {
-        return this.rulesArray.length;
+        return this.getRulesArray().length;
     }
 
     get enabledRulesCount() {
-        return this.rulesArray.filter(rule => rule.enabled).length;
+        return this.getRulesArray().filter(rule => rule.enabled).length;
     }
 
-    private get rulesMap(): Map<string, Rule> {
-        return new Map<string, Rule>(this.getState()?.get<[string, Rule][]>(RuleFactory.RULES_MAP_KEY_ID, []) ?? []);
+    /**
+     * Async overwrite rules map into storage.
+     * @param map 
+     */
+    private async setRulesMap(map: Map<string,Rule> | undefined) {
+        this.logger.trace(`[EXT] [${reverseMap(this.location)}] setting rule map of size: ${map?.size}`);
+        await this.getState()?.update(RuleFactory.RULES_MAP_KEY_ID, Array.from(map?.entries() ?? []));
     }
 
-    private set rulesMap(map: Map<string,Rule> | undefined) {
-        this.getState()?.update(RuleFactory.RULES_MAP_KEY_ID, Array.from(map?.entries() ?? []));
-    }
-
-    private get rulesArray(): Rule[] {
-        return this.getState()?.get<Rule[]>(RuleFactory.RULES_ARRAY_KEY_ID) ?? [];
-    }
-
-    private set rulesArray(array: Rule[] | undefined) {
-        this.getState()?.update(RuleFactory.RULES_ARRAY_KEY_ID, array);
+    /**
+     * Async overwrite rules array into storage.
+     * @param array 
+     */
+    private async setRulesArray(array: Rule[] | undefined) {
+        this.logger.trace(`[EXT] [${reverseMap(this.location)}] setting rule array of size: ${array?.length}`);
+        await this.getState()?.update(RuleFactory.RULES_ARRAY_KEY_ID, array);
     }
 
     private getState() {
@@ -74,58 +81,104 @@ export class RuleFactory {
     }
 
     public getRulesMap(): Map<string, Rule> {
-        return this.rulesMap;
+        const map = new Map<string, Rule>(this.getState()?.get<[string, Rule][]>(RuleFactory.RULES_MAP_KEY_ID, []) ?? []);
+        this.cleanOccurrenceData(...map.values());
+        return map;
     }
 
     public getRulesArray(): Rule[] {
-        const rulesArray = this.rulesArray;
-        // Fix with issue #54
-        //console.log('getRulesArray() is called. updating $enabledRules');
-        this._enabledRules.next(rulesArray.filter(rule => rule.enabled));
-        return rulesArray;
+        const array = this.getState()?.get<Rule[]>(RuleFactory.RULES_ARRAY_KEY_ID) ?? [];
+        this.cleanOccurrenceData(...array);
+        return array;
     }
 
-    disableRules() {
-        const rulesArray = this.getRulesArray().map(value => {
-            value.enabled = false;
-            return value;
-        });
-        const rulesMap = this.getRulesMap();
-        const newRulesMap = new Map();
-        rulesMap.forEach((value, key) => {
-            value.enabled = false;
-            newRulesMap.set(key, value);
-        });
-        this.updateRules(newRulesMap, rulesArray);
-    }
-
-    enableRules() {
-        const rulesArray = this.getRulesArray().map(value => {
-            value.enabled = true;
-            return value;
-        });
-        const rulesMap = this.getRulesMap();
-        const newRulesMap = new Map();
-        rulesMap.forEach((value, key) => {
-            value.enabled = true;
-            newRulesMap.set(key, value);
-        });
-        this.updateRules(newRulesMap, rulesArray);
-    }
-
-    public addRule(title: string, regEx: string | undefined, bgColor: string | undefined) {
-        this._grepcProvider?.addRule(title, regEx, bgColor);
+    public getRule(id: string) {
+        return this.getRulesMap().get(id);
     }
 
     /**
+     * This method is here for backwards compatibility.
+     * @param rules 
+     */
+    private cleanOccurrenceData(...rules: Rule[]) {
+        this.logger.debug(`[EXT] [${reverseMap(this.location)}] Cleaning occurrence data from rules.`);
+        for(const rule of rules) {
+            if(Object.hasOwn(rule, 'occurrences')) {
+                this.logger.info(`[EXT] [${reverseMap(this.location)}] Deleting property 'occurrences' from rule ID: ${rule.id}.`);
+                delete (rule as any).occurrences;
+            }
+            if(Object.hasOwn(rule, 'lineRanges')) {
+                this.logger.info(`[EXT] [${reverseMap(this.location)}] Deleting property 'lineRanges' from rule ID: ${rule.id}.`);
+                delete (rule as any).lineRanges;
+            }
+        }
+    }
+
+    async disableRules() {
+        const rulesArray = this.getRulesArray().map(value => {
+            value.enabled = false;
+            return value;
+        });
+        const rulesMap = this.getRulesMap();
+        const newRulesMap = new Map();
+        rulesMap.forEach((value, key) => {
+            value.enabled = false;
+            newRulesMap.set(key, value);
+        });
+        await this.updateRules(newRulesMap, rulesArray);
+    }
+
+    async enableRules() {
+        const rulesArray = this.getRulesArray().map(value => {
+            value.enabled = true;
+            return value;
+        });
+        const rulesMap = this.getRulesMap();
+        const newRulesMap = new Map();
+        rulesMap.forEach((value, key) => {
+            value.enabled = true;
+            newRulesMap.set(key, value);
+        });
+        await this.updateRules(newRulesMap, rulesArray);
+    }
+
+    /**
+     * Adds an existing rule to the current rule factory.
+     * 
+     * This method will recastEnabledRules.
+     * 
+     * Throws exception if id already exists within factory.
+     * @param rule 
+     */
+    public async addRule(rule: Rule) {
+        this.logger.info(`[EXT] [${reverseMap(this.location)}] Adding rule of ID ${rule.id}`);
+        const rulesMap = this.getRulesMap();
+        if(rulesMap.has(rule.id)) {
+            throw Error(`Rule ID: ${rule.id} cannot be added to rule factory due to conflict.`);
+        }
+
+        rulesMap.set(rule.id, rule);
+        const rulesArray = this.getRulesArray();
+        rulesArray.push(rule);
+        await this.updateRules(rulesMap, rulesArray);
+    }
+
+    /**
+     * updateRules will push the arguments into the VS Code storage and recast the enabled rules.
+     * 
      * ** Warning: This will push the rules to webview **
+     * ** Warning: This will overwrite the stored rules **
      * @param rulesMap 
      * @param rulesArray 
      */
-    public updateRules(rulesMap: Map<string, Rule>, rulesArray: Rule[]) {
-        this._enabledRules.next(rulesArray.filter(rule => rule.enabled));
-        this.getState()?.update(RuleFactory.RULES_MAP_KEY_ID, Array.from(rulesMap.entries()));
-        this.getState()?.update(RuleFactory.RULES_ARRAY_KEY_ID, rulesArray);
+    public async updateRules(rulesMap: Map<string, Rule>, rulesArray: Rule[]) {
+        this.logger.debug(`[EXT] [${reverseMap(this.location)}] updateRules: overwrite stored rules and pushing rule to webview. ${rulesMap.size} ${rulesArray.length}`);
+        if(rulesMap.size !== rulesArray.length) {
+            this.logger.error(`[EXT] [${reverseMap(this.location)}] rulesMap ${rulesMap.size} does not match rulesArray ${rulesArray.length}`);
+        }
+        await this.setRulesMap(rulesMap);
+        await this.setRulesArray(rulesArray);
+        this.recastEnabledRules();
         this._grepcProvider?.pushRules();
     }
     /**
@@ -133,10 +186,14 @@ export class RuleFactory {
      * @param rulesMap 
      * @param rulesArray 
      */
-    public updateRulesLocally(rulesMap: Map<string, Rule>, rulesArray: Rule[]) {
-        this._enabledRules.next(rulesArray.filter(rule => rule.enabled));
-        this.getState()?.update(RuleFactory.RULES_MAP_KEY_ID, Array.from(rulesMap.entries()));
-        this.getState()?.update(RuleFactory.RULES_ARRAY_KEY_ID, rulesArray);
+    public async updateRulesLocally(rulesMap: Map<string, Rule>, rulesArray: Rule[]) {
+        this.logger.debug(`[EXT] [${reverseMap(this.location)}] updateRulesLocally: overwrite stored rules. ${rulesMap.size} ${rulesArray.length}`);
+        if(rulesMap.size !== rulesArray.length) {
+            this.logger.error(`[EXT] [${reverseMap(this.location)}] rulesMap ${rulesMap.size} does not match rulesArray ${rulesArray.length}`);
+        }
+        await this.setRulesMap(rulesMap);
+        await this.setRulesArray(rulesArray);
+        this.recastEnabledRules();
     }
 
     /**
@@ -144,33 +201,42 @@ export class RuleFactory {
      * or without triggering a push to the webview. This is ideally only used when decorations are updated.
      * @param rule 
      */
-    public updateRuleWithNoSideEffects(rule: Rule) {
-        let newRules = this.rulesMap;
+    public async updateRuleWithNoSideEffects(rule: Rule) {
+        this.logger.debug(`[EXT] [${reverseMap(this.location)}] updateRuleWithNoSideEffects: overwrite stored rule ${rule.id}`);
+
+        let newRules = this.getRulesMap();
         newRules.set(rule.id, rule);
         // calls setter with logic.
-        this.rulesMap = newRules;
+        await this.setRulesMap(newRules);
         // calls setter with logic
-        this.rulesArray = this.rulesArray.map(value => {
-            if(value.id === rule.id) {
-                return rule;
-            }
-            return value;
-        });
+        await this.setRulesArray(
+            this.getRulesArray().map(value => {
+                if(value.id === rule.id) {
+                    return rule;
+                }
+                return value;
+            })
+        );
 
     }
 
-    public removeRule(id: string) {
-        this.logger.info('Removing rule with id: ' + id);
+    public async removeRule(id: string) {
+        this.logger.info(`[EXT] [${reverseMap(this.location)}] Removing rule with ID: ${id}`);
         const rulesMap = this.getRulesMap();
         const rule = rulesMap.get(id);
         if(!rule) {
-            this.logger.error('Unable to find rule id in rule map to delete: ' + id);
+            this.logger.error(`[EXT] [${reverseMap(this.location)}] Unable to find rule id in rule map to delete: ${id}`);
             return;
         }
-        rulesMap.delete(id);
+
+        if(!rulesMap.delete(id)) {
+            throw new Error(`RulesMap: cannot find ID ${id} to delete.`);
+        }
+        
         const rulesArray = this.getRulesArray().filter(val => val.id !== rule.id);
 
-        this.updateRules(rulesMap, rulesArray);
+        this.logger.debug(`[EXT] [${reverseMap(this.location)}] Rules after removal: map ${rulesMap.size} array ${rulesArray.length}`);
+        await this.updateRules(rulesMap, rulesArray);
     }
 
     pushOccurrences(rule: Rule, ranges: LineRange[], occurrences: number) {
@@ -188,18 +254,26 @@ export class RuleFactory {
      * For more info, see DecorationTypeManager::enableDecorationDetection
      */
     recastEnabledRules() {
-        this.getRulesArray();
+        this._enabledRules.next(this.getRulesArray().filter(rule => rule.enabled));
     }
 
     parseRules(mapData: string, arrayData: string) {
+        this.logger.debug(`[EXT] [${reverseMap(this.location)}] Parsing rules.`);
+        if(this.locked) {
+            this.logger.debug(`[EXT] [${reverseMap(this.location)}] Unable to parse rules as rule factory is locked. Try again later :)`);
+            return;
+        }
+
         try {
-            let parse = JSON.parse(mapData);
-            let rulesMap: Map<string, Rule> = new Map<string, Rule>(parse);
+            let rulesMap: Map<string, Rule> = new Map<string, Rule>(JSON.parse(mapData));
             let rulesArray = JSON.parse(arrayData);
+            if(rulesMap.size !== rulesArray.length) {
+                this.logger.error(`[EXT] [${reverseMap(this.location)}] Rules map and array are incoherent. Throwing error.`);
+            }
             this.updateRulesLocally(rulesMap, rulesArray);
         }
         catch (e) {
-            this.logger.error(`parseRules:: Unable to parse JSON map.`, e, mapData, arrayData);
+            this.logger.error(`[EXT] [${reverseMap(this.location)}] parseRules(): Unable to parse JSON map.`, e, mapData, arrayData);
         }
     };
 }

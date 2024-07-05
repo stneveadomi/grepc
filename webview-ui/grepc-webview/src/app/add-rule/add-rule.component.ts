@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RuleService } from '../../services/rule.service';
 import { Rule } from '../../models/rule';
-import { ExtensionService, LogLevel } from '../../services/extension.service';
+import { LoggerService } from '../../services/logger.service';
 
 @Component({
   selector: 'app-add-rule',
@@ -13,11 +13,11 @@ import { ExtensionService, LogLevel } from '../../services/extension.service';
 export class AddRuleComponent {
   constructor(
     private ruleService: RuleService,
-    private extension: ExtensionService
+    private logger: LoggerService
   ) {}
 
   addEmptyRule() {
-    this.extension.log(LogLevel.INFO, 'Creating new empty rule');
+    this.logger.info('Creating new empty rule');
     this.ruleService.addRule(new Rule(''));
   }
 }
