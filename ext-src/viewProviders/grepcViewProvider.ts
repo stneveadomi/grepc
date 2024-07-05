@@ -3,7 +3,8 @@ import { getNonce } from "../utilities/getNonce";
 import { RuleFactory } from '../rules/ruleFactory';
 import { LineRange } from '../rules/line-range';
 import { DecorationTypeManager } from '../decorationTypeManager';
-import { LocationState } from '../rules/locationState';
+import { LocationState, reverseMap } from '../rules/locationState';
+import { DragService } from '../dragService';
 
 export class GrepcViewProvider implements vscode.WebviewViewProvider {
     public webview: vscode.Webview | null = null;
@@ -14,7 +15,8 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         private readonly _extensionUri: vscode.Uri,
         private readonly _ruleFactory: RuleFactory,
         private readonly _dtManager: DecorationTypeManager,
-        private readonly _logger: vscode.LogOutputChannel
+        private readonly _dragService: DragService,
+        private readonly _logger: vscode.LogOutputChannel,
     ) {}
 
     resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext<unknown>, token: vscode.CancellationToken): void | Thenable<void> {
@@ -22,7 +24,6 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         webviewView.webview.options = {
             // Enable JavaScript in the webview
             enableScripts: true,
-            
             // Restrict the webview to only load resources from the `dist` and `webview-ui/build` directories
             localResourceRoots: [
                 this._extensionUri
@@ -30,7 +31,7 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         };
         this._ruleFactory.$enabledRules.subscribe({next: (enabledRules) => {
             webviewView.badge = {
-                tooltip: `Active ${this._ruleFactory.location === LocationState.GLOBAL ? 'global' : 'local'} rules`,
+                tooltip: `Active ${reverseMap(this._ruleFactory.location)} rules`,
                 value: enabledRules.length
             };
         }});
@@ -39,22 +40,29 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         webviewView.webview.html = this._getWebviewContent(webviewView.webview);
         this._setWebviewMessageListener(webviewView.webview);
         this.pushRules();
+        this._ruleFactory.recastEnabledRules();
     }
 
     pushRules() {
+        this._logger.debug(`[EXT] sending overwrite to rules @ ` + reverseMap(this._ruleFactory.location) + `map: ${this._ruleFactory.getRulesMap().size} array ${this._ruleFactory.getRulesArray().length}`);
         this.webview?.postMessage({
             type: 'rules', 
+            originLocation: this._ruleFactory.location,
             mapData: JSON.stringify(Array.from(this._ruleFactory.getRulesMap().entries())),
             arrayData: JSON.stringify(this._ruleFactory.getRulesArray())
         });
     }
 
-    addRule(title: string, regEx: string | undefined, bgColor: string | undefined) {
+    emitDragStart(originLocation: string | undefined) {
         this.webview?.postMessage({
-            type: 'addRule',
-            title,
-            regEx,
-            bgColor
+            type: "dragstart",
+            originLocation
+        });
+    }
+
+    emitDragEnd() {
+        this.webview?.postMessage({
+            type: "dragend"
         });
     }
 
@@ -125,7 +133,7 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
 
         switch (type) {
           case "rules":
-            this._logger.debug("Received rules event. Updating rules in storage.");
+            this._logger.debug(`[EXT] [${reverseMap(this._ruleFactory.location)}] Received rules event. Updating rules in storage.`);
             this._ruleFactory.parseRules(message?.mapData, message?.arrayData);
             return;
           case "rulesRequest":
@@ -157,6 +165,38 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
                 default:
                     this._logger.trace('[SPA] ' + message.data);
             }
+            return;
+          case "drop":
+            this._logger.debug('[EXT] Received external drop event from origin: ', this._ruleFactory.location);
+            this._dragService.dragData = message.dragData;
+            if(this._dragService.originLocation === this._ruleFactory.location) {
+                /* Return as we do not need to transfer rule */
+                return;
+            }
+            try {
+                this._dragService.transferRule(this._ruleFactory.location);
+            } catch (e) {
+                this._logger.error('[EXT] Drop failed due to the following: ', e);
+                vscode.window.showErrorMessage('Drop failed due to the following: ' + e);
+            }
+            
+            break;
+          case "dragstart":
+            this._logger.debug('[EXT] Drag started from location: ', message.originLocation);
+            this._dragService.originLocation = message.originLocation;
+            this._dragService.emitDragStart(message.originLocation);
+            break;
+          case "dragend":
+            this._logger.debug('[EXT] Drag ended');
+            this._dragService.emitDragEnd();
+            break;
+          case "debug":
+            /* This is used for debugging various operations on the SPA side
+             * Simply postMessage a {type: "debug"} to hit this debugger from the SPA side. */
+            debugger;
+            const data = message.data;
+            console.debug(data);
+            break;
         }
       },
       undefined,

@@ -3,7 +3,7 @@ import { Rule } from "./rules/rule";
 import { RuleFactory } from "./rules/ruleFactory";
 import * as vscode from 'vscode';
 import debounce from "debounce";
-import { LocationState } from "./rules/locationState";
+import { LocationState, reverseMap } from "./rules/locationState";
 import { LineRange } from "./rules/line-range";
 
 export class DecorationTypeManager {
@@ -29,13 +29,13 @@ export class DecorationTypeManager {
 
     enableDecorationDetection() {
 		this._ruleFactories.forEach(ruleFactory => {
-            this.logger.info(`${ruleFactory.rulesCount} ${ruleFactory.location === LocationState.GLOBAL ? 'global' : 'local'} rules loaded.`);
-            this.logger.info(`${ruleFactory.enabledRulesCount} ${ruleFactory.location === LocationState.GLOBAL ? 'global' : 'local'} rules enabled.`);
+            this.logger.info(`${ruleFactory.rulesCount} ${reverseMap(ruleFactory.location)} rules loaded.`);
+            this.logger.info(`${ruleFactory.enabledRulesCount} ${reverseMap(ruleFactory.location)} rules enabled.`);
             this._subscriptions.push(
                 ruleFactory.$enabledRules.subscribe({
                     next: (enabledRules: Rule[]) => {
                         if(this.isDecorationChangeInArray(enabledRules, ruleFactory.location)) {
-                            this.logger.debug('[DTM] Decoration Detection: decoration update is needed!');
+                            this.logger.debug(`[DTM][${reverseMap(ruleFactory.location)}] Decoration Detection: decoration update is needed!`);
                             this.clearDecorationsByFactory(ruleFactory);
                             this.updateDecorations(enabledRules, ruleFactory);
                         } else {
@@ -69,7 +69,7 @@ export class DecorationTypeManager {
 
                 this._factoryToOldEnabledRules.clear();
 
-                if(editor) {
+                if(this._activeEditor) {
                     this.triggerUpdateDecorations();
                 } else {
                     this._ruleToDecorationType.clear();
@@ -98,24 +98,30 @@ export class DecorationTypeManager {
     private lastActiveEditor: vscode.TextEditor | undefined = undefined;
 
     updateDecorations(enabledRules: Rule[], ruleFactory: RuleFactory) {
-        let activeEditor = vscode.window.activeTextEditor;
-        this.logger.debug(`[DTM] Applying decorations to active editor: ${activeEditor?.document?.fileName}`);
-		if (!activeEditor) {
+        if(ruleFactory.locked) {
+            /* This is here to prevent a strange race condition where the map was not properly updated. */
+            this.logger.debug('updateDecorations: ruleFactory is locked for update. Try again next time :)');
+            return;
+        }
+
+        this.logger.debug(`[DTM] Applying decorations to active editor: ${this._activeEditor?.document?.fileName}`);
+		if (!this._activeEditor) {
+            this.logger.error(`[DTM] Cannot apply decorations to falsey active editor`, this._activeEditor);
 			return;
 		}
 
-        if(activeEditor !== this.lastActiveEditor) {
-            this.lastActiveEditor = activeEditor;
+        if(this._activeEditor !== this.lastActiveEditor) {
+            this.lastActiveEditor = this._activeEditor;
             // if a new active editor, clear the decoration type map.
             this._ruleToDecorationType.clear();
         }
 
         this.clearDecorationsByFactory(ruleFactory);
-        this.logger.debug(`[DTM] Applying ${enabledRules.length} rules to document: ${activeEditor.document.fileName}`);
+        this.logger.debug(`[DTM] Applying ${enabledRules.length} rules to document: ${this._activeEditor.document.fileName}`);
         for(let rule of enabledRules) {
             if(rule.excludedFiles) {
                 const exclude = new RegExp(rule.excludedFiles);
-                if(exclude.test(activeEditor.document.fileName)) {
+                if(exclude.test(this._activeEditor.document.fileName)) {
                     this.logger.debug(`[DTM] Decorations not applied for rule ${rule.title}. Document title does match exclude.`);
                     ruleFactory.pushOccurrences(rule, [], 0);
                     continue;
@@ -123,7 +129,7 @@ export class DecorationTypeManager {
             }
             if(rule.includedFiles) {
                 const include = new RegExp(rule.includedFiles);
-                if(!include.test(activeEditor.document.fileName)) {
+                if(!include.test(this._activeEditor.document.fileName)) {
                     this.logger.debug(`[DTM] Decorations not applied for rule ${rule.title}. Document title does not match include.`);
                     ruleFactory.pushOccurrences(rule, [], 0);
                     continue;
@@ -133,18 +139,18 @@ export class DecorationTypeManager {
                 ruleFactory.pushOccurrences(rule, [], 0);
                 continue;
             }
-            this.logger.debug(`[DTM] Applying ${rule.title} to document: ${activeEditor.document.fileName}`);
+            this.logger.debug(`[DTM] Applying ${rule.title} to document: ${this._activeEditor.document.fileName}`);
             try {
                 const regEx = new RegExp(rule.regularExpression, rule.regularExpressionFlags || 'g');
-                const text = activeEditor.document.getText();
+                const text = this._activeEditor.document.getText();
                 const decorations: vscode.DecorationOptions[] = [];
                 const ranges: vscode.Range[] = [];
                 let match;
                 let occurrence = 0;
                 while((match = regEx.exec(text)) && decorations.length < (rule.maxOccurrences ?? 1000)) {
                     occurrence++;
-                    const startPos = activeEditor.document.positionAt(match.index);
-                    const endPos = activeEditor.document.positionAt(match.index + match[0].length);
+                    const startPos = this._activeEditor.document.positionAt(match.index);
+                    const endPos = this._activeEditor.document.positionAt(match.index + match[0].length);
                     const range = new vscode.Range(startPos, endPos);
                     const decoration = { 
                         range: range, 
@@ -159,8 +165,8 @@ export class DecorationTypeManager {
                 this._factoryToDecorations.get(ruleFactory.location)?.add(textEditorDecorationType);
                 this._activeDecorations.set(textEditorDecorationType, decorations);
     
-                this.logger.debug(`[DTM] Applying ${decorations.length} decorations from ${rule.title} to document: ${activeEditor.document.fileName}`);
-                activeEditor.setDecorations(
+                this.logger.debug(`[DTM] Applying ${decorations.length} decorations from ${rule.title} to document: ${this._activeEditor.document.fileName}`);
+                this._activeEditor.setDecorations(
                     textEditorDecorationType, 
                     decorations
                 );
@@ -252,7 +258,12 @@ export class DecorationTypeManager {
     }
 
     private _triggerUpdateDecorations = () => {
-        this.logger.debug('Triggering decoration update');
+        this.logger.debug('[DTM] Triggering decoration update to all rule factories.');
+        if(!this._activeEditor) {
+            this.logger.error('[DTM] Unable to trigger update decorations as _activeEditor is undefined.');
+            return;
+        }
+
         this._ruleFactories.forEach(ruleFactory => {
             ruleFactory.recastEnabledRules();
         });
@@ -261,7 +272,7 @@ export class DecorationTypeManager {
     public triggerUpdateDecorations = debounce(this._triggerUpdateDecorations, 300, {immediate: true});
 
     clearAllDecorations() {
-        this.logger.debug('Clearing all decorations on active editor');
+        this.logger.debug('[DTM] Clearing all decorations on active editor');
         this._decorationSet.forEach(decorationType => {
             this._activeEditor?.setDecorations(
                 decorationType,
@@ -290,7 +301,7 @@ export class DecorationTypeManager {
 
     clearDecorationsByFactory(ruleFactory: RuleFactory) {
         const setDecorations = this._factoryToDecorations.get(ruleFactory.location);
-        this.logger.debug(`[DTM] Clearing decorations on rule factory ${ruleFactory.location === LocationState.GLOBAL ? 'global' : 'local'}`);
+        this.logger.debug(`[DTM] Clearing decorations on rule factory ${reverseMap(ruleFactory.location)}`);
         for(let decorationType of setDecorations ?? []) {
             this._activeEditor?.setDecorations(
                 decorationType,

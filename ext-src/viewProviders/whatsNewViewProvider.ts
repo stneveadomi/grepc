@@ -19,7 +19,7 @@ export class WhatsNewWebview {
     showWebviewIfNewVersion() {
         const storedVersion = this.context.globalState.get(RuleFactory.STORED_VERSION_KEY_ID);
 		if(!storedVersion) {
-            this.logger.info('Stored version is undefined. Showing webview.');
+            this.logger.info('[EXT] Stored version is undefined. Showing webview.');
             this.updateStoredVersion(this.currentVersion);
             this.showWebview();
             return;
@@ -31,14 +31,14 @@ export class WhatsNewWebview {
                 case VersionDiff.MINOR_DIFF:
                     this.updateStoredVersion(this.currentVersion);
                     this.showWebview();
-                    this.logger.info('New version detected. Displaying changelog.');
+                    this.logger.info('[EXT] New version detected. Displaying changelog.');
                     break;
                 case VersionDiff.PATCH_DIFF:
-                    this.logger.info('New patch detected. To see the changelog, run grepc.whatsNew');
+                    this.logger.info('[EXT] New patch detected. To see the changelog, run grepc.whatsNew');
                     break;
                 case VersionDiff.NO_DIFF:
                 default:
-                    this.logger.info('No change in version detected.');
+                    this.logger.info('[EXT] No change in version detected.');
                     break;
             }
         }

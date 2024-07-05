@@ -8,7 +8,7 @@ export class LoggerService {
 
     public location: string | undefined = undefined;
 
-    public printToConsole = true;
+    public printToConsole = false;
 
     constructor(
         protected extension: ExtensionService
@@ -24,27 +24,27 @@ export class LoggerService {
         if(this.printToConsole) {
             console.log(this.getFormattedLocation(), message, ...objs);
         }
-        this.extension.log(LogLevel.INFO, this.getFormattedLocation() + message + objs.join('\n'));
+        this.extension.log(LogLevel.INFO, [this.getFormattedLocation(), message, objs.join('\n')].join(' '));
     }
 
     error(message: string, ...objs: any[]) {
         if(this.printToConsole) {
             console.error(this.getFormattedLocation(), message, objs);
         }
-        this.extension.log(LogLevel.ERROR, this.getFormattedLocation() + message + objs.join('\n'));
+        this.extension.log(LogLevel.ERROR, [this.getFormattedLocation(), message, objs.join('\n')].join(' '));
     }
 
     debug(message: string, ...objs: any[]) {
         if(this.printToConsole) {
             console.debug(this.getFormattedLocation(), message, objs);
         }
-        this.extension.log(LogLevel.DEBUG, this.getFormattedLocation() + message + objs.join('\n'));
+        this.extension.log(LogLevel.DEBUG, [this.getFormattedLocation(), message, objs.join('\n')].join(' '));
     }
 
     warn(message: string, ...objs: any[]) {
         if(this.printToConsole) {
             console.warn(this.getFormattedLocation(), message, objs);
         }
-        this.extension.log(LogLevel.WARN, this.getFormattedLocation() + message + objs.join('\n'));
+        this.extension.log(LogLevel.WARN, [this.getFormattedLocation(), message, objs.join('\n')].join(' '));
     }
 }

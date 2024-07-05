@@ -1,10 +1,11 @@
-<div #container class="rule-container">
+<div #container [draggable]="isDraggable" class="rule-container">
     <form [formGroup]="ruleForm">
         <header class="rule-header" (click)="toggleExpand($event)">
 
             <div class="rule-header-container">
                 <div
-                    (mousedown)="mouseDown()"
+                    (mousedown)="enableDraggable()"
+                    (mouseup)="disableDraggable()"
                     [ngClass]="this.gripperClass"
                     class="gripper codicon codicon-gripper">
                 </div>

@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { Command } from './command';
 import { window } from 'vscode';
-import { LocationState } from '../rules/locationState';
+import { LocationState, reverseMap } from '../rules/locationState';
 import { RuleFactoryMediator } from '../rules/ruleFactoryMediator';
 import { Rule } from '../rules/rule';
 import { WhatsNewWebview } from '../viewProviders/whatsNewViewProvider';
@@ -35,11 +35,17 @@ export class CommandManager {
     
                 let bgColor = await this.showBgColorInput(inputTitle);
     
-                const logMessage = `Creating ${location === LocationState.GLOBAL ? 'global' : 'workspace'} rule "${title}"`;
+                const logMessage = `Creating ${reverseMap(<LocationState> location)} rule "${title}"`;
                 this.logger.info(logMessage);
                 vscode.window.showInformationMessage(logMessage);
+
+                const rule = new Rule(title);
+                rule.regularExpression = regEx ?? '';
+                rule.regularExpressionFlags = 'g';
+                rule.backgroundColor = bgColor ?? '';
+                rule.enabled = true;
     
-                this.rfm.getRuleFactory(<LocationState> location)?.addRule(title, regEx, bgColor);
+                this.rfm.getRuleFactory(<LocationState> location)?.addRule(rule);
             }, this.logger),
             new Command('grepc.addTextRule', async () => {
                 const inputTitle = 'grepc: Add rule from selection';
@@ -64,11 +70,17 @@ export class CommandManager {
                     }
                 }
     
-                const logMessage = `Creating ${location === LocationState.GLOBAL ? 'global' : 'workspace'} rule "${title}"`;
+                const logMessage = `Creating ${reverseMap(<LocationState> location)} rule "${title}"`;
                 this.logger.info(logMessage);
                 vscode.window.showInformationMessage(logMessage);
+                
+                const rule = new Rule(title);
+                rule.regularExpression = regEx ?? '';
+                rule.regularExpressionFlags = 'g';
+                rule.backgroundColor = bgColor ?? '';
+                rule.enabled = true;
     
-                this.rfm.getRuleFactory(<LocationState> location)?.addRule(title, regEx, bgColor);
+                this.rfm.getRuleFactory(<LocationState> location)?.addRule(rule);
             }, this.logger),
             new Command('grepc.deleteRule', async () => {
                 const inputTitle = 'Which rule location do you want to delete from?';

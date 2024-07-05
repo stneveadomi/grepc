@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, Subject, share, shareReplay } from 'rxjs';
 import { ExtensionService, LogLevel } from './extension.service';
 import { LineRange } from '../models/line-range';
 import { RuleComponent } from '../app/rule/rule.component';
+import { LoggerService } from './logger.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,8 @@ export class RuleService {
   private _isAwaitingRulesResolveReject: {resolve: any, reject: any} | undefined = undefined;
 
   constructor(
-    private extensionService: ExtensionService
+    private extensionService: ExtensionService,
+    private logger: LoggerService
   ) { }
   
   public readonly $rules: Observable<Rule[]> = this._rules.asObservable().pipe(shareReplay(1));
@@ -41,16 +43,23 @@ export class RuleService {
     try {
       this._ruleMap = new Map(JSON.parse(mapData));
       this._rulesArray = JSON.parse(arrayData);
+      this.logger.debug('overwriting rule state from extension: ruleMap ' + this._ruleMap.size + ' ruleArray ' + this._rulesArray.length);
+      if(this._ruleMap.size !== this._rulesArray.length) {
+        let str = `Rule Incoherency: rule map size: ${this._ruleMap.size} - rule array size: ${this._rulesArray.length}`;
+        this.logger.error(str);
+        throw new Error(str);
+      }
+      
       this._rules.next(this._rulesArray);
       this._isAwaitingRulesResolveReject?.resolve();
     }
     catch (e) {
-      this.extensionService.log(LogLevel.ERROR, `Unable to parse JSON map in pushRules(). ${e}`);
+      this.logger.error(`Unable to parse JSON map in pushRules(). ${e}`);
       this._isAwaitingRulesResolveReject?.reject();
     }
     finally {
       if(this._isAwaitingRulesResponse) {
-        this.extensionService.log(LogLevel.DEBUG, 'Clearing awaitingRulesResponse');
+        this.logger.debug('Clearing awaitingRulesResponse');
       }
       this._isAwaitingRulesResponse = undefined;
     }
@@ -61,8 +70,8 @@ export class RuleService {
    * This also triggers the $rules observable to cast the current set of rules.
    */
   public pushRules() {
-    this.extensionService.log(LogLevel.DEBUG, 'RuleService::pushRules _rulesArray = ' + JSON.stringify(this._rulesArray));
-    this.extensionService.log(LogLevel.DEBUG, 'Pushing new rules to extension ' + JSON.stringify(Array.from(this._ruleMap.entries())));
+    this.logger.debug('RuleService::pushRules _rulesArray = ' + JSON.stringify(this._rulesArray));
+    this.logger.debug('Pushing new rules to extension ' + JSON.stringify(Array.from(this._ruleMap.entries())));
     this.pushRulesToExtension();
     this._rules.next(this._rulesArray);
   }
@@ -77,6 +86,7 @@ export class RuleService {
    * Note: This is called by RuleService::pushRules()
    */
   public pushRulesToExtension() {
+    this.logger.debug('pushing rule state to extension.');
     this.extensionService.postMessage({
       type: 'rules', 
       mapData: JSON.stringify(Array.from(this._ruleMap.entries())),
@@ -110,12 +120,16 @@ export class RuleService {
     return this._rulesArray;
   }
 
+  public getRule(id: string): Rule | undefined {
+    return this._ruleMap.get(id);
+  }
+
   /**
    * Update the rule in the current map and array.
    * @param rule rule to be updated by id in the map and array
    */
   public updateRule(rule: Rule) {
-    this.extensionService.log(LogLevel.DEBUG, `Updating rule ${rule.title}`);
+    this.logger.debug(`Updating rule ${rule.title}`);
     this._ruleMap.set(rule.id!, rule);
     this._rulesArray = this._rulesArray.map(value => {
       if(value.id === rule.id) {
@@ -123,6 +137,12 @@ export class RuleService {
       }
       return value;
     });
+  }
+
+  public clearRules() {
+    this._rulesArray = [];
+    this._ruleMap = new Map();
+    this.pushRules();
   }
 
   /**
@@ -144,18 +164,19 @@ export class RuleService {
   public swapPositions(ruleA: Rule, ruleB: Rule) {
     const ruleAIndex = this._rulesArray.indexOf(ruleA);
     const ruleBIndex = this._rulesArray.indexOf(ruleB);
-    this.extensionService.log(LogLevel.DEBUG, `Swapping positions of rule ${ruleA.title}:${ruleAIndex} and rule ${ruleB.title}:${ruleBIndex}`);
+    this.logger.debug( `Swapping positions of rule ${ruleA.title}:${ruleAIndex} and rule ${ruleB.title}:${ruleBIndex}`);
     this._rulesArray[ruleAIndex] = ruleB;
     this._rulesArray[ruleBIndex] = ruleA;
     this._rules.next(this._rulesArray);
   }
 
   updateDecorations(id: string, ranges: LineRange[], occurrences: number) {
+    this.logger.debug('updateDecorations: applied to rule ' + id);
     if(this._isAwaitingRulesResponse) {
       this._isAwaitingRulesResponse.then(_ => {
         this._updateOccurrencesHelper(id, ranges, occurrences);
       })
-      .catch((reason) => this.extensionService.log(LogLevel.ERROR, `isAwaitingRulesResponse exception caught. Reason: ${reason}`));
+      .catch((reason) => this.logger.error(`isAwaitingRulesResponse exception caught. Reason: ${reason}`));
     }
     else {
       this._updateOccurrencesHelper(id, ranges, occurrences);

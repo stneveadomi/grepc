@@ -5,5 +5,12 @@ export enum LocationState {
 }
 
 export function reverseMap(location: LocationState) {
-    return location === LocationState.GLOBAL ? 'GLOBAL' : 'LOCAL';
+    switch(location) {
+        case LocationState.LOCAL:
+            return 'LOCAL';
+        case LocationState.GLOBAL:
+            return 'GLOBAL';
+        default:
+            return location;
+    } 
 }
