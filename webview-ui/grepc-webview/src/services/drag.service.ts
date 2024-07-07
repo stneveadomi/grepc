@@ -47,7 +47,6 @@ export class DragService {
         //technically unnecessary.
         this.dragOriginLocation = undefined;
         this.dragData = undefined;
-
         this.disableDraggable();
     };
 
@@ -172,7 +171,7 @@ export class DragService {
     }
 
     /**
-     * This enables mouse event listeners on all draggables. 
+     * This enables mouse event listeners on all draggables other than draggedItem. 
      */
     enableDraggable(draggedItem: Draggable) {
         if (draggedItem instanceof RuleComponent) {
@@ -190,12 +189,15 @@ export class DragService {
     }
 
     /**
-     * This disables mouse event listeners on all draggables.
+     * This disables drag on all registered draggables.
+     * This also clears drag data within the drag service.
      */
     disableDraggable() {
         this._dragged = undefined;
+
         this._registered.forEach(draggable => {
             draggable.disableDropDetection();
+            draggable.disableDraggable();
         });
         
         /* This catches the case of disableDraggable being called externally */

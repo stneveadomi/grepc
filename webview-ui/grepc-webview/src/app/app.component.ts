@@ -80,7 +80,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         const id = event?.data?.id;
         const ranges = event?.data?.ranges;
         const occurences = event?.data?.occurrences;
-        this.ruleService.updateDecorations(id, JSON.parse(ranges), occurences);
+        this.ruleService.updateOccurrenceData(id, JSON.parse(ranges), occurences);
         break; 
       }
       case 'dragstart':

@@ -1,5 +1,6 @@
 import { ElementRef } from "@angular/core";
 import { DragService } from "../services/drag.service";
+import { LoggerService } from "../services/logger.service";
 
 /**
  * Droppable class.
@@ -18,9 +19,9 @@ export abstract class Droppable {
 
     abstract droppableElement: ElementRef;
 
-    onDragOver = (event: DragEvent) => { 
-        this.drag.onTargetDragOver(this);
+    onDragOver = (event: DragEvent) => {
         event.preventDefault();
+        this.drag.onTargetDragOver(this);
     };
 
     abstract onDrop: (event: DragEvent) => void;
@@ -29,7 +30,10 @@ export abstract class Droppable {
         event.preventDefault();
     };
 
-    constructor(protected drag: DragService) {
+    constructor(
+        protected drag: DragService,
+        protected logger: LoggerService
+    ) {
     }
 
     enableDropDetection() {

@@ -166,8 +166,8 @@ export class RuleService {
     this._rules.next(this._rulesArray);
   }
 
-  updateDecorations(id: string, ranges: LineRange[], occurrences: number) {
-    this.logger.debug('updateDecorations: applied to rule ' + id);
+  updateOccurrenceData(id: string, ranges: LineRange[], occurrences: number) {
+    this.logger.debug(`updateOccurrenceData: rule ${id} - occurrences - ${occurrences} `);
     if(this._isAwaitingRulesResponse) {
       this._isAwaitingRulesResponse.then(() => {
         this._updateOccurrencesHelper(id, ranges, occurrences);

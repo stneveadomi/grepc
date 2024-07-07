@@ -5,8 +5,8 @@
             <div class="rule-header-container">
                 <div
                     (mousedown)="enableDraggable()"
-                    (mouseup)="disableDraggable()"
-                    [ngClass]="this.gripperClass"
+                    (mouseup)="disableAllDraggable()"
+                    [ngClass]="isDraggable ? 'grabbed' : ''"
                     class="gripper codicon codicon-gripper">
                 </div>
                 <div

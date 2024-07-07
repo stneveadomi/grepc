@@ -91,10 +91,7 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
     ],
     isWholeLine: [false]
   });
-
-  @ViewChild('container')
-  override containingElement!: ElementRef;
-
+  
   @ViewChild('container')
   override droppableElement!: ElementRef;
 
