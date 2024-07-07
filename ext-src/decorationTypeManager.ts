@@ -126,7 +126,7 @@ export class DecorationTypeManager {
 
         this.clearDecorationsByFactory(ruleFactory);
         this.logger.debug(`[DTM] Applying ${enabledRules.length} rules to document: ${this._activeEditor.document.fileName}`);
-        for(let rule of enabledRules) {
+        for(const rule of enabledRules) {
             if(rule.excludedFiles) {
                 const exclude = new RegExp(rule.excludedFiles);
                 if(exclude.test(this._activeEditor.document.fileName)) {
@@ -201,8 +201,8 @@ export class DecorationTypeManager {
         }
 
         for(let i = 0; i < enabledRules.length; i++) {
-            let element = enabledRules[i];
-            let matchingOldRule = oldEnabledRules[i];
+            const element = enabledRules[i];
+            const matchingOldRule = oldEnabledRules[i];
             if(!matchingOldRule || element.id !== matchingOldRule.id) {
                 // if different ids, than a reorder happened indicating redecorate.
                 return true;
@@ -325,7 +325,7 @@ export class DecorationTypeManager {
     clearDecorationsByFactory(ruleFactory: RuleFactory) {
         const setDecorations = this._factoryToDecorations.get(ruleFactory.location);
         this.logger.debug(`[DTM] Clearing decorations on rule factory ${reverseMap(ruleFactory.location)}`);
-        for(let decorationType of setDecorations ?? []) {
+        for(const decorationType of setDecorations ?? []) {
             this._activeEditor?.setDecorations(
                 decorationType,
                 []
@@ -370,7 +370,7 @@ export class DecorationTypeManager {
     }
 
     jumpToLine(lineRange: LineRange) {
-        let range = this._ruleToActiveOccurrences.get(lineRange?.ruleId)?.[lineRange.index];
+        const range = this._ruleToActiveOccurrences.get(lineRange?.ruleId)?.[lineRange.index];
         if(range) {
             this.logger.debug('[DTM] jumpToLine() - range found, jumping to in editor', this._activeEditor);
             if(this._activeEditor) {

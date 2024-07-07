@@ -1,7 +1,6 @@
-import { AfterViewInit, Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Draggable } from "../utilities/draggable";
 import { RuleService } from "./rule.service";
-import { Rule } from "../models/rule";
 import { RuleComponent } from "../app/rule/rule.component";
 import { ExtensionService } from "./extension.service";
 import { Droppable } from '../utilities/droppable';
@@ -12,7 +11,7 @@ import { LoggerService } from './logger.service';
 
 })
 export class DragService {
-    private _registered: Set<Draggable> = new Set();
+    private _registered = new Set<Draggable>();
     private _dragged: Draggable | undefined = undefined;
     private dragData: string | undefined;
     private _location: string | undefined = undefined;
@@ -57,8 +56,8 @@ export class DragService {
         if (this._dragged instanceof RuleComponent && draggable instanceof RuleComponent) {
             // Cool little conversion to Rule.
             this.ruleService.swapPositions(
-                (<RuleComponent>draggable).rule,
-                (<RuleComponent>this._dragged).rule
+                (draggable as RuleComponent).rule,
+                (this._dragged as RuleComponent).rule
             );
         }
     };

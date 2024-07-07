@@ -105,10 +105,12 @@ export class RuleFactory {
         for(const rule of rules) {
             if(Object.hasOwn(rule, 'occurrences')) {
                 this.logger.info(`[EXT] [${reverseMap(this.location)}] Deleting property 'occurrences' from rule ID: ${rule.id}.`);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 delete (rule as any).occurrences;
             }
             if(Object.hasOwn(rule, 'lineRanges')) {
                 this.logger.info(`[EXT] [${reverseMap(this.location)}] Deleting property 'lineRanges' from rule ID: ${rule.id}.`);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 delete (rule as any).lineRanges;
             }
         }
@@ -204,7 +206,7 @@ export class RuleFactory {
     public async updateRuleWithNoSideEffects(rule: Rule) {
         this.logger.debug(`[EXT] [${reverseMap(this.location)}] updateRuleWithNoSideEffects: overwrite stored rule ${rule.id}`);
 
-        let newRules = this.getRulesMap();
+        const newRules = this.getRulesMap();
         newRules.set(rule.id, rule);
         // calls setter with logic.
         await this.setRulesMap(newRules);
@@ -265,8 +267,8 @@ export class RuleFactory {
         }
 
         try {
-            let rulesMap: Map<string, Rule> = new Map<string, Rule>(JSON.parse(mapData));
-            let rulesArray = JSON.parse(arrayData);
+            const rulesMap: Map<string, Rule> = new Map<string, Rule>(JSON.parse(mapData));
+            const rulesArray = JSON.parse(arrayData);
             if(rulesMap.size !== rulesArray.length) {
                 this.logger.error(`[EXT] [${reverseMap(this.location)}] Rules map and array are incoherent. Throwing error.`);
             }
@@ -275,6 +277,6 @@ export class RuleFactory {
         catch (e) {
             this.logger.error(`[EXT] [${reverseMap(this.location)}] parseRules(): Unable to parse JSON map.`, e, mapData, arrayData);
         }
-    };
+    }
 }
 

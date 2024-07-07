@@ -1,8 +1,8 @@
 <div class="occurrence-text clickable"
     (click)="select()"
-    [style.backgroundColor]="isSelected && occurrenceIndex != -1 
+    [style.backgroundColor]="isSelected && occurrenceIndex !== -1 
         ? 'rgb(73,73,73)' 
-        : isSelected && occurrenceIndex == -1
+        : isSelected && occurrenceIndex === -1
             ? 'var(--vscode-input-background)'
             : 'transparent'"
     *ngIf="lineRange">

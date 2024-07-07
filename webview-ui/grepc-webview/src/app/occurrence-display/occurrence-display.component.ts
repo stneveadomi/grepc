@@ -36,10 +36,10 @@ export class  OccurrenceDisplayComponent {
   isSelected = false;
 
   @Output()
-  onSelect = new EventEmitter<void>();
+  selected = new EventEmitter<void>();
 
   select() {
-    this.onSelect.emit();
+    this.selected.emit();
   }
 
 }

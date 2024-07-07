@@ -13,6 +13,7 @@ export class CommandManager {
     ];
 
     constructor(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         private subscriptions: { dispose(): any; }[],
         private rfm: RuleFactoryMediator,
         private whatsNewWebview: WhatsNewWebview,
@@ -21,19 +22,19 @@ export class CommandManager {
         this.commands = [
             new Command('grepc.addRule', async () => {
                 const inputTitle = 'grepc: Add new rule';
-                let location = await this.showLocationInput(inputTitle);
+                const location = await this.showLocationInput(inputTitle);
                 if(!location) {
                     return;
                 }
     
-                let title = await this.showRuleTitleInput(inputTitle);
+                const title = await this.showRuleTitleInput(inputTitle);
                 if(!title) {
                     return;
                 }
     
-                let regEx = await this.showRegExInput(inputTitle);
+                const regEx = await this.showRegExInput(inputTitle);
     
-                let bgColor = await this.showBgColorInput(inputTitle);
+                const bgColor = await this.showBgColorInput(inputTitle);
     
                 const logMessage = `Creating ${reverseMap(<LocationState> location)} rule "${title}"`;
                 this.logger.info(logMessage);
@@ -49,19 +50,19 @@ export class CommandManager {
             }, this.logger),
             new Command('grepc.addTextRule', async () => {
                 const inputTitle = 'grepc: Add rule from selection';
-                let location = await this.showLocationInput(inputTitle);
+                const location = await this.showLocationInput(inputTitle);
                 if(!location) {
                     return;
                 }
     
-                let title = await this.showRuleTitleInput(inputTitle);
+                const title = await this.showRuleTitleInput(inputTitle);
                 if(!title) {
                     return;
                 }
     
-                let bgColor = await this.showBgColorInput(inputTitle);
+                const bgColor = await this.showBgColorInput(inputTitle);
     
-                let selection = vscode.window.activeTextEditor?.selection;
+                const selection = vscode.window.activeTextEditor?.selection;
                 let regEx = '';
                 if(selection && window.activeTextEditor?.document) {
                     regEx = window.activeTextEditor.document.getText(new vscode.Range(selection.start, selection.end));
@@ -85,14 +86,14 @@ export class CommandManager {
             new Command('grepc.deleteRule', async () => {
                 const inputTitle = 'Which rule location do you want to delete from?';
     
-                let location = await this.showLocationInput(inputTitle);
+                const location = await this.showLocationInput(inputTitle);
                 if(!location) {
                     return;
                 }
     
-                let ruleFactory = this.rfm.getRuleFactory(<LocationState> location);
-                let currentRuleArray = ruleFactory!.getRulesArray();
-                let ruleToBeRemoved = await this.showRulesInput('Select a rule to be deleted:', currentRuleArray);
+                const ruleFactory = this.rfm.getRuleFactory(<LocationState> location);
+                const currentRuleArray = ruleFactory!.getRulesArray();
+                const ruleToBeRemoved = await this.showRulesInput('Select a rule to be deleted:', currentRuleArray);
                 if(!ruleToBeRemoved) {
                     return;
                 }
@@ -101,12 +102,12 @@ export class CommandManager {
                 ruleFactory?.removeRule(ruleToBeRemoved.id);
             }, this.logger),
             new Command('grepc.disableAllRules', () => {
-                for(let ruleFactory of this.rfm.map.values()) {
+                for(const ruleFactory of this.rfm.map.values()) {
                     ruleFactory.disableRules();
                 }
             }, this.logger),
             new Command('grepc.enableAllRules', () => {
-                for(let ruleFactory of this.rfm.map.values()) {
+                for(const ruleFactory of this.rfm.map.values()) {
                     ruleFactory.enableRules();
                 }
             }, this.logger),
@@ -144,7 +145,7 @@ export class CommandManager {
     }
 
     showRulesInput(title: string, rules: Rule[]) {
-        return vscode.window.showQuickPick(rules.map((rule, index, array) => {
+        return vscode.window.showQuickPick(rules.map((rule, index) => {
             return <vscode.QuickPickItem & {id: string}> {
                 label: rule.title,
                 description: `Rule ${index}`,

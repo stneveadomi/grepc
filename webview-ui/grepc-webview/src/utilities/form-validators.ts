@@ -26,7 +26,7 @@ export class CSSValidator {
         if (!propertyValue) { 
             return true; 
         }
-        let option = new Option();
+        const option = new Option();
 
         /* Handle manually all the cases where validation doesn't work as expected? */
         switch(property) {

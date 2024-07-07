@@ -70,11 +70,23 @@
           "options": {
             "buildTarget": "grepc-webview:build"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
   "cli": {
-    "analytics": "78a9ee97-40a9-49b4-9e97-f4a219ca3180"
+    "analytics": "78a9ee97-40a9-49b4-9e97-f4a219ca3180",
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

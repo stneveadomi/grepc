@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SliderCheckboxComponent } from './slider-checkbox.component';
-import { FormControl, FormControlDirective } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SliderCheckboxComponent', () => {
   let component: SliderCheckboxComponent;
   let fixture: ComponentFixture<SliderCheckboxComponent>;
-  let inputControl: FormControl<boolean | null> = new FormControl(false);
+  const inputControl = new FormControl<boolean | null>(false);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

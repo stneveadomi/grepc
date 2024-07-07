@@ -1,9 +1,8 @@
 import * as vscode from 'vscode';
 import { getNonce } from "../utilities/getNonce";
 import { RuleFactory } from '../rules/ruleFactory';
-import { LineRange } from '../rules/line-range';
 import { DecorationTypeManager } from '../decorationTypeManager';
-import { LocationState, reverseMap } from '../rules/locationState';
+import { reverseMap } from '../rules/locationState';
 import { DragService } from '../dragService';
 
 export class GrepcViewProvider implements vscode.WebviewViewProvider {
@@ -26,7 +25,8 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         });
     }
 
-    resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext<unknown>, token: vscode.CancellationToken): void | Thenable<void> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    resolveWebviewView(webviewView: vscode.WebviewView, _context: vscode.WebviewViewResolveContext<unknown>, _token: vscode.CancellationToken): void | Thenable<void> {
         this.webview = webviewView.webview;
         webviewView.webview.options = {
             // Enable JavaScript in the webview
@@ -135,6 +135,7 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
    */
   private _setWebviewMessageListener(webview: vscode.Webview) {
     webview.onDidReceiveMessage(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (message: any) => {
         const type = message.type;
 
@@ -149,12 +150,13 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
             this._logger.debug("Received rulesRequest event. Pushing rules to webview.");
             this.pushRules();
             return;
-          case "jumpToLine":
+          case "jumpToLine": {
             //when a selection is made, a user can jump their cursor to it.
             const lineRange = JSON.parse(message.data);
             this._logger.debug("Jumping to rule at line range:", lineRange);
             this._dtManager.jumpToLine(lineRange);
             return;
+          }
           case "log":
             switch(message.logLevel) {
                 case 'info':
@@ -197,13 +199,15 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
             this._logger.debug('[EXT] Drag ended');
             this._dragService.emitDragEnd();
             break;
-          case "debug":
+          case "debug": {
             /* This is used for debugging various operations on the SPA side
              * Simply postMessage a {type: "debug"} to hit this debugger from the SPA side. */
+            // eslint-disable-next-line no-debugger
             debugger;
             const data = message.data;
             console.debug(data);
             break;
+          }
         }
       },
       undefined,

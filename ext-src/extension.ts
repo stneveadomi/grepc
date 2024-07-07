@@ -8,7 +8,7 @@ import { WhatsNewWebview } from './viewProviders/whatsNewViewProvider';
 import { DragService } from './dragService';
 
 export function activate(context: vscode.ExtensionContext) {
-	let logger = vscode.window.createOutputChannel('grepc', {log: true});
+	const logger = vscode.window.createOutputChannel('grepc', {log: true});
 
 	logger.info('Initializing grepc extension.');
 	const initStart = Date.now();

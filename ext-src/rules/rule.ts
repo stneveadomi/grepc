@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 //     }
 // }
 
-export interface Rule {
+export interface IRule {
     enabled: boolean;
     expanded: boolean;
     decorationExpanded: boolean;
@@ -48,7 +48,7 @@ export interface Rule {
     isWholeLine: boolean;
 }
 
-export class Rule implements Rule {
+export class Rule implements IRule {
 
     constructor(title: string) {
         this.id = uuidv4();
@@ -77,6 +77,31 @@ export class Rule implements Rule {
         this.color = '';
         this.isWholeLine = false;
     }
+    enabled: boolean;
+    expanded: boolean;
+    decorationExpanded: boolean;
+    id: string;
+    title: string;
+    overviewRulerLane: vscode.OverviewRulerLane;
+    overviewRulerColor: string;
+    maxOccurrences: number | null;
+    regularExpression: string;
+    regularExpressionFlags: string;
+    includedFiles: string;
+    excludedFiles: string;
+    backgroundColor: string;
+    outline: string;
+    outlineColor: string;
+    outlineWidth: string;
+    border: string;
+    borderColor: string;
+    borderWidth: string;
+    fontStyle: string;
+    fontWeight: string;
+    textDecoration: string;
+    cursor: string;
+    color: string;
+    isWholeLine: boolean;
 
     valueOf() {
         return this.id;

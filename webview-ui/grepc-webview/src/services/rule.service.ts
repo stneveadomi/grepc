@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OccurrenceData, Rule } from '../models/rule';
-import { BehaviorSubject, Observable, Subject, share, shareReplay } from 'rxjs';
-import { ExtensionService, LogLevel } from './extension.service';
+import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
+import { ExtensionService } from './extension.service';
 import { LineRange } from '../models/line-range';
 import { RuleComponent } from '../app/rule/rule.component';
 import { LoggerService } from './logger.service';
@@ -10,13 +10,14 @@ import { LoggerService } from './logger.service';
   providedIn: 'root'
 })
 export class RuleService {
-  private _ruleMap: Map<string, Rule> = new Map();
+  private _ruleMap = new Map<string, Rule>();
   private _rulesArray: Rule[] = [];
   private _rules = new BehaviorSubject<Rule[]>([]);
 
-  private _ruleIdToComponent: Map<string, RuleComponent> = new Map();
+  private _ruleIdToComponent = new Map<string, RuleComponent>();
 
   private _isAwaitingRulesResponse: Promise<void> | undefined  = undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private _isAwaitingRulesResolveReject: {resolve: any, reject: any} | undefined = undefined;
 
   constructor(
@@ -45,7 +46,7 @@ export class RuleService {
       this._rulesArray = JSON.parse(arrayData);
       this.logger.debug('overwriting rule state from extension: ruleMap ' + this._ruleMap.size + ' ruleArray ' + this._rulesArray.length);
       if(this._ruleMap.size !== this._rulesArray.length) {
-        let str = `Rule Incoherency: rule map size: ${this._ruleMap.size} - rule array size: ${this._rulesArray.length}`;
+        const str = `Rule Incoherency: rule map size: ${this._ruleMap.size} - rule array size: ${this._rulesArray.length}`;
         this.logger.error(str);
         throw new Error(str);
       }
@@ -168,7 +169,7 @@ export class RuleService {
   updateDecorations(id: string, ranges: LineRange[], occurrences: number) {
     this.logger.debug('updateDecorations: applied to rule ' + id);
     if(this._isAwaitingRulesResponse) {
-      this._isAwaitingRulesResponse.then(_ => {
+      this._isAwaitingRulesResponse.then(() => {
         this._updateOccurrencesHelper(id, ranges, occurrences);
       })
       .catch((reason) => this.logger.error(`isAwaitingRulesResponse exception caught. Reason: ${reason}`));

@@ -6,7 +6,7 @@ import { OccurrenceData, Rule } from '../../models/rule';
 describe('OccurrencesComponent', () => {
   let component: OccurrencesComponent;
   let fixture: ComponentFixture<OccurrencesComponent>;
-  let injectedRule: Rule = new Rule(
+  const injectedRule: Rule = new Rule(
     'title'
   );
   const injectedOccurrenceData = new OccurrenceData();

@@ -6,7 +6,7 @@ import { Rule } from '../../models/rule';
 describe('DecorationPreviewComponent', () => {
   let component: DecorationPreviewComponent;
   let fixture: ComponentFixture<DecorationPreviewComponent>;
-  let injectedRule: Rule = new Rule(
+  const injectedRule: Rule = new Rule(
     'title'
   );
 

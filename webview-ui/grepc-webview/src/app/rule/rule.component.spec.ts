@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 describe('RuleComponent', () => {
   let component: RuleComponent;
   let fixture: ComponentFixture<RuleComponent>;
-  let injectedRule: Rule = new Rule(
+  const injectedRule: Rule = new Rule(
     'title'
   );
 

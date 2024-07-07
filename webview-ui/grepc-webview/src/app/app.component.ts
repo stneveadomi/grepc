@@ -1,9 +1,8 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { CommonModule, NgFor } from '@angular/common';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { RuleComponent } from './rule/rule.component';
 import { Rule } from '../models/rule';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RuleService } from '../services/rule.service';
 import { AddRuleComponent } from './add-rule/add-rule.component';
 import { ExtensionService } from '../services/extension.service';
@@ -61,27 +60,29 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostListener("window:message", ['$event'])
   onPostMessage(event: MessageEvent) {
     switch(event?.data?.type) {
-      case 'addRule':
-        let rule = new Rule((<string> event?.data?.title).toUpperCase());
+      case 'addRule': { 
+        const rule = new Rule((event?.data?.title as string).toUpperCase());
         rule.regularExpression = event?.data?.regEx ?? '';
         if(rule.regularExpression) {
           rule.enabled = true;
         }
         rule.backgroundColor = event?.data?.bgColor ?? '';
         this.ruleService.addRule(rule);
-        break;
+        break; 
+      }
       case 'rules':
         this.location = event.data?.originLocation;
         this.extension.location = this.location;
         this.logger.location = event.data?.originLocation;
         this.ruleService.parseRules(event.data?.mapData, event.data?.arrayData);
         break;
-      case 'ruleDecorationUpdate':
+      case 'ruleDecorationUpdate': { 
         const id = event?.data?.id;
         const ranges = event?.data?.ranges;
         const occurences = event?.data?.occurrences;
         this.ruleService.updateDecorations(id, JSON.parse(ranges), occurences);
-        break;
+        break; 
+      }
       case 'dragstart':
         this.dragService.dragOriginLocation = event?.data?.originLocation;
         break;

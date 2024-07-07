@@ -48,29 +48,45 @@
             "id": "openlocalrules",
             "title": "Open local rules",
             "description": "Where are the local rules found?",
-            "media": { "markdown": "media/open-local-rules.md"},
-            "completionEvents": ["onView:grepc.webview.local"]
+            "media": {
+              "markdown": "media/open-local-rules.md"
+            },
+            "completionEvents": [
+              "onView:grepc.webview.local"
+            ]
           },
           {
             "id": "openglobalrules",
             "title": "Open global rules",
             "description": "Where are the global rules found?",
-            "media": { "markdown": "media/open-global-rules.md"},
-            "completionEvents": ["onView:grepc.webview.global"]
+            "media": {
+              "markdown": "media/open-global-rules.md"
+            },
+            "completionEvents": [
+              "onView:grepc.webview.global"
+            ]
           },
           {
             "id": "createablankrule",
             "title": "Create a blank rule",
             "description": "Run the command \"grepc: Create Blank Rule\" to create a new rule or click the button below.\n[Create Blank Rule](command:grepc.addRule)",
-            "media": { "markdown": "media/create-blank-rule.md"},
-            "completionEvents": ["onCommand:grepc.addRule"]
+            "media": {
+              "markdown": "media/create-blank-rule.md"
+            },
+            "completionEvents": [
+              "onCommand:grepc.addRule"
+            ]
           },
           {
             "id": "createrulefromselection",
             "title": "Create a rule from selected text",
             "description": "Select some text and right click to run the command \"grepc: Create Rule From Selection\".",
-            "media": { "markdown": "media/create-rule-from-selection.md"},
-            "completionEvents": ["onCommand:grepc.addRule"]
+            "media": {
+              "markdown": "media/create-rule-from-selection.md"
+            },
+            "completionEvents": [
+              "onCommand:grepc.addRule"
+            ]
           }
         ]
       }
@@ -197,10 +213,11 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "lint": "eslint ext-src --ext-ts",
+    "lint": "eslint ./ext-src/",
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
+    "@eslint/js": "^9.6.0",
     "@types/jest": "^29.5.12",
     "@types/mocha": "^10.0.3",
     "@types/node": "^18.18.13",
@@ -210,11 +227,13 @@
     "@typescript-eslint/parser": "^6.9.0",
     "@vscode/codicons": "^0.0.35",
     "@vscode/test-electron": "^2.3.6",
-    "eslint": "^8.52.0",
+    "eslint": "^9.6.0",
     "glob": "^10.3.10",
+    "globals": "^15.8.0",
     "mocha": "^10.2.0",
     "ts-loader": "^9.5.0",
     "typescript": "^5.2.2",
+    "typescript-eslint": "^7.15.0",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
   },

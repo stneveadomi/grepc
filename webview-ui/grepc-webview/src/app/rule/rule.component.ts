@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { OccurrenceData, OverviewRulerLane, Rule } from '../../models/rule';
 import { CommonModule } from '@angular/common';
 import { SliderCheckboxComponent } from '../slider-checkbox/slider-checkbox.component';
@@ -6,12 +6,10 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { RuleService } from '../../services/rule.service';
 import { FormBuilder, FormControlStatus, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime } from 'rxjs';
-import { GlobalStylesService } from '../../services/global-styles.service';
 import { Draggable } from '../../utilities/draggable';
 import { DragService } from '../../services/drag.service';
 import { DecorationPreviewComponent } from '../decoration-preview/decoration-preview.component';
 import { OccurrencesComponent } from '../occurrences/occurrences.component';
-import { ExtensionService } from '../../services/extension.service';
 import { CSSValidator, RegularExpressionValidator } from '../../utilities/form-validators';
 import { LoggerService } from '../../services/logger.service';
 
@@ -103,12 +101,12 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
   private STATUS_CHANGE_OBSERVER = {
   next: (status: FormControlStatus) => {
       switch(status) {
-        case 'VALID':
+        case 'VALID': { 
           if(this.isEditing || this.isEditingTitle) {
             return;
           }
           
-          let newRule = {
+          const newRule = {
             ...this.rule,
             ...this.ruleForm.value,
           };
@@ -121,8 +119,8 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
           newRule.title = this.rule.title;
           this.ruleService.updateRule(newRule);
           this.ruleService.pushRules();
-          return;
-         
+          return; 
+        } 
         case 'INVALID':
         case 'PENDING':
         case 'DISABLED':
@@ -137,8 +135,6 @@ export class RuleComponent extends Draggable implements OnDestroy, OnChanges, Af
 
   constructor(
     private ruleService: RuleService,
-    private extensionService: ExtensionService,
-    private globalStyles: GlobalStylesService,
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
     logger: LoggerService,

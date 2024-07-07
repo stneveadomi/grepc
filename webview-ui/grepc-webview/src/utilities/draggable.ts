@@ -23,7 +23,7 @@ export abstract class Draggable extends Droppable {
      */
     abstract containingElement: ElementRef;
 
-    protected isDraggable: boolean = false;
+    protected isDraggable = false;
 
     abstract dragData: string | undefined;
 
