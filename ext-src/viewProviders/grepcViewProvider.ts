@@ -171,8 +171,11 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
                 case 'warn':
                     this._logger.warn('[SPA] ' + message.data);
                     break;
-                default:
+                case 'trace':
                     this._logger.trace('[SPA] ' + message.data);
+                    break;
+                default:
+                    this._logger.error('[SPA] ' + message.data);
             }
             return;
           case "drop":

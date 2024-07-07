@@ -47,4 +47,11 @@ export class LoggerService {
         }
         this.extension.log(LogLevel.WARN, [this.getFormattedLocation(), message, objs.join('\n')].join(' '));
     }
+
+    trace(message: string, ...objs: unknown[]) {
+        if(this.printToConsole) {
+            console.log(this.getFormattedLocation(), message, objs);
+        }
+        this.extension.log(LogLevel.TRACE, [this.getFormattedLocation(), message, objs.join('\n')].join(' '));
+    }
 }

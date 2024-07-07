@@ -15,7 +15,7 @@ export class ExtensionService {
 
     postMessage(event: any) {
         if(event?.type !== 'log') {
-            this.log(LogLevel.DEBUG, `[${this.location}] postMessage event to extension of type ${event?.type}`);
+            this.log(LogLevel.DEBUG, `[${this.location?.split(' ')[0]}] postMessage event to extension of type ${event?.type}`);
         }
         this.vscodeApi?.['postMessage'](event);
     }
@@ -33,5 +33,6 @@ export enum LogLevel {
     INFO = 'info',
     DEBUG = 'debug',
     ERROR = 'error',
-    WARN = 'warn'
+    WARN = 'warn',
+    TRACE = 'trace'
 }
