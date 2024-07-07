@@ -1,5 +1,7 @@
 <input
+    tabindex="0"
     [formControl]="control"
+    (keydown.enter)="toggle()"
     type="checkbox" 
     class="slider-checkbox"
     (click)="toggle()"
