@@ -1,12 +1,22 @@
-<header class="occurrences-header clickable" (click)="toggleExpand($event)">
+<header 
+    class="occurrences-header clickable"
+    tabindex="0"
+    (keydown.enter)="toggleExpand($event)"
+    (click)="toggleExpand($event)">
     <div class="rule-header-container clickable">
         <div
+            tabindex="0"
+            (keydown.enter)="toggleExpand($event)"
             (click)="toggleExpand($event)"
             [ngClass]="this.rule.occurrencesExpanded ? 'open' : 'closed'" 
             class="drop-down codicon codicon-chevron-right">
         </div>
 
-        <span class="rule-id clickable" (click)="toggleExpand($event)">
+        <span 
+            class="rule-id clickable"
+            tabindex="0"
+            (keydown.enter)="toggleExpand($event)"
+            (click)="toggleExpand($event)">
             Occurrences
         </span>
     </div>
@@ -24,6 +34,8 @@
     <div class="occurrence">
         <div
             title="Jump to line" 
+            tabindex="0"
+            (keydown.enter)="jumpToLine()"
             (click)="jumpToLine()"
             class="codicon codicon-target">
         </div>
@@ -31,11 +43,15 @@
             (wheel)="processWheel($event)"
             class="up-or-down" >
             <div
-                title="Previous selection" 
+                title="Previous selection"
+                tabindex="0"
+                (keydown.enter)="decrement()"
                 class="codicon codicon-arrow-small-up" 
                 (click)="decrement()"></div>
             <div 
                 title="Next selection"
+                tabindex="0"
+                (keydown.enter)="increment()"
                 class="codicon codicon-arrow-small-down"
                 (click)="increment()"></div>
         </div>
@@ -49,11 +65,15 @@
     </div>
     <div class="occurrences-list-container clickable">
         <div 
+            tabindex="0"
+            (keydown.enter)="toggleListExpand($event)"
             (click)="toggleListExpand($event)"
             class="occurrences-list-header clickable">
             OCCURRENCES LIST
             <div
                 [ngClass]="isListOpen ? 'open' : 'closed'"
+                tabindex="0"
+                (keydown.enter)="toggleListExpand($event)"
                 (click)="toggleListExpand($event)"
                 class="drop-down codicon codicon-chevron-right">
             </div>

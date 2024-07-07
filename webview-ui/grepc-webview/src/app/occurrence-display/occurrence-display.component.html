@@ -1,4 +1,6 @@
 <div class="occurrence-text clickable"
+    tabindex="0"
+    (keydown.enter)="select()"
     (click)="select()"
     [style.backgroundColor]="isSelected && occurrenceIndex !== -1 
         ? 'rgb(73,73,73)' 
