@@ -1,3 +1,4 @@
+import { DecorationTypeManager } from "./decorationTypeManager";
 import { LocationState, reverseMap } from "./rules/locationState";
 import { RuleFactoryMediator } from "./rules/ruleFactoryMediator";
 import { GrepcViewProvider } from "./viewProviders/grepcViewProvider";
@@ -10,6 +11,7 @@ export class DragService {
 
     constructor(
         protected ruleFactoryMediator: RuleFactoryMediator,
+        protected dtTypeManager: DecorationTypeManager,
         protected logger: vscode.LogOutputChannel,
     ) {
     }
@@ -44,6 +46,8 @@ export class DragService {
 
         if(source && target && source !== target && this._dragData) {
             await this.ruleFactoryMediator.moveRule(this._dragData, source, target);
+            // If successful in moving rule, now trigger update decorations.
+            this.dtTypeManager.forceDecorationUpdate();
         } else {
             throw new Error(`source or target webview are undefined or equal.\n SRC: ${reverseMap(source)} TARGET: ${reverseMap(target)} dragData: ${this._dragData}`);
         }

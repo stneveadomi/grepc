@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
 		logger
 	);
 
-	const dragService = new DragService(ruleFactoryMediator, logger);
+	const dragService = new DragService(ruleFactoryMediator, dtTypeManager, logger);
 	
 	const localWebviewProvider = new GrepcViewProvider("grepc.webview.local", context.extensionUri, localRuleFactory, dtTypeManager, dragService, logger);
 	const globalWebviewProvider = new GrepcViewProvider("grepc.webview.global", context.extensionUri, globalRuleFactory, dtTypeManager, dragService, logger);

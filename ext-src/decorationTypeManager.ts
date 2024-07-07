@@ -294,6 +294,20 @@ export class DecorationTypeManager {
         this._ruleToActiveOccurrences.clear(); 
     }
 
+    /**
+     * Manually retrieve latest enabled rules and force decoration update on both rule factories.
+     */
+    public forceDecorationUpdate() {     
+        this._ruleFactories.forEach(ruleFactory => {
+            // take 1 and complete, this should be the last value sent as we shareReplay $enabledRules.
+            ruleFactory.$enabledRules.pipe(
+                take(1)
+            ).subscribe(enabledRules => {
+                this.updateDecorations(enabledRules, ruleFactory);
+            });
+        });
+    }
+
     clearAllDecorations() {
         this.logger.debug('[DTM] Clearing all decorations on active editor');
         this._decorationSet.forEach(decorationType => {

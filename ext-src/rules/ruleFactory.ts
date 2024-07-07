@@ -101,7 +101,6 @@ export class RuleFactory {
      * @param rules 
      */
     private cleanOccurrenceData(...rules: Rule[]) {
-        this.logger.debug(`[EXT] [${reverseMap(this.location)}] Cleaning occurrence data from rules.`);
         for(const rule of rules) {
             if(Object.hasOwn(rule, 'occurrences')) {
                 this.logger.info(`[EXT] [${reverseMap(this.location)}] Deleting property 'occurrences' from rule ID: ${rule.id}.`);
