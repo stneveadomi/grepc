@@ -27,7 +27,6 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         });
     }
 
-    
     resolveWebviewView(
         webviewView: vscode.WebviewView,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
