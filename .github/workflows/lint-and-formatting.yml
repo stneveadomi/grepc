@@ -8,30 +8,27 @@ on:
       branches: [ "main" ]
 
 jobs:
-    eslint:
+    prettier-then-eslint:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
               with:
                 node-version: '20'
-            - run:
-                npm ci
-            - run:
-                npm run lint
-            - run:
-                npm run lint:spa
-    prettier:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
-              with:
-                node-version: '20'
-            - run:
-                npm ci
-            - run:
+            - name: Install dependencies
+              run:
+                npm ci --force
+            - name: Run prettier on extension
+              run:
                 npm run prettier
-            - run:
+            - name: Run prettier on SPA
+              run:
                 npm run prettier:spa
+            - name: Run ESLint on extension
+              run:
+                npm run lint
+            - name: Run ESLint on SPA
+              run:
+                npm run lint:spa
+
         

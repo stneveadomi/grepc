@@ -58,7 +58,7 @@ jobs:
       with:
         node-version: 22.x
         cache: 'npm'
-    - run: npm ci
+    - run: npm ci --force
     - shell: pwsh
       run: echo "target=${{ matrix.platform }}-${{ matrix.arch }}" >> $env:GITHUB_ENV
     - run: npx vsce package --target ${{ env.target }}
