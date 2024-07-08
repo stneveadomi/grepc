@@ -17,8 +17,9 @@ export class RuleService {
     private _ruleIdToComponent = new Map<string, RuleComponent>();
 
     private _isAwaitingRulesResponse: Promise<void> | undefined = undefined;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     private _isAwaitingRulesResolveReject:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         | { resolve: any; reject: any }
         | undefined = undefined;
 

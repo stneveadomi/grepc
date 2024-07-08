@@ -15,6 +15,8 @@
         "watch": "ng build --watch --configuration development",
         "build:production": "ng build --configuration production",
         "lint": "eslint",
+        "prettier:check": "prettier . --check ",
+        "prettier:write": "prettier . --write",
         "test": "jest",
         "test:coverage": "jest --coverage",
         "clean": "rimraf dist",
