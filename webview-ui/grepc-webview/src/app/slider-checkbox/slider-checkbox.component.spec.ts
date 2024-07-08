@@ -5,23 +5,22 @@ import { FormControl } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SliderCheckboxComponent', () => {
-  let component: SliderCheckboxComponent;
-  let fixture: ComponentFixture<SliderCheckboxComponent>;
-  const inputControl = new FormControl<boolean | null>(false);
+    let component: SliderCheckboxComponent;
+    let fixture: ComponentFixture<SliderCheckboxComponent>;
+    const inputControl = new FormControl<boolean | null>(false);
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [SliderCheckboxComponent, BrowserAnimationsModule]
-    })
-    .compileComponents();
-    
-    fixture = TestBed.createComponent(SliderCheckboxComponent);
-    component = fixture.componentInstance;
-    component.control = inputControl;
-    fixture.detectChanges();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [SliderCheckboxComponent, BrowserAnimationsModule],
+        }).compileComponents();
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+        fixture = TestBed.createComponent(SliderCheckboxComponent);
+        component = fixture.componentInstance;
+        component.control = inputControl;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

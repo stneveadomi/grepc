@@ -2,7 +2,9 @@
     gap: 2em;
 }
 
-.rule-body, .decoration-body, .control-body {
+.rule-body,
+.decoration-body,
+.control-body {
     flex-grow: 0;
     flex-shrink: 0;
     display: flex;
@@ -17,7 +19,8 @@
     font-size: 6pt;
 }
 
-.decoration-body, .control-body {
+.decoration-body,
+.control-body {
     padding: 0 2em;
     margin-bottom: 1em;
     gap: 0;
@@ -43,7 +46,7 @@ input[type='text'].rule-id-input {
     font-family: var(--vscode-font-family);
     font-weight: bold;
     font-size: var(--vscode-font-size);
-    
+
     text-transform: uppercase;
 }
 
@@ -59,11 +62,9 @@ input::placeholder {
     gap: 1em;
 }
 
-
 .delete-rule {
     cursor: pointer;
 }
-
 
 .codicon-edit {
     font-size: 10pt;
@@ -83,7 +84,8 @@ input[type='checkbox'] {
     width: 16px;
 }
 
-input, select {
+input,
+select {
     background-color: var(--vscode-input-background);
     color: var(--vscode-input-foreground);
     width: 100%;
@@ -115,7 +117,6 @@ span {
 }
 
 label {
-    
     margin: auto;
     font-size: 11px;
     font-weight: 400;

@@ -2,8 +2,10 @@
 
 @import '../node_modules/@vscode/codicons/dist/codicon.css';
 
-html, body { height: 100%; }
-
+html,
+body {
+    height: 100%;
+}
 
 body {
     padding: 0;
@@ -40,7 +42,9 @@ app-occurrence {
     cursor: pointer;
 }
 
-.rule-header, .decoration-header, .occurrences-header {
+.rule-header,
+.decoration-header,
+.occurrences-header {
     display: flex;
     flex-direction: row;
     text-transform: uppercase;
@@ -71,7 +75,7 @@ app-occurrence {
 
 .drop-down {
     padding: 0 4px;
-    transition: all .1s;
+    transition: all 0.1s;
 }
 
 .block {
@@ -115,7 +119,7 @@ app-occurrence {
     align-content: center;
 }
 
-.codicon[class*=codicon-] {
+.codicon[class*='codicon-'] {
     display: inline-flex;
 }
 
@@ -129,9 +133,10 @@ app-occurrence {
 }
 
 /* Chrome input type number - set spin button to less ugly color */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    filter: invert(99%) sepia(0%) saturate(1668%) hue-rotate(304deg) brightness(108%) contrast(60%);
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+    filter: invert(99%) sepia(0%) saturate(1668%) hue-rotate(304deg)
+        brightness(108%) contrast(60%);
 }
 
 .occurrence-list .occurrence-text {

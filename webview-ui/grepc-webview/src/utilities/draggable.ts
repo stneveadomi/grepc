@@ -1,6 +1,6 @@
-import { DragService } from "../services/drag.service";
-import { Droppable } from "./droppable";
-import { LoggerService } from "../services/logger.service";
+import { DragService } from '../services/drag.service';
+import { Droppable } from './droppable';
+import { LoggerService } from '../services/logger.service';
 
 /**
  * Draggable class.
@@ -9,7 +9,7 @@ import { LoggerService } from "../services/logger.service";
  * ```
  *  class RuleComponent extends Draggable implements OnDestroy
  *  //...
- * 
+ *
  *  ngOnDestroy() {
  *    super.onDestroy();
  *  }
@@ -22,7 +22,7 @@ export abstract class Draggable extends Droppable {
 
     constructor(
         override drag: DragService,
-        override logger: LoggerService
+        override logger: LoggerService,
     ) {
         super(drag, logger);
         this.drag.register(this);

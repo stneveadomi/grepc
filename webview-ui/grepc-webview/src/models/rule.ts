@@ -13,12 +13,12 @@ export interface IRule {
     overviewRulerColor: string | null;
 
     maxOccurrences: number | null;
-    
+
     regularExpression: string | null;
     regularExpressionFlags: string | null;
     includedFiles: string | null;
     excludedFiles: string | null;
-    
+
     backgroundColor: string | null;
 
     outline: string | null;
@@ -35,9 +35,9 @@ export interface IRule {
     textDecoration: string | null;
 
     cursor: string | null;
-    
+
     color: string | null;
-    
+
     isWholeLine: boolean | null;
 }
 
@@ -45,7 +45,10 @@ export class OccurrenceData {
     occurrences: number | null;
     lineRanges: LineRange[] | null;
 
-    constructor(occurrences: number | null = 0, lineRanges: LineRange[] | null = []) {
+    constructor(
+        occurrences: number | null = 0,
+        lineRanges: LineRange[] | null = [],
+    ) {
         this.occurrences = occurrences;
         this.lineRanges = lineRanges;
     }
@@ -67,11 +70,10 @@ export enum OverviewRulerLane {
     /**
      * All lanes of the overview ruler.
      */
-    Full = 7
+    Full = 7,
 }
 
 export class Rule implements IRule {
-
     constructor(title: string) {
         this.id = uuidv4();
         this.title = title;
@@ -100,7 +102,7 @@ export class Rule implements IRule {
         this.color = '';
         this.isWholeLine = false;
     }
-    
+
     enabled: boolean | null;
     expanded: boolean | null;
     decorationExpanded: boolean | null;

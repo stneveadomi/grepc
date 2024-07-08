@@ -41,7 +41,7 @@ app-occurrence-display {
 }
 
 .occurrences-list-header {
-    border: solid 1px rgb(73,73,73);
+    border: solid 1px rgb(73, 73, 73);
     display: inline-flex;
     align-items: center;
     margin-top: 10px;
@@ -53,7 +53,7 @@ app-occurrence-display {
 }
 
 .open {
-    transform: rotate(90deg)
+    transform: rotate(90deg);
 }
 
 .closed {

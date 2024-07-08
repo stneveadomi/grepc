@@ -1,21 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ExtensionService {
-
     public vscodeApi: any;
     public location: string | undefined = undefined;
-  
+
     constructor() {
         this.vscodeApi = (window as any)?.['acquireVsCodeApi']?.();
     }
 
     postMessage(event: any) {
-        if(event?.type !== 'log') {
-            this.log(LogLevel.DEBUG, `[${this.location?.split(' ')[0]}] postMessage event to extension of type ${event?.type}`);
+        if (event?.type !== 'log') {
+            this.log(
+                LogLevel.DEBUG,
+                `[${this.location?.split(' ')[0]}] postMessage event to extension of type ${event?.type}`,
+            );
         }
         this.vscodeApi?.['postMessage'](event);
     }
@@ -24,7 +26,7 @@ export class ExtensionService {
         this.postMessage({
             type: 'log',
             logLevel,
-            data: message
+            data: message,
         });
     }
 }
@@ -34,5 +36,5 @@ export enum LogLevel {
     DEBUG = 'debug',
     ERROR = 'error',
     WARN = 'warn',
-    TRACE = 'trace'
+    TRACE = 'trace',
 }

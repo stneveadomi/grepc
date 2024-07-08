@@ -1,6 +1,6 @@
-import { ElementRef } from "@angular/core";
-import { DragService } from "../services/drag.service";
-import { LoggerService } from "../services/logger.service";
+import { ElementRef } from '@angular/core';
+import { DragService } from '../services/drag.service';
+import { LoggerService } from '../services/logger.service';
 
 /**
  * Droppable class.
@@ -9,14 +9,13 @@ import { LoggerService } from "../services/logger.service";
  * ```
  *  class RuleComponent extends Draggable implements OnDestroy
  *  //...
- * 
+ *
  *  ngOnDestroy() {
  *    super.onDestroy();
  *  }
  * ```
  */
 export abstract class Droppable {
-
     abstract droppableElement: ElementRef;
 
     onDragOver = (event: DragEvent) => {
@@ -32,19 +31,36 @@ export abstract class Droppable {
 
     constructor(
         protected drag: DragService,
-        protected logger: LoggerService
-    ) {
-    }
+        protected logger: LoggerService,
+    ) {}
 
     enableDropDetection() {
-        this.droppableElement?.nativeElement?.addEventListener('dragover', this.onDragOver);
-        this.droppableElement?.nativeElement?.addEventListener('drop', this.onDrop);
-        this.droppableElement?.nativeElement?.addEventListener("dragenter", this.preventDefault);
+        this.droppableElement?.nativeElement?.addEventListener(
+            'dragover',
+            this.onDragOver,
+        );
+        this.droppableElement?.nativeElement?.addEventListener(
+            'drop',
+            this.onDrop,
+        );
+        this.droppableElement?.nativeElement?.addEventListener(
+            'dragenter',
+            this.preventDefault,
+        );
     }
 
     disableDropDetection() {
-        this.droppableElement?.nativeElement?.removeEventListener('dragover', this.onDragOver);
-        this.droppableElement?.nativeElement?.removeEventListener('drop', this.onDrop);
-        this.droppableElement?.nativeElement?.removeEventListener('dragenter', this.preventDefault);
+        this.droppableElement?.nativeElement?.removeEventListener(
+            'dragover',
+            this.onDragOver,
+        );
+        this.droppableElement?.nativeElement?.removeEventListener(
+            'drop',
+            this.onDrop,
+        );
+        this.droppableElement?.nativeElement?.removeEventListener(
+            'dragenter',
+            this.preventDefault,
+        );
     }
 }
