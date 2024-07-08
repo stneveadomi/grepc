@@ -17,7 +17,8 @@
         "lint": "eslint",
         "test": "jest",
         "test:coverage": "jest --coverage",
-        "clean": "rimraf dist"
+        "clean": "rimraf dist",
+        "prepare": "husky install"
     },
     "private": true,
     "dependencies": {
@@ -56,5 +57,9 @@
         "prettier": "3.3.2",
         "typescript": "~5.4.5",
         "typescript-eslint": "8.0.0-alpha.38"
+    },
+    "lint-staged": {
+        "*.js": "eslint --cache --fix",
+        "*.{js,css,md}": "prettier --write"
     }
 }

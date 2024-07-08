@@ -214,7 +214,8 @@
         "watch-tests": "tsc -p . -w --outDir out",
         "pretest": "npm run compile-tests && npm run compile && npm run lint",
         "lint": "eslint ./ext-src/",
-        "test": "node ./out/test/runTest.js"
+        "test": "node ./out/test/runTest.js",
+        "prepare": "husky install"
     },
     "devDependencies": {
         "@eslint/js": "^9.6.0",
@@ -245,5 +246,9 @@
         "rxjs": "^7.8.1",
         "showdown": "^2.1.0",
         "uuid": "^9.0.1"
+    },
+    "lint-staged": {
+        "*.js": "eslint --cache --fix",
+        "*.{js,css,md}": "prettier --write"
     }
 }
