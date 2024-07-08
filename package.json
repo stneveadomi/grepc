@@ -214,7 +214,7 @@
         "watch-tests": "tsc -p . -w --outDir out",
         "pretest": "npm run compile-tests && npm run compile && npm run lint",
         "lint": "eslint ./ext-src/",
-        "lint:spa": "cd webview-ui/grepc-webview && && npm ci --force && eslint .",
+        "lint:spa": "cd webview-ui/grepc-webview && npm ci --force && eslint .",
         "prettier": "prettier . --check",
         "prettier:spa": "cd webview-ui/grepc-webview && prettier . --check",
         "test": "node ./out/test/runTest.js",
