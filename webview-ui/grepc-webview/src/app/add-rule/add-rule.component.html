@@ -1,6 +1,9 @@
 <div class="rule-container">
-    <div (click)="addEmptyRule()" class="rule-header center">
+    <div
+        tabindex="0"
+        (keydown.enter)="addEmptyRule()"
+        (click)="addEmptyRule()"
+        class="rule-header center">
         <div class="codicon codicon-plus"></div>
     </div>
 </div>
-

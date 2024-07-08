@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { LineRange } from './line-range';
 
-export interface Rule {
+export interface IRule {
     enabled: boolean | null;
     expanded: boolean | null;
     decorationExpanded: boolean | null;
@@ -13,12 +13,12 @@ export interface Rule {
     overviewRulerColor: string | null;
 
     maxOccurrences: number | null;
-    
+
     regularExpression: string | null;
     regularExpressionFlags: string | null;
     includedFiles: string | null;
     excludedFiles: string | null;
-    
+
     backgroundColor: string | null;
 
     outline: string | null;
@@ -35,9 +35,9 @@ export interface Rule {
     textDecoration: string | null;
 
     cursor: string | null;
-    
+
     color: string | null;
-    
+
     isWholeLine: boolean | null;
 }
 
@@ -45,7 +45,10 @@ export class OccurrenceData {
     occurrences: number | null;
     lineRanges: LineRange[] | null;
 
-    constructor(occurrences: number | null = 0, lineRanges: LineRange[] | null = []) {
+    constructor(
+        occurrences: number | null = 0,
+        lineRanges: LineRange[] | null = [],
+    ) {
         this.occurrences = occurrences;
         this.lineRanges = lineRanges;
     }
@@ -67,11 +70,10 @@ export enum OverviewRulerLane {
     /**
      * All lanes of the overview ruler.
      */
-    Full = 7
+    Full = 7,
 }
 
-export class Rule implements Rule {
-
+export class Rule implements IRule {
     constructor(title: string) {
         this.id = uuidv4();
         this.title = title;
@@ -100,6 +102,33 @@ export class Rule implements Rule {
         this.color = '';
         this.isWholeLine = false;
     }
+
+    enabled: boolean | null;
+    expanded: boolean | null;
+    decorationExpanded: boolean | null;
+    occurrencesExpanded: boolean | null;
+    id: string;
+    title: string | null;
+    overviewRulerLane: OverviewRulerLane | null;
+    overviewRulerColor: string | null;
+    maxOccurrences: number | null;
+    regularExpression: string | null;
+    regularExpressionFlags: string | null;
+    includedFiles: string | null;
+    excludedFiles: string | null;
+    backgroundColor: string | null;
+    outline: string | null;
+    outlineColor: string | null;
+    outlineWidth: string | null;
+    border: string | null;
+    borderColor: string | null;
+    borderWidth: string | null;
+    fontStyle: string | null;
+    fontWeight: string | null;
+    textDecoration: string | null;
+    cursor: string | null;
+    color: string | null;
+    isWholeLine: boolean | null;
 
     // TODO: If this is a performance bottleneck, improve.
     static equals(a: Rule, b: Rule): boolean {

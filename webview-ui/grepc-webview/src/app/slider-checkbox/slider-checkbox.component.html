@@ -1,6 +1,8 @@
 <input
+    tabindex="0"
     [formControl]="control"
-    type="checkbox" 
+    (keydown.enter)="toggle()"
+    type="checkbox"
     class="slider-checkbox"
     (click)="toggle()"
     [ngClass]="this.control.value ? 'enabled' : 'disabled'"

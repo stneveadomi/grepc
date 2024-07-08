@@ -1,7 +1,6 @@
-import { ElementRef } from "@angular/core";
-import { DragService } from "../services/drag.service";
-import { Droppable } from "./droppable";
-import { LoggerService } from "../services/logger.service";
+import { DragService } from '../services/drag.service';
+import { Droppable } from './droppable';
+import { LoggerService } from '../services/logger.service';
 
 /**
  * Draggable class.
@@ -10,38 +9,44 @@ import { LoggerService } from "../services/logger.service";
  * ```
  *  class RuleComponent extends Draggable implements OnDestroy
  *  //...
- * 
+ *
  *  ngOnDestroy() {
  *    super.onDestroy();
  *  }
  * ```
  */
 export abstract class Draggable extends Droppable {
-    /**
-     * @property containingElement is the DOM element that we want to check for mouseenter events.
-     * This often will be the top-level element of the Draggable component.
-     */
-    abstract containingElement: ElementRef;
-
-    protected isDraggable: boolean = false;
+    protected isDraggable = false;
 
     abstract dragData: string | undefined;
 
     constructor(
         override drag: DragService,
-        protected logger: LoggerService
+        override logger: LoggerService,
     ) {
-        super(drag);
+        super(drag, logger);
         this.drag.register(this);
     }
 
+    /**
+     * Can be called from inner, enables draggable within drag service
+     */
     enableDraggable() {
+        this.logger.trace('enableDraggable()');
         this.isDraggable = true;
         this.drag.enableDraggable(this);
     }
 
+    /**
+     * Only drag service calls this or the component itself.
+     * Will not disable draggable across all registered draggable.
+     */
     disableDraggable() {
+        this.logger.trace('disableDraggable()', this.dragData);
         this.isDraggable = false;
+    }
+
+    disableAllDraggable() {
         this.drag.disableDraggable();
     }
 

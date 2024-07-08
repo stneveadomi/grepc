@@ -1,18 +1,27 @@
-<div class="occurrence-text clickable"
+<div
+    class="occurrence-text clickable"
+    tabindex="0"
+    (keydown.enter)="select()"
     (click)="select()"
-    [style.backgroundColor]="isSelected && occurrenceIndex != -1 
-        ? 'rgb(73,73,73)' 
-        : isSelected && occurrenceIndex == -1
-            ? 'var(--vscode-input-background)'
-            : 'transparent'"
+    [style.backgroundColor]="
+        isSelected && occurrenceIndex !== -1
+            ? 'rgb(73,73,73)'
+            : isSelected && occurrenceIndex === -1
+              ? 'var(--vscode-input-background)'
+              : 'transparent'
+    "
     *ngIf="lineRange">
-    <div class="line"
-        *ngFor="let line of lineRange.lines; let i = index; let isFirst = first; let isLast = last">
-        <div class="line-number">
-            {{ lineRange.lineNumbers[i] + 1 }}:
-        </div>
+    <div
+        class="line"
+        *ngFor="
+            let line of lineRange.lines;
+            let i = index;
+            let isFirst = first;
+            let isLast = last
+        ">
+        <div class="line-number">{{ lineRange.lineNumbers[i] + 1 }}:</div>
         <div>
-            {{ isFirst ? line?.substring(0, lineRange.startIndex) : '' }} 
+            {{ isFirst ? line?.substring(0, lineRange.startIndex) : '' }}
             <span
                 [style.border]="rule.border"
                 [style.borderColor]="rule.borderColor"
@@ -26,13 +35,15 @@
                 [style.outlineWidth]="rule.outlineWidth"
                 [style.backgroundColor]="rule.backgroundColor">
                 {{
-                    isFirst && isLast 
-                        ? line?.substring(lineRange.startIndex, lineRange.endIndexExcl) 
+                    isFirst && isLast
+                        ? line?.substring(
+                              lineRange.startIndex,
+                              lineRange.endIndexExcl
+                          )
                         : line
                 }}
             </span>
             {{ isLast ? line?.substring(lineRange.endIndexExcl) : '' }}
         </div>
     </div>
-
 </div>

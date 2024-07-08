@@ -1,0 +1,34 @@
+
+name: Lint and Formatting
+
+on:
+    push:
+      branches: [ "main" ]
+    pull_request:
+      branches: [ "main" ]
+
+jobs:
+    prettier-then-eslint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                node-version: '20'
+            - name: Install dependencies
+              run:
+                npm ci --force
+            - name: Run prettier on extension
+              run:
+                npm run prettier
+            - name: Run prettier on SPA
+              run:
+                npm run prettier:spa
+            - name: Run ESLint on extension
+              run:
+                npm run lint
+            - name: Run ESLint on SPA
+              run:
+                npm run lint:spa
+
+        

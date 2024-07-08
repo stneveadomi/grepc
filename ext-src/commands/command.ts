@@ -1,7 +1,6 @@
-import { LogOutputChannel } from "vscode";
+import { LogOutputChannel } from 'vscode';
 
 export class Command {
-
     id: string;
     callback: () => void;
 
@@ -12,5 +11,4 @@ export class Command {
             callback();
         };
     }
-
 }

@@ -1,11 +1,6 @@
 <div class="main-container">
-  <app-rule *ngFor="let r of ($rules | async)"
-    [rule]="r">
-  </app-rule>
-  <app-add-rule>
-  </app-add-rule>
+    <app-rule *ngFor="let r of $rules | async" [rule]="r"> </app-rule>
+    <app-add-rule> </app-add-rule>
 </div>
 
-<div #dropOverlay class="drop-overlay" 
-  *ngIf="showDropOverlay()">
-</div>
+<div #dropOverlay class="drop-overlay" *ngIf="showDropOverlay()"></div>

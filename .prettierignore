@@ -1,0 +1,6 @@
+.github
+.vscode
+dist
+media
+node_modules
+webview-ui

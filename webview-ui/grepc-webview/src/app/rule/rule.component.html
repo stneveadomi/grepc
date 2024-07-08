@@ -1,31 +1,40 @@
 <div #container [draggable]="isDraggable" class="rule-container">
     <form [formGroup]="ruleForm">
-        <header class="rule-header" (click)="toggleExpand($event)">
-
+        <header
+            class="rule-header"
+            (click)="toggleExpand($event)"
+            (keydown.enter)="toggleExpand($event)"
+            tabindex="0">
             <div class="rule-header-container">
                 <div
                     (mousedown)="enableDraggable()"
-                    (mouseup)="disableDraggable()"
-                    [ngClass]="this.gripperClass"
-                    class="gripper codicon codicon-gripper">
-                </div>
+                    (mouseup)="disableAllDraggable()"
+                    [ngClass]="isDraggable ? 'grabbed' : ''"
+                    [tabIndex]="0"
+                    class="gripper codicon codicon-gripper"></div>
                 <div
                     (click)="toggleExpand($event)"
-                    [ngClass]="this.rule.expanded ? 'open' : 'closed'" 
-                    class="drop-down codicon codicon-chevron-right">
-                </div>
+                    (keydown.enter)="toggleExpand($event)"
+                    [ngClass]="this.rule.expanded ? 'open' : 'closed'"
+                    tabindex="0"
+                    class="drop-down codicon codicon-chevron-right"></div>
                 <span
                     *ngIf="!this.isEditingTitle"
                     (click)="toggleExpand($event)"
                     (mouseenter)="showEditIcon = true"
                     (mouseleave)="showEditIcon = false"
+                    (focus)="showEditIcon = true"
+                    (blur)="showEditIcon = false"
+                    tabindex="0"
+                    (keydown.enter)="toggleEditTitle()"
                     class="rule-id center-vertical">
-                    {{rule.title}}
+                    {{ rule.title }}
                     <div
+                        tabindex="0"
                         (click)="toggleEditTitle()"
+                        (keydown.enter)="toggleEditTitle()"
                         [ngClass]="this.showEditIcon ? 'editing' : 'fixed'"
-                        class="codicon codicon-edit clickable">
-                    </div>
+                        class="codicon codicon-edit clickable"></div>
                 </span>
                 <div *ngIf="this.isEditingTitle" class="edit-title-controls">
                     <input
@@ -33,24 +42,40 @@
                         type="text"
                         (focus)="onFormFocus()"
                         (blur)="onFormBlur()"
-                        (keydown.enter)="updateTitle(); toggleEditTitle(); showEditIcon = false"
-                        (keydown.escape)="toggleEditTitle(); showEditIcon = false"
-                        formControlName="title"/>
+                        (keydown.enter)="
+                            updateTitle();
+                            toggleEditTitle();
+                            showEditIcon = false
+                        "
+                        (keydown.escape)="
+                            toggleEditTitle(); showEditIcon = false
+                        "
+                        formControlName="title" />
                     <div
+                        (keydown.enter)="
+                            toggleEditTitle(); showEditIcon = false
+                        "
                         (click)="toggleEditTitle(); showEditIcon = false"
-                        class="codicon codicon-close clickable">
-                    </div>
+                        tabindex="0"
+                        class="codicon codicon-close clickable"></div>
                     <div
-                        (click)="updateTitle(); toggleEditTitle(); showEditIcon = false"
-                        class="codicon codicon-check clickable">
-                    </div>
+                        (keydown.enter)="
+                            updateTitle();
+                            toggleEditTitle();
+                            showEditIcon = false
+                        "
+                        (click)="
+                            updateTitle();
+                            toggleEditTitle();
+                            showEditIcon = false
+                        "
+                        tabindex="0"
+                        class="codicon codicon-check clickable"></div>
                 </div>
             </div>
-            
+
             <div class="rule-header-controls center-vertical">
-                <app-decoration-preview
-                    [rule]="rule">
-                </app-decoration-preview>
+                <app-decoration-preview [rule]="rule"> </app-decoration-preview>
                 <div class="center-vertical control-gap">
                     <span *ngIf="this.rule.enabled" class="circle">
                         {{ this.occurrenceData.occurrences }}
@@ -59,240 +84,348 @@
                         [control]="this.ruleForm.controls['enabled']">
                     </app-slider-checkbox>
                 </div>
-                <span 
+                <span
+                    tabindex="0"
                     class="delete-rule codicon codicon-trash"
+                    (keydown.enter)="deleteSelf()"
                     (click)="deleteSelf()">
                 </span>
             </div>
         </header>
-    
-        <div [style.display]="getExpandedStyle(this.rule.expanded)" class="rule-body">
+
+        <div
+            [style.display]="getExpandedStyle(this.rule.expanded)"
+            class="rule-body">
             <div class="control-body">
                 <div class="input-label regex-input-row">
-
                     <div class="regex-column regex-input-column">
-                        <label>
-                            regular expression: <a title="Regex Tester" href="https://regex101.com/" class="codicon codicon-info"></a>
+                        <label [htmlFor]="this.rule.id + '-regularExpression'">
+                            regular expression:
+                            <a
+                                title="Regex Tester"
+                                href="https://regex101.com/"
+                                class="codicon codicon-info"></a>
                         </label>
                         <input
+                            [id]="this.rule.id + '-regularExpression'"
                             formControlName="regularExpression"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" class="regex-input" placeholder="e.g. [0-9]+, apple, (?:apple|orange)"/>
+                            type="text"
+                            class="regex-input"
+                            placeholder="e.g. [0-9]+, apple, (?:apple|orange)" />
                     </div>
                     <div class="regex-column flags-input-column">
-                        <label>
-                            flags: <a title="MDN Reference for Flags" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions#advanced_searching_with_flags" class="codicon codicon-info"></a>
+                        <label
+                            [htmlFor]="
+                                this.rule.id + '-regularExpressionFlags'
+                            ">
+                            flags:
+                            <a
+                                title="MDN Reference for Flags"
+                                href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions#advanced_searching_with_flags"
+                                class="codicon codicon-info"></a>
                         </label>
                         <input
+                            [id]="this.rule.id + '-regularExpressionFlags'"
                             formControlName="regularExpressionFlags"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
                             type="text"
                             class="regex-flags-input"
-                            placeholder="e.g. g, gd, gi, i"/>
+                            placeholder="e.g. g, gd, gi, i" />
                     </div>
                 </div>
                 <div class="input-label">
-                    <label>
+                    <label [htmlFor]="this.rule.id + '-includedFiles'">
                         included files:
                     </label>
                     <input
+                        [id]="this.rule.id + '-includedFiles'"
                         formControlName="includedFiles"
                         (focus)="onFormFocus()"
                         (blur)="onFormBlur()"
-                        type="text" name="include-files" placeholder="e.g. .*\.java, Test.java, py"/>
+                        type="text"
+                        name="include-files"
+                        placeholder="e.g. .*\.java, Test.java, py" />
                 </div>
                 <div class="input-label">
-                    <label>
+                    <label [htmlFor]="this.rule.id + '-excludedFiles'">
                         excluded files:
                     </label>
                     <input
+                        [id]="this.rule.id + '-excludedFiles'"
                         formControlName="excludedFiles"
                         (focus)="onFormFocus()"
                         (blur)="onFormBlur()"
-                        type="text" name="exclude-files" placeholder="e.g. java, .*\.component\.*"/>
+                        type="text"
+                        name="exclude-files"
+                        placeholder="e.g. java, .*\.component\.*" />
                 </div>
             </div>
 
-    
             <div class="decoration-container">
-                <header class="decoration-header clickable" (click)="toggleDecorationExpanded($event)">
+                <header
+                    class="decoration-header clickable"
+                    tabindex="0"
+                    (keydown.enter)="toggleDecorationExpanded($event)"
+                    (click)="toggleDecorationExpanded($event)">
                     <div class="rule-header-container">
                         <div
+                            tabindex="0"
+                            (keydown.enter)="toggleDecorationExpanded($event)"
                             (click)="toggleDecorationExpanded($event)"
-                            [ngClass]="this.rule.decorationExpanded ? 'open' : 'closed'" 
-                            class="drop-down codicon codicon-chevron-right">
-                        </div>
-        
-                        <span class="rule-id" (click)="toggleDecorationExpanded($event)">
+                            [ngClass]="
+                                this.rule.decorationExpanded ? 'open' : 'closed'
+                            "
+                            class="drop-down codicon codicon-chevron-right"></div>
+
+                        <span
+                            class="rule-id"
+                            tabindex="0"
+                            (keydown.enter)="toggleDecorationExpanded($event)"
+                            (click)="toggleDecorationExpanded($event)">
                             Decorations
                         </span>
                     </div>
-        
                 </header>
-        
-                <div class="decoration-body" [style.display]="getExpandedStyle(this.rule.decorationExpanded)">
+
+                <div
+                    class="decoration-body"
+                    [style.display]="
+                        getExpandedStyle(this.rule.decorationExpanded)
+                    ">
                     <div class="block">
-                        <label>
-                            background color: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/background-color" class="codicon codicon-info"></a>
-                        </label>   
+                        <label [htmlFor]="this.rule.id + '-backgroundColor'">
+                            background color:
+                            <a
+                                title="MDN Reference"
+                                href="https://developer.mozilla.org/en-US/docs/Web/CSS/background-color"
+                                class="codicon codicon-info"></a>
+                        </label>
                         <input
+                            [id]="this.rule.id + '-backgroundColor'"
                             formControlName="backgroundColor"
                             [value]="this.rule.backgroundColor"
                             [style.background]="this.rule.backgroundColor"
                             [(colorPicker)]="this.rule.backgroundColor!"
                             [cpPosition]="'bottom'"
-                            (colorPickerSelect)="updateColorPicker('backgroundColor', $event)"/>
+                            (colorPickerSelect)="
+                                updateColorPicker('backgroundColor', $event)
+                            " />
                     </div>
                     <div class="input-label">
-                        <label>
-                            color: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/color" class="codicon codicon-info"></a>
+                        <label [htmlFor]="this.rule.id + '-color'">
+                            color:
+                            <a
+                                title="MDN Reference"
+                                href="https://developer.mozilla.org/en-US/docs/Web/CSS/color"
+                                class="codicon codicon-info"></a>
                         </label>
-                        <input 
+                        <input
+                            [id]="this.rule.id + '-color'"
                             formControlName="color"
-                            type="text" name="include-files" 
+                            type="text"
+                            name="include-files"
                             [value]="this.rule.color"
                             [style.background]="this.rule.color"
                             [(colorPicker)]="this.rule.color!"
                             [cpPosition]="'bottom'"
-                            (colorPickerSelect)="updateColorPicker('color', $event)"/>
+                            (colorPickerSelect)="
+                                updateColorPicker('color', $event)
+                            " />
                     </div>
                     <div class="input-label">
-                        <label>
-                            outline: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/outline" class="codicon codicon-info"></a>
+                        <label [htmlFor]="this.rule.id + '-outline'">
+                            outline:
+                            <a
+                                title="MDN Reference"
+                                href="https://developer.mozilla.org/en-US/docs/Web/CSS/outline"
+                                class="codicon codicon-info"></a>
                         </label>
                         <input
-                            formControlName="outline" 
+                            [id]="this.rule.id + '-outline'"
+                            formControlName="outline"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="outline" 
-                            placeholder="e.g. solid 1px blue, dashed, dotted, double"/>
+                            type="text"
+                            name="outline"
+                            placeholder="e.g. solid 1px blue, dashed, dotted, double" />
                     </div>
                     <div class="input-label">
-                        <label>
+                        <label [htmlFor]="this.rule.id + '-outlineColor'">
                             outline color:
                         </label>
                         <input
-                            formControlName="outlineColor" 
-                            type="text" name="include-files"
+                            [id]="this.rule.id + '-outlineColor'"
+                            formControlName="outlineColor"
+                            type="text"
+                            name="include-files"
                             [value]="this.rule.outlineColor"
                             [style.background]="this.rule.outlineColor"
                             [(colorPicker)]="this.rule.outlineColor!"
-                            (colorPickerSelect)="updateColorPicker('outlineColor', $event)"/>
+                            (colorPickerSelect)="
+                                updateColorPicker('outlineColor', $event)
+                            " />
                     </div>
                     <div class="input-label">
-                        <label>
+                        <label [htmlFor]="this.rule.id + '-outlineWidth'">
                             outline width:
                         </label>
                         <input
+                            [id]="this.rule.id + '-outlineWidth'"
                             formControlName="outlineWidth"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="include-files" 
+                            type="text"
+                            name="include-files"
                             placeholder="e.g. 1px, 2em, 1rem"
-                            [(value)]="this.rule.outlineWidth"/>
-                    </div>            
+                            [(value)]="this.rule.outlineWidth" />
+                    </div>
                     <div class="input-label">
-                        <label>
-                            border: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/border" class="codicon codicon-info"></a>
+                        <label [htmlFor]="this.rule.id + '-border'">
+                            border:
+                            <a
+                                title="MDN Reference"
+                                href="https://developer.mozilla.org/en-US/docs/Web/CSS/border"
+                                class="codicon codicon-info"></a>
                         </label>
-                        <input 
+                        <input
+                            [id]="this.rule.id + '-border'"
                             formControlName="border"
                             title="You can either put the entire border value in this input or for organization, across the following fields."
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="border" 
+                            type="text"
+                            name="border"
                             placeholder="e.g. solid 1px red, ridge"
-                            [(value)]="this.rule.border"/>
-                    </div>     
+                            [(value)]="this.rule.border" />
+                    </div>
                     <div class="input-label">
-                        <label>
+                        <label [htmlFor]="this.rule.id + '-borderColor'">
                             border color:
                         </label>
-                        <input 
+                        <input
+                            [id]="this.rule.id + '-borderColor'"
                             formControlName="borderColor"
-                            type="text" name="border-color"
+                            type="text"
+                            name="border-color"
                             [value]="this.rule.borderColor"
                             [style.background]="this.rule.borderColor"
                             [(colorPicker)]="this.rule.borderColor!"
-                            (colorPickerSelect)="updateColorPicker('borderColor', $event)"/>
-                    </div>  
+                            (colorPickerSelect)="
+                                updateColorPicker('borderColor', $event)
+                            " />
+                    </div>
                     <div class="input-label">
-                        <label>
+                        <label [htmlFor]="this.rule.id + '-borderWidth'">
                             border width:
                         </label>
-                        <input 
+                        <input
+                            [id]="this.rule.id + '-borderWidth'"
                             formControlName="borderWidth"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="border-width" placeholder="e.g. 1px, 2em, 3rem"
-                            [(value)]="this.rule.borderWidth"/>
-                    </div>         
+                            type="text"
+                            name="border-width"
+                            placeholder="e.g. 1px, 2em, 3rem"
+                            [(value)]="this.rule.borderWidth" />
+                    </div>
                     <div class="input-label">
-                        <label>
-                            font style: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-style" class="codicon codicon-info"></a>
+                        <label [htmlFor]="this.rule.id + '-fontStyle'">
+                            font style:
+                            <a
+                                title="MDN Reference"
+                                href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-style"
+                                class="codicon codicon-info"></a>
                         </label>
                         <input
+                            [id]="this.rule.id + '-fontStyle'"
                             formControlName="fontStyle"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="font-style" placeholder="e.g. normal, italic, oblique"
-                            [(value)]="this.rule.fontStyle"/>
+                            type="text"
+                            name="font-style"
+                            placeholder="e.g. normal, italic, oblique"
+                            [(value)]="this.rule.fontStyle" />
                     </div>
                     <div class="input-label">
-                        <label>
-                            font weight: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight" class="codicon codicon-info"></a>
+                        <label [htmlFor]="this.rule.id + '-fontWeight'">
+                            font weight:
+                            <a
+                                title="MDN Reference"
+                                href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight"
+                                class="codicon codicon-info"></a>
                         </label>
                         <input
+                            [id]="this.rule.id + '-fontWeight'"
                             formControlName="fontWeight"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="font-weight" placeholder="(100-900) e.g. 700, bold"
-                            [(value)]="this.rule.fontWeight"/>
-                    </div>                
+                            type="text"
+                            name="font-weight"
+                            placeholder="(100-900) e.g. 700, bold"
+                            [(value)]="this.rule.fontWeight" />
+                    </div>
                     <div class="input-label">
-                        <label>
-                            text decoration: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration" class="codicon codicon-info"></a>
+                        <label [htmlFor]="this.rule.id + '-textDecoration'">
+                            text decoration:
+                            <a
+                                title="MDN Reference"
+                                href="https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration"
+                                class="codicon codicon-info"></a>
                         </label>
-                        <input 
+                        <input
+                            [id]="this.rule.id + '-textDecoration'"
                             formControlName="textDecoration"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="text-decoration"
+                            type="text"
+                            name="text-decoration"
                             placeholder="e.g. dashed, double, wavy, underline"
-                            [(value)]="this.rule.textDecoration"/>
-                    </div>            
+                            [(value)]="this.rule.textDecoration" />
+                    </div>
                     <div class="input-label">
-                        <label>
-                            cursor: <a title="MDN Reference" href="https://developer.mozilla.org/en-US/docs/Web/CSS/cursor" class="codicon codicon-info"></a>
+                        <label [htmlFor]="this.rule.id + '-cursor'">
+                            cursor:
+                            <a
+                                title="MDN Reference"
+                                href="https://developer.mozilla.org/en-US/docs/Web/CSS/cursor"
+                                class="codicon codicon-info"></a>
                         </label>
-                        <input 
+                        <input
+                            [id]="this.rule.id + '-cursor'"
                             formControlName="cursor"
                             (focus)="onFormFocus()"
                             (blur)="onFormBlur()"
-                            type="text" name="cursor" placeholder="e.g. pointer, grab, text, crosshair"
-                            [(value)]="this.rule.cursor"/>
+                            type="text"
+                            name="cursor"
+                            placeholder="e.g. pointer, grab, text, crosshair"
+                            [(value)]="this.rule.cursor" />
                     </div>
                     <div class="input-label">
-                        <label>
+                        <label [htmlFor]="this.rule.id + '-overviewRuleColor'">
                             overview ruler color:
                         </label>
-                        <input 
+                        <input
+                            [id]="this.rule.id + '-overviewRuleColor'"
                             formControlName="overviewRulerColor"
-                            type="text" 
-                            name="overview-ruler-color" 
+                            type="text"
+                            name="overview-ruler-color"
                             [value]="this.rule.overviewRulerColor"
                             [style.background]="this.rule.overviewRulerColor"
                             [(colorPicker)]="this.rule.overviewRulerColor!"
                             [cpPosition]="'top'"
-                            (colorPickerSelect)="updateColorPicker('overviewRulerColor', $event)"/>
+                            (colorPickerSelect)="
+                                updateColorPicker('overviewRulerColor', $event)
+                            " />
                     </div>
                     <div class="input-label">
-                        <label>
+                        <label [htmlFor]="this.rule.id + '-overviewRulerLane'">
                             overview ruler lane:
                         </label>
                         <select
+                            [id]="this.rule.id + '-overviewRulerLane'"
                             (blur)="onFormBlur()"
                             formControlName="overviewRulerLane">
                             <option value="7" selected>Full</option>
@@ -302,26 +435,30 @@
                         </select>
                     </div>
                     <div class="input-label">
-                        <label>
+                        <label [htmlFor]="this.rule.id + '-maxOccurrences'">
                             max occurrences:
                         </label>
-                        <input 
+                        <input
+                            [id]="this.rule.id + '-maxOccurrences'"
                             formControlName="maxOccurrences"
                             title="This field limits the max amount of regex matches within a file for performance reasons. Increase at your own risk."
                             (blur)="onFormBlur()"
                             (focus)="onFormFocus()"
-                            type="number" name="max-occurrences" placeholder="e.g. 1000"
-                            />
+                            type="number"
+                            name="max-occurrences"
+                            placeholder="e.g. 1000" />
                     </div>
                     <div class="input-checkbox">
-                        <label>
+                        <label [htmlFor]="this.rule.id + '-isWholeLine'">
                             Is Whole Line?
                         </label>
-                        <input type="checkbox"
+                        <input
+                            [id]="this.rule.id + '-isWholeLine'"
+                            type="checkbox"
                             title="Check this to have the decoration apply for the whole line."
                             (blur)="onFormBlur()"
-                            formControlName="isWholeLine"/>
-                    </div>    
+                            formControlName="isWholeLine" />
+                    </div>
                 </div>
             </div>
 

@@ -1,4 +1,3 @@
-
 export interface LineRange {
     ruleId: string;
     index: number;
@@ -7,6 +6,6 @@ export interface LineRange {
 
     startIndex: number;
     endIndexExcl: number;
-    
+
     selectionNumber: number;
 }
