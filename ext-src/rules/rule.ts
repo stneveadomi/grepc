@@ -15,17 +15,17 @@ export interface IRule {
     id: string;
     // custom name for rule.
     title: string;
-    
+
     overviewRulerLane: vscode.OverviewRulerLane;
     overviewRulerColor: string;
 
     maxOccurrences: number | null;
-    
+
     regularExpression: string;
     regularExpressionFlags: string;
     includedFiles: string;
     excludedFiles: string;
-    
+
     backgroundColor: string;
 
     outline: string;
@@ -42,14 +42,13 @@ export interface IRule {
     textDecoration: string;
 
     cursor: string;
-    
+
     color: string;
-    
+
     isWholeLine: boolean;
 }
 
 export class Rule implements IRule {
-
     constructor(title: string) {
         this.id = uuidv4();
         this.title = title;

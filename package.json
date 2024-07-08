@@ -1,247 +1,249 @@
 {
-  "name": "grepc",
-  "displayName": "grepc: Regex Highlighting",
-  "description": "An approachable regular expression highlighter with advanced customization for VS Code.",
-  "icon": "media/GREPC_enhanced-standard-circle-128.png",
-  "version": "1.1.2",
-  "engines": {
-    "vscode": "^1.84.0"
-  },
-  "galleryBanner": {
-    "color": "#000000",
-    "theme": "dark"
-  },
-  "publisher": "stneveadomi",
-  "sponsor": {
-    "url": "https://github.com/sponsors/stneveadomi"
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/stneveadomi/grepc.git"
-  },
-  "homepage": "https://github.com/stneveadomi/grepc",
-  "categories": [
-    "Visualization",
-    "Programming Languages",
-    "Formatters"
-  ],
-  "keywords": [
-    "highlight",
-    "decoration",
-    "organization",
-    "search",
-    "regex"
-  ],
-  "activationEvents": [
-    "onStartupFinished"
-  ],
-  "main": "./dist/extension.js",
-  "contributes": {
-    "walkthroughs": [
-      {
-        "id": "grepc.walkthrough",
-        "title": "grepc: Walkthrough",
-        "description": "Showing the features of grepc and how to make rules in various ways.",
-        "steps": [
-          {
-            "id": "openlocalrules",
-            "title": "Open local rules",
-            "description": "Where are the local rules found?",
-            "media": {
-              "markdown": "media/open-local-rules.md"
-            },
-            "completionEvents": [
-              "onView:grepc.webview.local"
-            ]
-          },
-          {
-            "id": "openglobalrules",
-            "title": "Open global rules",
-            "description": "Where are the global rules found?",
-            "media": {
-              "markdown": "media/open-global-rules.md"
-            },
-            "completionEvents": [
-              "onView:grepc.webview.global"
-            ]
-          },
-          {
-            "id": "createablankrule",
-            "title": "Create a blank rule",
-            "description": "Run the command \"grepc: Create Blank Rule\" to create a new rule or click the button below.\n[Create Blank Rule](command:grepc.addRule)",
-            "media": {
-              "markdown": "media/create-blank-rule.md"
-            },
-            "completionEvents": [
-              "onCommand:grepc.addRule"
-            ]
-          },
-          {
-            "id": "createrulefromselection",
-            "title": "Create a rule from selected text",
-            "description": "Select some text and right click to run the command \"grepc: Create Rule From Selection\".",
-            "media": {
-              "markdown": "media/create-rule-from-selection.md"
-            },
-            "completionEvents": [
-              "onCommand:grepc.addRule"
-            ]
-          }
-        ]
-      }
-    ],
-    "commands": [
-      {
-        "command": "grepc.addRule",
-        "title": "grepc: Create Blank Rule"
-      },
-      {
-        "command": "grepc.addTextRule",
-        "title": "grepc: Create Rule From Selection"
-      },
-      {
-        "command": "grepc.deleteRule",
-        "title": "grepc: Delete Rule"
-      },
-      {
-        "command": "grepc.enableAllRules",
-        "title": "grepc: Enable All Rules"
-      },
-      {
-        "command": "grepc.enableLocalRules",
-        "title": "grepc: Enable Local Workspace Rules"
-      },
-      {
-        "command": "grepc.enableGlobalRules",
-        "title": "grepc: Enable Global Workspace Rules"
-      },
-      {
-        "command": "grepc.disableAllRules",
-        "title": "grepc: Disable All Rules"
-      },
-      {
-        "command": "grepc.disableLocalRules",
-        "title": "grepc: Disable Local Workspace Rules"
-      },
-      {
-        "command": "grepc.disableGlobalRules",
-        "title": "grepc: Disable Global Workspace Rules"
-      },
-      {
-        "command": "grepc.showWhatsNew",
-        "title": "grepc: Show What's New"
-      }
-    ],
-    "menus": {
-      "commandPalette": [
-        {
-          "command": "grepc.addTextRule",
-          "when": "editorHasSelection"
-        }
-      ],
-      "editor/context": [
-        {
-          "command": "grepc.addTextRule",
-          "group": "grepc",
-          "when": "editorHasSelection"
-        },
-        {
-          "command": "grepc.addRule",
-          "group": "grepc"
-        },
-        {
-          "command": "grepc.deleteRule",
-          "group": "grepc"
-        },
-        {
-          "command": "grepc.disableAllRules",
-          "group": "grepc"
-        },
-        {
-          "command": "grepc.enableAllRules",
-          "group": "grepc"
-        },
-        {
-          "command": "grepc.disableLocalRules",
-          "group": "grepc"
-        },
-        {
-          "command": "grepc.enableLocalRules",
-          "group": "grepc"
-        },
-        {
-          "command": "grepc.disableGlobalRules",
-          "group": "grepc"
-        },
-        {
-          "command": "grepc.enableGlobalRules",
-          "group": "grepc"
-        }
-      ]
+    "name": "grepc",
+    "displayName": "grepc: Regex Highlighting",
+    "description": "An approachable regular expression highlighter with advanced customization for VS Code.",
+    "icon": "media/GREPC_enhanced-standard-circle-128.png",
+    "version": "1.1.2",
+    "engines": {
+        "vscode": "^1.84.0"
     },
-    "views": {
-      "grepc-explorer": [
-        {
-          "type": "webview",
-          "id": "grepc.webview.local",
-          "name": "Workspace Rules"
-        },
-        {
-          "type": "webview",
-          "id": "grepc.webview.global",
-          "name": "Global Rules"
-        }
-      ]
+    "galleryBanner": {
+        "color": "#000000",
+        "theme": "dark"
     },
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "grepc-explorer",
-          "title": "grepc",
-          "icon": "media/grepc-activity-bar.svg"
+    "publisher": "stneveadomi",
+    "sponsor": {
+        "url": "https://github.com/sponsors/stneveadomi"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/stneveadomi/grepc.git"
+    },
+    "homepage": "https://github.com/stneveadomi/grepc",
+    "categories": [
+        "Visualization",
+        "Programming Languages",
+        "Formatters"
+    ],
+    "keywords": [
+        "highlight",
+        "decoration",
+        "organization",
+        "search",
+        "regex"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "walkthroughs": [
+            {
+                "id": "grepc.walkthrough",
+                "title": "grepc: Walkthrough",
+                "description": "Showing the features of grepc and how to make rules in various ways.",
+                "steps": [
+                    {
+                        "id": "openlocalrules",
+                        "title": "Open local rules",
+                        "description": "Where are the local rules found?",
+                        "media": {
+                            "markdown": "media/open-local-rules.md"
+                        },
+                        "completionEvents": [
+                            "onView:grepc.webview.local"
+                        ]
+                    },
+                    {
+                        "id": "openglobalrules",
+                        "title": "Open global rules",
+                        "description": "Where are the global rules found?",
+                        "media": {
+                            "markdown": "media/open-global-rules.md"
+                        },
+                        "completionEvents": [
+                            "onView:grepc.webview.global"
+                        ]
+                    },
+                    {
+                        "id": "createablankrule",
+                        "title": "Create a blank rule",
+                        "description": "Run the command \"grepc: Create Blank Rule\" to create a new rule or click the button below.\n[Create Blank Rule](command:grepc.addRule)",
+                        "media": {
+                            "markdown": "media/create-blank-rule.md"
+                        },
+                        "completionEvents": [
+                            "onCommand:grepc.addRule"
+                        ]
+                    },
+                    {
+                        "id": "createrulefromselection",
+                        "title": "Create a rule from selected text",
+                        "description": "Select some text and right click to run the command \"grepc: Create Rule From Selection\".",
+                        "media": {
+                            "markdown": "media/create-rule-from-selection.md"
+                        },
+                        "completionEvents": [
+                            "onCommand:grepc.addRule"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "commands": [
+            {
+                "command": "grepc.addRule",
+                "title": "grepc: Create Blank Rule"
+            },
+            {
+                "command": "grepc.addTextRule",
+                "title": "grepc: Create Rule From Selection"
+            },
+            {
+                "command": "grepc.deleteRule",
+                "title": "grepc: Delete Rule"
+            },
+            {
+                "command": "grepc.enableAllRules",
+                "title": "grepc: Enable All Rules"
+            },
+            {
+                "command": "grepc.enableLocalRules",
+                "title": "grepc: Enable Local Workspace Rules"
+            },
+            {
+                "command": "grepc.enableGlobalRules",
+                "title": "grepc: Enable Global Workspace Rules"
+            },
+            {
+                "command": "grepc.disableAllRules",
+                "title": "grepc: Disable All Rules"
+            },
+            {
+                "command": "grepc.disableLocalRules",
+                "title": "grepc: Disable Local Workspace Rules"
+            },
+            {
+                "command": "grepc.disableGlobalRules",
+                "title": "grepc: Disable Global Workspace Rules"
+            },
+            {
+                "command": "grepc.showWhatsNew",
+                "title": "grepc: Show What's New"
+            }
+        ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "grepc.addTextRule",
+                    "when": "editorHasSelection"
+                }
+            ],
+            "editor/context": [
+                {
+                    "command": "grepc.addTextRule",
+                    "group": "grepc",
+                    "when": "editorHasSelection"
+                },
+                {
+                    "command": "grepc.addRule",
+                    "group": "grepc"
+                },
+                {
+                    "command": "grepc.deleteRule",
+                    "group": "grepc"
+                },
+                {
+                    "command": "grepc.disableAllRules",
+                    "group": "grepc"
+                },
+                {
+                    "command": "grepc.enableAllRules",
+                    "group": "grepc"
+                },
+                {
+                    "command": "grepc.disableLocalRules",
+                    "group": "grepc"
+                },
+                {
+                    "command": "grepc.enableLocalRules",
+                    "group": "grepc"
+                },
+                {
+                    "command": "grepc.disableGlobalRules",
+                    "group": "grepc"
+                },
+                {
+                    "command": "grepc.enableGlobalRules",
+                    "group": "grepc"
+                }
+            ]
+        },
+        "views": {
+            "grepc-explorer": [
+                {
+                    "type": "webview",
+                    "id": "grepc.webview.local",
+                    "name": "Workspace Rules"
+                },
+                {
+                    "type": "webview",
+                    "id": "grepc.webview.global",
+                    "name": "Global Rules"
+                }
+            ]
+        },
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "grepc-explorer",
+                    "title": "grepc",
+                    "icon": "media/grepc-activity-bar.svg"
+                }
+            ]
         }
-      ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run build:spa && npm run package",
+        "compile": "webpack",
+        "watch": "webpack --watch",
+        "build:spa": "cd webview-ui/grepc-webview && npm ci && npm run test:coverage && npm run build:production",
+        "package": "webpack --mode production --devtool hidden-source-map",
+        "compile-tests": "tsc -p . --outDir out",
+        "watch-tests": "tsc -p . -w --outDir out",
+        "pretest": "npm run compile-tests && npm run compile && npm run lint",
+        "lint": "eslint ./ext-src/",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.6.0",
+        "@types/jest": "^29.5.12",
+        "@types/mocha": "^10.0.3",
+        "@types/node": "^18.18.13",
+        "@types/uuid": "^9.0.8",
+        "@types/vscode": "^1.84.0",
+        "@typescript-eslint/eslint-plugin": "^6.9.0",
+        "@typescript-eslint/parser": "^6.9.0",
+        "@vscode/codicons": "^0.0.35",
+        "@vscode/test-electron": "^2.3.6",
+        "eslint": "^9.6.0",
+        "eslint-config-prettier": "^9.1.0",
+        "glob": "^10.3.10",
+        "globals": "^15.8.0",
+        "mocha": "^10.2.0",
+        "prettier": "3.3.2",
+        "ts-loader": "^9.5.0",
+        "typescript": "^5.2.2",
+        "typescript-eslint": "^7.15.0",
+        "webpack": "^5.89.0",
+        "webpack-cli": "^5.1.4"
+    },
+    "dependencies": {
+        "@types/showdown": "^2.0.6",
+        "debounce": "^2.0.0",
+        "rxjs": "^7.8.1",
+        "showdown": "^2.1.0",
+        "uuid": "^9.0.1"
     }
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run build:spa && npm run package",
-    "compile": "webpack",
-    "watch": "webpack --watch",
-    "build:spa": "cd webview-ui/grepc-webview && npm ci && npm run test:coverage && npm run build:production",
-    "package": "webpack --mode production --devtool hidden-source-map",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "lint": "eslint ./ext-src/",
-    "test": "node ./out/test/runTest.js"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.6.0",
-    "@types/jest": "^29.5.12",
-    "@types/mocha": "^10.0.3",
-    "@types/node": "^18.18.13",
-    "@types/uuid": "^9.0.8",
-    "@types/vscode": "^1.84.0",
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0",
-    "@vscode/codicons": "^0.0.35",
-    "@vscode/test-electron": "^2.3.6",
-    "eslint": "^9.6.0",
-    "glob": "^10.3.10",
-    "globals": "^15.8.0",
-    "mocha": "^10.2.0",
-    "ts-loader": "^9.5.0",
-    "typescript": "^5.2.2",
-    "typescript-eslint": "^7.15.0",
-    "webpack": "^5.89.0",
-    "webpack-cli": "^5.1.4"
-  },
-  "dependencies": {
-    "@types/showdown": "^2.0.6",
-    "debounce": "^2.0.0",
-    "rxjs": "^7.8.1",
-    "showdown": "^2.1.0",
-    "uuid": "^9.0.1"
-  }
 }

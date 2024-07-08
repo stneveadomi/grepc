@@ -1,5 +1,9 @@
 import * as vscode from 'vscode';
-import { VersionDiff, compareVersions, isValidSemVer } from '../utilities/version';
+import {
+    VersionDiff,
+    compareVersions,
+    isValidSemVer,
+} from '../utilities/version';
 import { getNonce } from '../utilities/getNonce';
 import Showdown from 'showdown';
 import { RuleFactory } from '../rules/ruleFactory';
@@ -11,30 +15,38 @@ export class WhatsNewWebview {
     constructor(
         public viewId: string,
         private context: vscode.ExtensionContext,
-        private logger: vscode.LogOutputChannel
+        private logger: vscode.LogOutputChannel,
     ) {
         this.currentVersion = this.context.extension.packageJSON.version;
     }
 
     showWebviewIfNewVersion() {
-        const storedVersion = this.context.globalState.get(RuleFactory.STORED_VERSION_KEY_ID);
-		if(!storedVersion) {
-            this.logger.info('[EXT] Stored version is undefined. Showing webview.');
+        const storedVersion = this.context.globalState.get(
+            RuleFactory.STORED_VERSION_KEY_ID,
+        );
+        if (!storedVersion) {
+            this.logger.info(
+                '[EXT] Stored version is undefined. Showing webview.',
+            );
             this.updateStoredVersion(this.currentVersion);
             this.showWebview();
             return;
         }
 
-        if(typeof storedVersion === 'string' && isValidSemVer(storedVersion)) {
-            switch(compareVersions(storedVersion, this.currentVersion)) {
+        if (typeof storedVersion === 'string' && isValidSemVer(storedVersion)) {
+            switch (compareVersions(storedVersion, this.currentVersion)) {
                 case VersionDiff.MAJOR_DIFF:
                 case VersionDiff.MINOR_DIFF:
                     this.updateStoredVersion(this.currentVersion);
                     this.showWebview();
-                    this.logger.info('[EXT] New version detected. Displaying changelog.');
+                    this.logger.info(
+                        '[EXT] New version detected. Displaying changelog.',
+                    );
                     break;
                 case VersionDiff.PATCH_DIFF:
-                    this.logger.info('[EXT] New patch detected. To see the changelog, run grepc.whatsNew');
+                    this.logger.info(
+                        '[EXT] New patch detected. To see the changelog, run grepc.whatsNew',
+                    );
                     break;
                 case VersionDiff.NO_DIFF:
                 default:
@@ -42,10 +54,13 @@ export class WhatsNewWebview {
                     break;
             }
         }
-	}
+    }
 
     private updateStoredVersion(version: string) {
-        this.context.globalState.update(RuleFactory.STORED_VERSION_KEY_ID, version);
+        this.context.globalState.update(
+            RuleFactory.STORED_VERSION_KEY_ID,
+            version,
+        );
     }
 
     async showWebview() {
@@ -54,18 +69,36 @@ export class WhatsNewWebview {
             `grepc: What's New ${this.currentVersion}`,
             vscode.ViewColumn.One,
             {
-                localResourceRoots: [this.context.extensionUri]
-            }
+                localResourceRoots: [this.context.extensionUri],
+            },
         );
 
-        this.webviewPanel.webview.html = await this.getWebviewHtml(this.webviewPanel.webview);
+        this.webviewPanel.webview.html = await this.getWebviewHtml(
+            this.webviewPanel.webview,
+        );
     }
 
     async getWebviewHtml(webview: vscode.Webview) {
         const nonce = getNonce();
-        const stylesUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "ext-src", "whats-new-ui", "whats-new.css"));
-        const bannerUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, "media", "GREPC-grey-dark.svg"));
-        const changelogUri = vscode.Uri.joinPath(this.context.extensionUri, "CHANGELOG.md");
+        const stylesUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(
+                this.context.extensionUri,
+                'ext-src',
+                'whats-new-ui',
+                'whats-new.css',
+            ),
+        );
+        const bannerUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(
+                this.context.extensionUri,
+                'media',
+                'GREPC-grey-dark.svg',
+            ),
+        );
+        const changelogUri = vscode.Uri.joinPath(
+            this.context.extensionUri,
+            'CHANGELOG.md',
+        );
 
         const clBytes = await vscode.workspace.fs.readFile(changelogUri);
         const changelog = new TextDecoder('UTF-8').decode(clBytes);
@@ -135,7 +168,6 @@ export class WhatsNewWebview {
             </html>
         `;
     }
-
 
     /**
      * Dispose() is called by the VS Code lifecycle when cleaning up the extension.
