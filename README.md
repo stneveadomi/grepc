@@ -19,13 +19,37 @@ Grepc is an approachable regular expression highlighter with advanced customizat
 
 ## Features
 
--   **Easily decorate text with any regular expression and save them as rules**
--   **Enable and disable decoration rules across all files or per file type**
--   **Share rules across multiple workspaces or keep them workspace specific**
--   **Have overlapping rules? Drag & drop to change execution priority**
--   **See all matches of the current rule in an readable and approachable interface**
--   **Adjust font style, color, background color, border, outline, and more as needed.**
--   **Easy commands for creating, enabling, disabling, and removing rules for decoration.**
+### **Easily decorate text with any regular expression and save them as rules**
+
+![create-rule](media/create-rule-basic.gif)
+
+### **Enable and disable decoration rules across all files or per file type**
+
+![enable-file-type](media/enable-disable-file-types.gif)
+
+### **Share rules across multiple workspaces or keep them workspace specific**
+
+![global-rule](media/global-rule.gif)
+
+### **Have overlapping rules? Drag & drop to change execution priority**
+
+![rule-priority](media/rule-priority.gif)
+
+### **Drag & drop to transfer between workspace rules and global rules**
+
+![drag-transfer](media/d&d-transfer.gif)
+
+### **See all matches of the current rule in an readable and approachable interface**
+
+![occurrences](media/occurrences-tab.gif)
+
+### **Adjust font style, color, background color, border, outline, and more as needed.**
+
+![full-decoration](media/full-decoration.gif)
+
+### **Easy commands for creating, enabling, disabling, and removing rules for decoration.**
+
+![context-options](media/context-options.gif)
 
 ## Usage
 
@@ -51,21 +75,15 @@ The easiest way to install is through the VS Code Marketplace.
 
 Alternatively, you can install any version of grepc by going to the [releases](https://github.com/stneveadomi/grepc/releases) and downloading the specific .vsix file. From there, you can follow the instructions [here](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix).
 
-## Demo
-
-![Example 4](media/Code_PSyTYpsF5e.gif)
-
-![Example 2](media/Code_IlBi9doiz1.gif)
-
-![Occurrences Example](media/occurrences-demo.gif)
-
-![Example 3](media/Code_PMvUMJj9x3.gif)
-
-![Example 1](media/Code_hRfd4iIgh6.gif)
-
 ## Release Notes
 
 See [releases](https://github.com/stneveadomi/grepc/releases)
+
+Also feel free to run the command `grepc: Show What's New`
+
+## FAQ
+
+Check out the [FAQ](docs/FAQ.md). Don't see your question? Create an issue and one of the contributors will hopefully have an answer :).
 
 ## Contributing
 
