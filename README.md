@@ -79,6 +79,12 @@ Alternatively, you can install any version of grepc by going to the [releases](h
 
 See [releases](https://github.com/stneveadomi/grepc/releases)
 
+Also feel free to run the command `grepc: Show What's New`
+
+## FAQ
+
+Check out the [FAQ](docs/FAQ.md). Don't see your question? Create an issue and one of the contributors will hopefully have an answer :).
+
 ## Contributing
 
 Find an issue or a potential new feature? Create an issue on the GitHub page.
