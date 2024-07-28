@@ -241,6 +241,8 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
                             this._ruleFactory.location
                         ) {
                             /* Return as we do not need to transfer rule */
+                            /* but we should reapply decorations as possible priority shift */
+                            this._dtManager.applyDecorationsToVisibleEditors();
                             return;
                         }
                         try {

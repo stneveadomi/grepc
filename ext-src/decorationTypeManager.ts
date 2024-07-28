@@ -23,10 +23,10 @@ export class DecorationTypeManager {
      * This is so that we can effectively clear out rules that are currently applied but shouldn't be.
      * 
      */
-    private _documentToActiveDecorationMap: WeakMap<
-        vscode.TextDocument, 
+    private _documentToActiveDecorationMap: Map<
+        string, 
         Map<LocationState, Map<string, DecorationTypeWrapper>>
-    > = new WeakMap();
+    > = new Map();
 
     private _visibleEditors: vscode.TextEditor[] = [];
 
@@ -75,27 +75,49 @@ export class DecorationTypeManager {
                         }
 
                         //intersection of old and new enabled rules. These were not removed. Check for decoration changes.
-                        const unchangedRules = enabledRules.filter(rule => this.getOldEnabledRuleIdSet(ruleFactory.location).has(rule.id));
-                        this.logger.debug(`[DTM] $enabled rules - ${unchangedRules.length} unchanged.`);
-                        for(const unchangedRule of unchangedRules) {
+                        const remainingRules = enabledRules.filter(rule => this.getOldEnabledRuleIdSet(ruleFactory.location).has(rule.id));
+                        this.logger.debug(`[DTM] $enabled rules - ${remainingRules.length} unchanged.`);
+                        for(const remainingRule of remainingRules) {
                             this.logger.debug(
-                                `[DTM][${reverseMap(ruleFactory.location)}] unchanged rule - ${unchangedRule.id}`,
+                                `[DTM][${reverseMap(ruleFactory.location)}] persistent rule - ${remainingRule.id}`,
                             );
                             for(const document of vscode.workspace.textDocuments) {
                                 const activeDecorationMap = this.getActiveDecorationMap(document, ruleFactory.location);
-                                const decType = activeDecorationMap.get(document.fileName);
-                                if(decType?.needsOccurrenceUpdate(unchangedRule)) {
-                                    decType.updateOccurrences(document, unchangedRule);
+                                let decType = activeDecorationMap.get(remainingRule.id);
+                                if(!decType) {
+                                    this.logger.error(`[DTM] [${reverseMap(ruleFactory.location)}] [${remainingRule.id.substring(0,5)}] rule is missing decoration type under document ${document.fileName}`);
+                                }
+                                this.logger.debug(`[DTM] [${reverseMap(ruleFactory.location)}] [${remainingRule.id.substring(0,5)}] rule needs occurrence update? ${decType?.needsOnlyOccurrenceUpdate(remainingRule)}`)
+                                if(decType?.needsOnlyOccurrenceUpdate(remainingRule)) {
+                                    decType.updateOccurrences(document, remainingRule);
+                                    /* WARNING: DO NOT APPLY TO EDITOR UNLESS EDITOR IS SHOWING DOCUMENT */
+                                    vscode.window.visibleTextEditors.filter(editor => editor.document.fileName === document.fileName).forEach(x => decType!.applyDecorationsToEditor(x));
+                                    continue;
+                                    // no need to do additional check as we have determined we need to reaplpy decorations anyway.
                                 }
 
-                                if(decType?.hasDecorationChanged(unchangedRule)) {
+                                this.logger.debug(`[DTM] [${reverseMap(ruleFactory.location)}] [${remainingRule.id.substring(0,5)}] has decoration changed? ${decType?.hasDecorationChanged(remainingRule)}`)
+                                if(decType?.hasDecorationChanged(remainingRule)) {
+                                    // overkill as technically, we only need to do this to the editors that have this decType's document.
+
                                     for(const editor of vscode.window.visibleTextEditors) {
+                                        decType.clearDecorations(editor);
+                                    }
+                                    decType.dispose();
+                                    decType = new DecorationTypeWrapper(document.fileName, remainingRule);
+                                    decType.updateOccurrences(document, remainingRule);
+
+                                    const applicableEditors = vscode.window.visibleTextEditors.filter(editor => editor.document.fileName === document.fileName);
+                                    // apply decorations to only the editors that are associated with this document.
+                                    for(const editor of applicableEditors) {
                                         decType.applyDecorationsToEditor(editor);
                                     }
+                                    
+                                    // restore map to new dec type.
+                                    activeDecorationMap.set(remainingRule.id, decType);
                                 }
                             }
                         }
-
 
                         this._oldEnabledRules.set(
                             ruleFactory.location,
@@ -163,7 +185,7 @@ export class DecorationTypeManager {
                     this._activeEditor = undefined;
                 }
 
-                if(editor && !this._documentToActiveDecorationMap.has(editor.document)) {
+                if(editor && !this._documentToActiveDecorationMap.has(editor.document.fileName)) {
                     this.applyDecorationsToEditor(editor);
                 }
             },
@@ -176,7 +198,7 @@ export class DecorationTypeManager {
         vscode.workspace.onDidOpenTextDocument(
             (document: vscode.TextDocument) => {
                 this.logger.info(`Document opened: ${document.fileName}`);
-                this.logger.info(`Does document match others? ${this._documentToActiveDecorationMap.has(document)}`);
+                this.logger.info(`Does document match others? ${this._documentToActiveDecorationMap.has(document.fileName)}`);
                 for(const ruleFactory of this._ruleFactories) {
                     const activeDecorationMap = this.getActiveDecorationMap(document, ruleFactory.location);
                     for(const decType of activeDecorationMap.values()) {
@@ -197,8 +219,8 @@ export class DecorationTypeManager {
                     }
                     activeDecorationMap.clear();
                 }
-                this._documentToActiveDecorationMap.get(document)?.clear();
-                this._documentToActiveDecorationMap.delete(document);
+                this._documentToActiveDecorationMap.get(document.fileName)?.clear();
+                this._documentToActiveDecorationMap.delete(document.fileName);
             },
             this,
             this._disposables
@@ -245,7 +267,7 @@ export class DecorationTypeManager {
 
     /**
      * Given a document and location, fetch the currently stored mappings to retrieve the following:
-     * TextDocument -> ActiveDecorationMap (Location -> (Rule ID -> DecorationType)) -> (Rule ID -> DecorationType)
+     * TextDocument.fileName -> ActiveDecorationMap (Location -> (Rule ID -> DecorationType)) -> (Rule ID -> DecorationType)
      * 
      * If the document mapping is not available, it will create it. (as an empty map)
      * If the location mapping is not available, it will create it. (as an empty map)
@@ -255,10 +277,10 @@ export class DecorationTypeManager {
      * @returns Map of (Rule ID -> DecorationType)
      */
     private getActiveDecorationMap(document: vscode.TextDocument, location: LocationState): Map<string, DecorationTypeWrapper> {
-        if(!this._documentToActiveDecorationMap.has(document)) {
-            this._documentToActiveDecorationMap.set(document, new Map());
+        if(!this._documentToActiveDecorationMap.has(document.fileName)) {
+            this._documentToActiveDecorationMap.set(document.fileName, new Map());
         }
-        const activeDecorationMap = this._documentToActiveDecorationMap.get(document);
+        const activeDecorationMap = this._documentToActiveDecorationMap.get(document.fileName);
 
         if(!activeDecorationMap!.has(location)) {
             activeDecorationMap!.set(location, new Map());
@@ -300,7 +322,7 @@ export class DecorationTypeManager {
                 } else {
                     // if appliedRule does not have a decoration type
                     this.logger.debug(`[DTM] applyDecorationsToEditor(): decorationType not found. Creating one and applying it.`)
-                    decorationType = new DecorationTypeWrapper(applyRule);
+                    decorationType = new DecorationTypeWrapper(textEditor.document.fileName, applyRule);
                     decorationType.updateOccurrences(textEditor.document, applyRule);
                     decorationType.applyDecorationsToEditor(textEditor);
                     appliedRuleToDecorationMap?.set(applyRule.id, decorationType);
@@ -351,11 +373,18 @@ export class DecorationTypeManager {
             let decorationType;
             if(activeDecorationMap.has(rule.id)) {
                 decorationType = activeDecorationMap.get(rule.id);
+                // decorations need to be recreated if decoration change has occurred.
+                if(decorationType?.hasDecorationChanged(rule)) {
+                    decorationType.dispose();
+                    decorationType = new DecorationTypeWrapper(document.fileName, rule);
+                    activeDecorationMap.set(rule.id, decorationType);
+                }
             } else {
-                decorationType = new DecorationTypeWrapper(rule);
+                decorationType = new DecorationTypeWrapper(document.fileName, rule);
                 activeDecorationMap.set(rule.id, decorationType);
             }
-            decorationType!.updateOccurrences(document);
+
+            decorationType!.updateOccurrences(document, rule);
         }
     }
 

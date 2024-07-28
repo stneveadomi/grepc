@@ -15,8 +15,8 @@ export class DecorationTypeWrapper {
     private decorationOptions: vscode.DecorationOptions[] = [];
     private activeOccurrences: vscode.Range[] = [];
 
-
     constructor(
+        private documentName: string,
         private rule: Rule,
     ) {
         this.decorationType = vscode.window.createTextEditorDecorationType({
@@ -45,7 +45,12 @@ export class DecorationTypeWrapper {
         });
     }
 
-    
+    /**
+     * If decoration has changed, we must dispose of this object properly and
+     * create a new decoration type wrapper with its corresponding implementation.
+     * @param current 
+     * @returns 
+     */
     hasDecorationChanged(current: Rule) {
         return this.rule.id !== current.id ||
             this.rule.backgroundColor !== current.backgroundColor ||
@@ -54,8 +59,6 @@ export class DecorationTypeWrapper {
             this.rule.borderWidth !== current.borderWidth ||
             this.rule.color !== current.color ||
             this.rule.cursor !== current.cursor ||
-            this.rule.excludedFiles !== current.excludedFiles ||
-            this.rule.includedFiles !== current.includedFiles ||
             this.rule.fontStyle !== current.fontStyle ||
             this.rule.fontWeight !== current.fontWeight ||
             this.rule.isWholeLine !== current.isWholeLine ||
@@ -67,20 +70,16 @@ export class DecorationTypeWrapper {
                 current.overviewRulerColor ||
             this.rule.overviewRulerLane !==
                 current.overviewRulerLane ||
-            this.rule.regularExpression !==
-                current.regularExpression ||
-            this.rule.regularExpressionFlags !==
-                current.regularExpressionFlags ||
-            this.rule.textDecoration !== current.textDecoration ||
-            this.rule.title !== current.title
+            this.rule.textDecoration !== current.textDecoration
     }
 
-    needsOccurrenceUpdate(current: Rule) {
-        return this.rule.regularExpression !== current.regularExpression ||
+    needsOnlyOccurrenceUpdate(current: Rule) {
+        return (this.rule.regularExpression !== current.regularExpression ||
             this.rule.regularExpressionFlags !== current.regularExpressionFlags ||
             this.rule.includedFiles !== current.includedFiles || 
             this.rule.excludedFiles !== current.excludedFiles || 
-            this.rule.title !== current.title
+            this.rule.title !== current.title) &&
+            !this.hasDecorationChanged(current);
     }
 
     generateOccurrencesOnChange(contentChange: vscode.TextDocumentContentChangeEvent) {
@@ -141,6 +140,9 @@ export class DecorationTypeWrapper {
     }
 
     applyDecorationsToEditor(activeEditor: vscode.TextEditor) {
+        if(activeEditor.document.fileName !== this.documentName) {
+            throw new Error(`CANNOT APPLY DECORATIONS TO DIFFERENT DOCUMENT - obs -> ${activeEditor.document.fileName} != expected ->${this.documentName}`)
+        }
         activeEditor.setDecorations(this.decorationType, this.decorationOptions);
     }
 
@@ -201,5 +203,4 @@ export class DecorationTypeWrapper {
     dispose() {
         this.decorationType.dispose();
     }
-    
 }
