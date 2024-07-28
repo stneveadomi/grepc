@@ -57,7 +57,7 @@ export class DragService {
                 target,
             );
             // If successful in moving rule, now trigger update decorations.
-            this.dtTypeManager.forceDecorationUpdate();
+            this.dtTypeManager.applyDecorationsToVisibleEditors();
         } else {
             throw new Error(
                 `source or target webview are undefined or equal.\n SRC: ${reverseMap(source)} TARGET: ${reverseMap(target)} dragData: ${this._dragData}`,

@@ -109,6 +109,27 @@ export class RuleFactory {
         return this.getRulesMap().get(id);
     }
 
+    public getEnabledRules() {
+        const enabledRules = [];
+        for(const rule of this.getRulesArray()) {
+            if(rule.enabled) {
+                enabledRules.push(rule);
+            }
+        }
+
+        return enabledRules;
+    }
+
+    public getEnabledRuleIdSet() {
+        const enabledSet = new Set();
+        for(const rule of this.getRulesArray()) {
+            if(rule.enabled)
+            enabledSet.add(rule.id);
+        }
+
+        return enabledSet;
+    }
+
     /**
      * This method is here for backwards compatibility.
      * @param rules
