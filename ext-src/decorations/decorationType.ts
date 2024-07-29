@@ -19,6 +19,7 @@ export class DecorationTypeWrapper {
     constructor(
         private readonly document: vscode.TextDocument,
         private rule: Rule,
+        private logger: vscode.LogOutputChannel
     ) {
         this.decorationType = vscode.window.createTextEditorDecorationType({
             backgroundColor: rule.backgroundColor ?? '',
@@ -109,7 +110,6 @@ export class DecorationTypeWrapper {
         //or just take the content change range and get the full line i.e. contentChange.range
         const textRange = this.getFullLineRange(intersectingRangeData.range ?? contentChange.range);
         const text = this.document.getText(textRange);
-        console.log(`new text range to check over: ${text}`);
 
         const regEx = new RegExp(this.rule.regularExpression, this.rule.regularExpressionFlags || 'g');
 
@@ -170,7 +170,7 @@ export class DecorationTypeWrapper {
             const middle = Math.floor((left + right) / 2);
             const midRange = this.activeOccurrences[middle];
             if (midRange == undefined) {
-                console.error(`midRange is undefined: ${middle} not in [${left}, ${right})`);
+                this.logger.debug(`midRange is undefined: ${middle} not in [${left}, ${right})`);
                 return { removed: 0, insertIndex: left + 1 };
             }
 
@@ -211,7 +211,7 @@ export class DecorationTypeWrapper {
             }
         }
 
-        console.error('Unable to find an intersection. Returning undefined.');
+        this.logger.debug('Unable to find an intersection. Returning undefined.');
         return { removed: 0, insertIndex: left + 1 };
     }
 

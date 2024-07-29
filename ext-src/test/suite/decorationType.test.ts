@@ -8,6 +8,7 @@ suite('DecorationTypeWrapper', () => {
     let dt: DecorationTypeWrapper;
     let textDoc: vscode.TextDocument;
     let rule: Rule;
+    const logger = vscode.window.createOutputChannel('grepc', { log: true });
 
     suiteSetup(async () => {
         // textDoc = new vscode.TextDocument();
@@ -16,7 +17,8 @@ suite('DecorationTypeWrapper', () => {
         });
         rule = new Rule('rule 1');
         rule.regularExpression = '[0-9]+';
-        dt = new DecorationTypeWrapper(textDoc, rule);
+        
+        dt = new DecorationTypeWrapper(textDoc, rule, logger);
         dt.updateOccurrences(textDoc);
     });
 

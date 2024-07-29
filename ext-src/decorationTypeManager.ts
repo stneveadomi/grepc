@@ -100,7 +100,7 @@ export class DecorationTypeManager {
                                         decType.clearDecorations(editor);
                                     }
                                     decType.dispose();
-                                    decType = new DecorationTypeWrapper(document, remainingRule);
+                                    decType = new DecorationTypeWrapper(document, remainingRule, this.logger);
                                     decType.updateOccurrences(document, remainingRule);
 
                                     const applicableEditors = vscode.window.visibleTextEditors.filter(
@@ -119,7 +119,7 @@ export class DecorationTypeManager {
 
                         // update SPAs with appropriate occurrence data.
                         this.pushActiveEditorOccurrenceData();
-
+                        
                         this._oldEnabledRules.set(ruleFactory.location, enabledRules);
                     },
                 }),
@@ -145,17 +145,15 @@ export class DecorationTypeManager {
         vscode.window.onDidChangeVisibleTextEditors((editors) => {
             this.logger.debug('onDidChangeVisibleTextEditors: size ' + editors.length);
             const newVisibleEditors = editors.filter((editor) => !this._visibleEditors.includes(editor));
-
-            this.logger.debug('diff: \n', newVisibleEditors.map((editor) => editor.document.fileName).join('✔\n') + '✔');
-
             const notVisibleEditors = this._visibleEditors.filter((editor) => !editors.includes(editor));
-            this.logger.debug('diff: \n', notVisibleEditors.map((editor) => editor.document.fileName).join('❌\n') + '❌');
-
             this._visibleEditors = Array.from(editors.values());
 
             for (const newEditor of newVisibleEditors) {
                 this.updateOccurrenceData(newEditor.document);
                 this.applyDecorationsToEditor(newEditor);
+            }
+            if(newVisibleEditors.length > 0) {
+                this.pushActiveEditorOccurrenceData();
             }
 
             for (const notVisibleEditor of notVisibleEditors) {
@@ -183,8 +181,8 @@ export class DecorationTypeManager {
         );
 
         vscode.workspace.onDidOpenTextDocument((document: vscode.TextDocument) => {
-            this.logger.info(`Document opened: ${document.fileName}`);
-            this.logger.info(`Does document match others? ${this._documentToActiveDecorationMap.has(document.fileName)}`);
+            this.logger.debug(`Document opened: ${document.fileName}`);
+            this.logger.debug(`Does document match others? ${this._documentToActiveDecorationMap.has(document.fileName)}`);
             for (const ruleFactory of this._ruleFactories) {
                 const activeDecorationMap = this.getActiveDecorationMap(document, ruleFactory.location);
                 for (const decType of activeDecorationMap.values()) {
@@ -195,7 +193,7 @@ export class DecorationTypeManager {
 
         vscode.workspace.onDidCloseTextDocument(
             (document: vscode.TextDocument) => {
-                this.logger.info(`Document closed: ${document.fileName}. Cleaning up resources.`);
+                this.logger.debug(`Document closed: ${document.fileName}. Cleaning up resources.`);
                 for (const ruleFactory of this._ruleFactories) {
                     const activeDecorationMap = this.getActiveDecorationMap(document, ruleFactory.location);
                     for (const decType of activeDecorationMap.values()) {
@@ -307,7 +305,7 @@ export class DecorationTypeManager {
                 } else {
                     // if appliedRule does not have a decoration type
                     this.logger.debug(`[DTM] applyDecorationsToEditor(): decorationType not found. Creating one and applying it.`);
-                    decorationType = new DecorationTypeWrapper(textEditor.document, applyRule);
+                    decorationType = new DecorationTypeWrapper(textEditor.document, applyRule, this.logger);
                     decorationType.updateOccurrences(textEditor.document, applyRule);
                     decorationType.applyDecorationsToEditor(textEditor);
                     appliedRuleToDecorationMap?.set(applyRule.id, decorationType);
@@ -361,11 +359,11 @@ export class DecorationTypeManager {
                 // decorations need to be recreated if decoration change has occurred.
                 if (decorationType?.hasDecorationChanged(rule)) {
                     decorationType.dispose();
-                    decorationType = new DecorationTypeWrapper(document, rule);
+                    decorationType = new DecorationTypeWrapper(document, rule, this.logger);
                     activeDecorationMap.set(rule.id, decorationType);
                 }
             } else {
-                decorationType = new DecorationTypeWrapper(document, rule);
+                decorationType = new DecorationTypeWrapper(document, rule, this.logger);
                 activeDecorationMap.set(rule.id, decorationType);
             }
 
