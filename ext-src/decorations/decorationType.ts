@@ -1,5 +1,6 @@
 import { Rule } from "../rules/rule";
 import * as vscode from 'vscode';
+import { IntersectingRangeData } from "./intersectingRangeData";
 
 /**
  * DecorationTypeWrapper is a pseudo-wrapper class for the vscode
@@ -16,7 +17,7 @@ export class DecorationTypeWrapper {
     private activeOccurrences: vscode.Range[] = [];
 
     constructor(
-        private documentName: string,
+        private readonly document: vscode.TextDocument,
         private rule: Rule,
     ) {
         this.decorationType = vscode.window.createTextEditorDecorationType({
@@ -82,57 +83,143 @@ export class DecorationTypeWrapper {
             !this.hasDecorationChanged(current);
     }
 
-    generateOccurrencesOnChange(contentChange: vscode.TextDocumentContentChangeEvent) {
-        const intersectingRanges = this.binarySearchRange(this.activeOccurrences, contentChange.range, 0, this.activeOccurrences.length);
-        if(intersectingRanges.length != 0) {
-            const range = new vscode.Range(
-                intersectingRanges[0].start,
-                intersectingRanges[intersectingRanges.length - 1].end
-            );
-            console.log('handleContentRange:', range);
-            console.log('contentChange: ', contentChange);
-
-        } else {
-            console.log('no content change needed');
-        }
+    /**
+     * This method is a helper for taking any text range from vs code and expanding it to be the entire start and end lines.
+     * For example, if the range is "b" in the text "abc\ndef". This will return a range of "abc\n".
+     * @param range 
+     */
+    private getFullLineRange(range: vscode.Range) {
+        const newStart = range.start.with(range.start.line, 0);
+        const newEnd = range.end.with(range.end.line + 1, 0);
+        return new vscode.Range(newStart, newEnd);
     }
 
-    binarySearchRange(ranges: vscode.Range[], contentChangeRange: vscode.Range, start: number, endExcl: number): vscode.Range[] {
-        if(endExcl - start <= 0) {
-            return [];
+    generateOccurrencesOnChange(contentChange: vscode.TextDocumentContentChangeEvent) {
+        // We will pass in a getFullLineRange() to handle removing intersecting occurrences.
+        // This just makes everything so much easier as we are forcing updates per line.
+        // We could be more particular, but the logic gets a lot harder.
+        // TODO: Investigate why deletes do not work. This will involve removing this call to getFullLineRange.
+        const intersectingRangeData = this.removeIntersectingOccurrences(this.getFullLineRange(contentChange.range));
+
+        if(intersectingRangeData.removed > 0 && !intersectingRangeData.range) {
+            throw Error('Intersecting Range Data should contain a range if removed > 0.');
         }
 
-        const middle = Math.round(((endExcl - start) / 2)) + start;
-        const midRange = ranges[middle];
-        if(midRange == undefined) {
-            console.error(`midRange is undefined: ${middle} not in [${start}, ${endExcl})`);
-            return [];
+        //either expanded range over all intersecting matches 
+        //or just take the content change range and get the full line i.e. contentChange.range
+        const textRange = this.getFullLineRange(intersectingRangeData.range ?? contentChange.range);
+        const text = this.document.getText(textRange);
+        console.log(`new text range to check over: ${text}`);
+
+        const regEx = new RegExp(
+            this.rule.regularExpression,
+            this.rule.regularExpressionFlags || 'g',
+        );
+
+        let match;
+
+        const insertIndex = intersectingRangeData.insertIndex!;
+        let occurrence = insertIndex + 1;
+        const offset = this.document.offsetAt(textRange.start);
+        
+        const newDecorations: vscode.DecorationOptions[] = [];
+        const newOccurrences: vscode.Range[] = [];
+        while(
+            (match = regEx.exec(text)) &&
+            this.decorationOptions.length < (this.rule.maxOccurrences ?? 1000)
+        ) {
+            occurrence++;
+            const startPos = this.document.positionAt(
+                offset + match.index
+            );
+            const endPos = this.document.positionAt(
+                offset + match.index + match[0].length,
+            );
+            const range = new vscode.Range(startPos, endPos);
+            const decoration = {
+                range: range,
+                hoverMessage: `Rule: ${this.rule.title}\n #${occurrence}`,
+            };
+            newDecorations.push(decoration);
+            newOccurrences.push(range);
         }
-        let intersection;
-        if((intersection = midRange.intersection(contentChangeRange))) {
-            const intersections = [intersection];
-            // go left and check all intersections
-            for(let left = middle - 1; intersection; left--) {
-                intersection = midRange.intersection(contentChangeRange);
-                if(intersection) {
-                    intersections.push(intersection);
-                }
-            }
-            // go right and check all intersections
-            for(let right = middle + 1; intersection; right++) {
-                intersection = midRange.intersection(contentChangeRange);
-                if(intersection) {
-                    intersections.push(intersection);
-                }
+
+        newDecorations.forEach((decOption, i) => {
+            this.decorationOptions.splice(insertIndex + i, 0, decOption);
+        });
+
+        newOccurrences.forEach((occurrenceRange, i) => {
+            this.activeOccurrences.splice(insertIndex + i, 0, occurrenceRange);
+        });
+
+    }
+
+    /**
+     * Run binary search to find an intersecting range within this.activeOccurrences.
+     * 
+     * If an intersection is found, expand left and right to see if neighboring ranges are
+     * 
+     * If no intersection is found, return removed = 0 and the index of where to insert based off the range.
+     * 
+     * @param ranges 
+     * @param contentChangeRange 
+     * @returns vscode.Range - intersecting range built by the union of all intersecting ranges.
+     */
+    removeIntersectingOccurrences(contentChangeRange: vscode.Range): IntersectingRangeData {
+        let left = 0;
+        let right = this.activeOccurrences.length - 1;
+
+        // shift range -1 and  +1 on either end to match with neighboring occurrences.
+        let newStart = contentChangeRange.start;
+        if(contentChangeRange.start.character > 0) {
+            newStart = contentChangeRange.start.translate(0, -1);
+        }
+        const newEnd = contentChangeRange.end.translate(0, 1);
+        contentChangeRange = new vscode.Range(newStart, newEnd);
+
+        while(left <= right) {
+            const middle = Math.floor((left + right) / 2);
+            const midRange = this.activeOccurrences[middle];
+            if(midRange == undefined) {
+                console.error(`midRange is undefined: ${middle} not in [${left}, ${right})`);
+                return {removed: 0, insertIndex: left + 1};
             }
 
-            return intersections;
-            //if mid range is before 
-        } else if(midRange.start.isBeforeOrEqual(contentChangeRange.start)) {
-            return this.binarySearchRange(ranges, contentChangeRange, start, middle);
-        } else {
-            return this.binarySearchRange(ranges, contentChangeRange, middle + 1, endExcl);
+            let intersection;
+            if((intersection = midRange.intersection(contentChangeRange))) {
+                // once we find intersection, begin unioning the intersections.
+                intersection = contentChangeRange.union(midRange);
+
+                let newIntersection;
+                
+                // go left and check all intersections
+                for(left = middle - 1; left >= 0 && (newIntersection = contentChangeRange.intersection(this.activeOccurrences[left])); left--) {
+                    intersection = newIntersection.union(intersection);
+                }
+
+                // go right and check all intersections
+                for(right = middle + 1; right < this.activeOccurrences.length && (newIntersection = contentChangeRange.intersection(this.activeOccurrences[right])); right++) {
+                    intersection = newIntersection.union(intersection);
+                }
+
+                this.decorationOptions.splice(left + 1, right - (left + 1));
+                this.activeOccurrences.splice(left + 1, right - (left + 1));
+
+                return {
+                    removed: right - (left + 1),
+                    range: intersection,
+                    insertIndex: left + 1
+                };
+                //if mid range is before 
+            } else if(midRange.start.isBeforeOrEqual(contentChangeRange.start)) {
+                left = middle + 1;
+            } else {
+                right = middle - 1;
+            }
         }
+
+        console.error('Unable to find an intersection. Returning undefined.');
+        return {removed: 0, insertIndex: left + 1};
     }
 
     getDisposeHandle() {
@@ -140,8 +227,8 @@ export class DecorationTypeWrapper {
     }
 
     applyDecorationsToEditor(activeEditor: vscode.TextEditor) {
-        if(activeEditor.document.fileName !== this.documentName) {
-            throw new Error(`CANNOT APPLY DECORATIONS TO DIFFERENT DOCUMENT - obs -> ${activeEditor.document.fileName} != expected ->${this.documentName}`)
+        if(activeEditor.document.fileName !== this.document.fileName) {
+            throw new Error(`CANNOT APPLY DECORATIONS TO DIFFERENT DOCUMENT - obs -> ${activeEditor.document.fileName} != expected ->${this.document.fileName}`)
         }
         activeEditor.setDecorations(this.decorationType, this.decorationOptions);
     }
