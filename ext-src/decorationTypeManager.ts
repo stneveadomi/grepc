@@ -11,7 +11,6 @@ export class DecorationTypeManager {
     private _activeEditor: vscode.TextEditor | undefined = undefined;
     private _disposables: { dispose(): void }[] = [];
 
-    private _ruleToActiveOccurrences = new Map<string, vscode.Range[]>();
     private _oldEnabledRules: Map<LocationState, Rule[]> = new Map();
     private _activeDecorations: Map<vscode.TextEditorDecorationType, vscode.DecorationOptions[]> = new Map();
 
@@ -447,17 +446,6 @@ export class DecorationTypeManager {
         return occurrences;
     }
 
-    private pushEmptyOccurrenceData() {
-        this._ruleFactories.forEach((ruleFactory) => {
-            // take 1 and complete, this should be the last value sent as we shareReplay $enabledRules.
-            ruleFactory.$enabledRules.pipe(take(1)).subscribe((enabledRules) => {
-                enabledRules.forEach((rule) => ruleFactory.pushOccurrences(rule.id, [], 0));
-            });
-        });
-        /* Clear active occurrences as we just pushed empty occurrence data. */
-        this._ruleToActiveOccurrences.clear();
-    }
-
     /**
      * Clear all set decorations on the given editor.
      *
@@ -481,7 +469,7 @@ export class DecorationTypeManager {
     }
 
     jumpToLine(lineRange: LineRange) {
-        const range = this._ruleToActiveOccurrences.get(lineRange?.ruleId)?.[lineRange.index];
+        const range = new vscode.Range(new vscode.Position(lineRange.lineNumbers[0], 0), new vscode.Position(lineRange.lineNumbers[0], 0));
         if (range) {
             this.logger.debug('[DTM] jumpToLine() - range found, jumping to in editor', this._activeEditor);
             if (this._activeEditor) {
