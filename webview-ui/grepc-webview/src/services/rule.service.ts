@@ -86,7 +86,7 @@ export class RuleService {
                 JSON.stringify(Array.from(this._ruleMap.entries())),
         );
         this.pushRulesToExtension();
-        this._rules.next(this._rulesArray);
+        this.pushRulesLocally();
     }
 
     public pushRulesLocally() {
@@ -177,7 +177,7 @@ export class RuleService {
 
         this._rulesArray[ruleAIndex] = ruleB;
         this._rulesArray[ruleBIndex] = ruleA;
-        this._rules.next(this._rulesArray);
+        this.pushRules();
     }
 
     updateOccurrenceData(id: string, ranges: LineRange[], occurrences: number) {

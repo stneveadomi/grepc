@@ -11,7 +11,7 @@ import { IntersectingRangeData } from './intersectingRangeData';
  * On disposal (dispose()) of this wrapper, the textEditorDecType will also be disposed.
  */
 export class DecorationTypeWrapper {
-    private decorationType;
+    private decorationType: vscode.TextEditorDecorationType | undefined;
 
     private decorationOptions: vscode.DecorationOptions[] = [];
     public activeOccurrences: vscode.Range[] = [];
@@ -21,27 +21,34 @@ export class DecorationTypeWrapper {
         private rule: Rule,
         private logger: vscode.LogOutputChannel,
     ) {
+        this.generateDecorationType();
+    }
+
+    private generateDecorationType() {
+        if (this.decorationType) {
+            this.decorationType.dispose();
+        }
         this.decorationType = vscode.window.createTextEditorDecorationType({
-            backgroundColor: rule.backgroundColor ?? '',
-            outline: rule.outline ?? '',
-            outlineColor: rule.outlineColor ?? '',
-            outlineWidth: rule.outlineWidth ?? '',
+            backgroundColor: this.rule.backgroundColor ?? '',
+            outline: this.rule.outline ?? '',
+            outlineColor: this.rule.outlineColor ?? '',
+            outlineWidth: this.rule.outlineWidth ?? '',
 
-            border: rule.border ?? '',
-            borderColor: rule.borderColor ?? '',
-            borderWidth: rule.borderWidth ?? '',
+            border: this.rule.border ?? '',
+            borderColor: this.rule.borderColor ?? '',
+            borderWidth: this.rule.borderWidth ?? '',
 
-            color: rule.color ?? '',
+            color: this.rule.color ?? '',
 
-            fontStyle: rule.fontStyle ?? '',
-            fontWeight: rule.fontWeight ?? '',
+            fontStyle: this.rule.fontStyle ?? '',
+            fontWeight: this.rule.fontWeight ?? '',
 
-            textDecoration: rule.textDecoration ?? '',
+            textDecoration: this.rule.textDecoration ?? '',
 
-            cursor: rule.cursor ?? '',
-            isWholeLine: rule.isWholeLine ?? false,
-            overviewRulerColor: rule.overviewRulerColor ?? '',
-            overviewRulerLane: rule.overviewRulerLane ? Number(rule.overviewRulerLane) : vscode.OverviewRulerLane.Full,
+            cursor: this.rule.cursor ?? '',
+            isWholeLine: this.rule.isWholeLine ?? false,
+            overviewRulerColor: this.rule.overviewRulerColor ?? '',
+            overviewRulerLane: this.rule.overviewRulerLane ? Number(this.rule.overviewRulerLane) : vscode.OverviewRulerLane.Full,
         });
     }
 
@@ -216,7 +223,7 @@ export class DecorationTypeWrapper {
     }
 
     getDisposeHandle() {
-        return this.decorationType.dispose;
+        return this.decorationType?.dispose;
     }
 
     applyDecorationsToEditor(activeEditor: vscode.TextEditor) {
@@ -225,7 +232,10 @@ export class DecorationTypeWrapper {
                 `CANNOT APPLY DECORATIONS TO DIFFERENT DOCUMENT - obs -> ${activeEditor.document.fileName} != expected ->${this.document.fileName}`,
             );
         }
-        activeEditor.setDecorations(this.decorationType, this.decorationOptions);
+        // we must regenerate the decoration type here as to fix priorities since
+        // vscode goes simply by newest decoration type to determine priority.
+        this.generateDecorationType();
+        activeEditor.setDecorations(this.decorationType!, this.decorationOptions);
     }
 
     /**
@@ -264,7 +274,7 @@ export class DecorationTypeWrapper {
     }
 
     clearDecorations(activeEditor: vscode.TextEditor) {
-        activeEditor.setDecorations(this.decorationType, []);
+        activeEditor.setDecorations(this.decorationType!, []);
     }
 
     clearOccurrenceData() {
@@ -273,6 +283,6 @@ export class DecorationTypeWrapper {
     }
 
     dispose() {
-        this.decorationType.dispose();
+        this.decorationType?.dispose();
     }
 }

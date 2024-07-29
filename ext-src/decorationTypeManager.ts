@@ -298,7 +298,7 @@ export class DecorationTypeManager {
                         decorationType.clearDecorations(textEditor);
                         decorationType.updateOccurrences(textEditor.document, applyRule);
                     }
-                    this.logger.debug(`[DTM] Applying decorations to editor: ${textEditor.document.fileName}`);
+                    this.logger.debug(`[DTM] Applying decoration ${applyRule.title} to editor: ${textEditor.document.fileName}`);
                     decorationType.applyDecorationsToEditor(textEditor);
                     //if decorationType has not changed, no need to update.
                 } else {
