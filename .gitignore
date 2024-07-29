@@ -3,3 +3,4 @@ webview-ui\grepc-webview\node_modules
 dist
 out
 !.husky/_/husky.sh
+.vscode-test
