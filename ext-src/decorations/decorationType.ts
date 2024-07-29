@@ -19,7 +19,7 @@ export class DecorationTypeWrapper {
     constructor(
         private readonly document: vscode.TextDocument,
         private rule: Rule,
-        private logger: vscode.LogOutputChannel
+        private logger: vscode.LogOutputChannel,
     ) {
         this.decorationType = vscode.window.createTextEditorDecorationType({
             backgroundColor: rule.backgroundColor ?? '',

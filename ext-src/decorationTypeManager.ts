@@ -119,7 +119,7 @@ export class DecorationTypeManager {
 
                         // update SPAs with appropriate occurrence data.
                         this.pushActiveEditorOccurrenceData();
-                        
+
                         this._oldEnabledRules.set(ruleFactory.location, enabledRules);
                     },
                 }),
@@ -152,7 +152,7 @@ export class DecorationTypeManager {
                 this.updateOccurrenceData(newEditor.document);
                 this.applyDecorationsToEditor(newEditor);
             }
-            if(newVisibleEditors.length > 0) {
+            if (newVisibleEditors.length > 0) {
                 this.pushActiveEditorOccurrenceData();
             }
 
