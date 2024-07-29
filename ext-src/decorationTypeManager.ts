@@ -117,7 +117,7 @@ export class DecorationTypeManager {
                         }
 
                         // update SPAs with appropriate occurrence data.
-                        this.pushActiveEditorOccurrenceData();
+                        this.pushAllActiveEditorOccurrenceData();
 
                         this._oldEnabledRules.set(ruleFactory.location, enabledRules);
                     },
@@ -131,7 +131,7 @@ export class DecorationTypeManager {
                 this._activeEditor = undefined;
             } else {
                 this.applyDecorationsToEditor(this._activeEditor);
-                this.pushActiveEditorOccurrenceData();
+                this.pushAllActiveEditorOccurrenceData();
             }
         }
 
@@ -152,7 +152,7 @@ export class DecorationTypeManager {
                 this.applyDecorationsToEditor(newEditor);
             }
             if (newVisibleEditors.length > 0) {
-                this.pushActiveEditorOccurrenceData();
+                this.pushAllActiveEditorOccurrenceData();
             }
 
             for (const notVisibleEditor of notVisibleEditors) {
@@ -173,7 +173,7 @@ export class DecorationTypeManager {
                 if (editor && !this._documentToActiveDecorationMap.has(editor.document.fileName)) {
                     this.applyDecorationsToEditor(editor);
                 }
-                this.pushActiveEditorOccurrenceData();
+                this.pushAllActiveEditorOccurrenceData();
             },
             this,
             this._disposables,
@@ -375,7 +375,7 @@ export class DecorationTypeManager {
             this._activeDecorations.forEach((decorations, decorationType) => {
                 this._activeEditor?.setDecorations(decorationType, decorations);
             });
-            this.pushActiveEditorOccurrenceData();
+            this.pushAllActiveEditorOccurrenceData();
         }
     }
 
@@ -383,7 +383,7 @@ export class DecorationTypeManager {
         for (const textEditor of vscode.window.visibleTextEditors) {
             this.applyDecorationsToEditor(textEditor);
             if (textEditor === vscode.window.activeTextEditor) {
-                this.pushActiveEditorOccurrenceData();
+                this.pushAllActiveEditorOccurrenceData();
             }
         }
     }
@@ -402,20 +402,25 @@ export class DecorationTypeManager {
     }
 
     /**
-     * Assumes that active editor is set.
+     * Push to all webviews the current occurrence data of the active editor.
+     * References vscode.window.activeTextEditor.
      */
-    private pushActiveEditorOccurrenceData() {
+    pushAllActiveEditorOccurrenceData() {
+        for (const ruleFactory of this._ruleFactories) {
+            this.pushActiveEditorOccurrenceData(ruleFactory);
+        }
+    }
+
+    pushActiveEditorOccurrenceData(ruleFactory: RuleFactory) {
         this.logger.debug('pushing active editor occurrence data');
         if (!vscode.window.activeTextEditor) {
             throw new Error('Unable to push occurrence data as active editor is undefined.');
         }
-        for (const ruleFactory of this._ruleFactories) {
-            const activeDecorationMap = this.getActiveDecorationMap(vscode.window.activeTextEditor!.document, ruleFactory.location);
-            for (const entry of activeDecorationMap.entries()) {
-                const ruleId = entry[0];
-                const decType = entry[1];
-                ruleFactory.pushOccurrences(ruleId, DecorationTypeManager.toLineRanges(ruleId, decType.activeOccurrences), decType.activeOccurrences.length);
-            }
+        const activeDecorationMap = this.getActiveDecorationMap(vscode.window.activeTextEditor!.document, ruleFactory.location);
+        for (const entry of activeDecorationMap.entries()) {
+            const ruleId = entry[0];
+            const decType = entry[1];
+            ruleFactory.pushOccurrences(ruleId, DecorationTypeManager.toLineRanges(ruleId, decType.activeOccurrences), decType.activeOccurrences.length);
         }
     }
 

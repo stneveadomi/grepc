@@ -163,6 +163,7 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
                         //especially if they are reopened without the extension closing.
                         this._logger.debug('Received rulesRequest event. Pushing rules to webview.');
                         this.pushRules();
+                        this._dtManager.pushActiveEditorOccurrenceData(this._ruleFactory);
                         return;
                     case 'jumpToLine': {
                         //when a selection is made, a user can jump their cursor to it.
