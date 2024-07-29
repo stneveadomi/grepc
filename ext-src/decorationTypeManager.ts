@@ -1,4 +1,4 @@
-import { Subscription, take } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Rule } from './rules/rule';
 import { RuleFactory } from './rules/ruleFactory';
 import * as vscode from 'vscode';
