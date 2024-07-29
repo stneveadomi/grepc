@@ -5,10 +5,7 @@ import { GrepcViewProvider } from './viewProviders/grepcViewProvider';
 import * as vscode from 'vscode';
 
 export class DragService {
-    private locationToWebviewProvider = new Map<
-        LocationState,
-        GrepcViewProvider
-    >();
+    private locationToWebviewProvider = new Map<LocationState, GrepcViewProvider>();
     private _dragData: string | undefined;
     private _originLocation: LocationState | undefined;
 
@@ -40,22 +37,14 @@ export class DragService {
 
     async transferRule(targetLocation: string | undefined) {
         if (!targetLocation) {
-            this.logger.error(
-                '[DRAG] Unable to transfer rule as target location is undefined.',
-            );
+            this.logger.error('[DRAG] Unable to transfer rule as target location is undefined.');
         }
-        this.logger.debug(
-            `[DRAG] Transferring rule ${this._dragData} from ${this._originLocation} to ${targetLocation}`,
-        );
+        this.logger.debug(`[DRAG] Transferring rule ${this._dragData} from ${this._originLocation} to ${targetLocation}`);
         const source = <LocationState>this._originLocation;
         const target = <LocationState>targetLocation;
 
         if (source && target && source !== target && this._dragData) {
-            await this.ruleFactoryMediator.moveRule(
-                this._dragData,
-                source,
-                target,
-            );
+            await this.ruleFactoryMediator.moveRule(this._dragData, source, target);
             // If successful in moving rule, now trigger update decorations.
             this.dtTypeManager.applyDecorationsToVisibleEditors();
         } else {

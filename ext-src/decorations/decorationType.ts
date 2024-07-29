@@ -14,7 +14,7 @@ export class DecorationTypeWrapper {
     private decorationType;
 
     private decorationOptions: vscode.DecorationOptions[] = [];
-    private activeOccurrences: vscode.Range[] = [];
+    public activeOccurrences: vscode.Range[] = [];
 
     constructor(
         private readonly document: vscode.TextDocument,
@@ -40,9 +40,7 @@ export class DecorationTypeWrapper {
             cursor: rule.cursor ?? '',
             isWholeLine: rule.isWholeLine ?? false,
             overviewRulerColor: rule.overviewRulerColor ?? '',
-            overviewRulerLane: rule.overviewRulerLane
-                ? Number(rule.overviewRulerLane)
-                : vscode.OverviewRulerLane.Full,
+            overviewRulerLane: rule.overviewRulerLane ? Number(rule.overviewRulerLane) : vscode.OverviewRulerLane.Full,
         });
     }
 
@@ -77,8 +75,7 @@ export class DecorationTypeWrapper {
     needsOnlyOccurrenceUpdate(current: Rule) {
         return (
             (this.rule.regularExpression !== current.regularExpression ||
-                this.rule.regularExpressionFlags !==
-                    current.regularExpressionFlags ||
+                this.rule.regularExpressionFlags !== current.regularExpressionFlags ||
                 this.rule.includedFiles !== current.includedFiles ||
                 this.rule.excludedFiles !== current.excludedFiles ||
                 this.rule.title !== current.title) &&
@@ -97,35 +94,24 @@ export class DecorationTypeWrapper {
         return new vscode.Range(newStart, newEnd);
     }
 
-    generateOccurrencesOnChange(
-        contentChange: vscode.TextDocumentContentChangeEvent,
-    ) {
+    generateOccurrencesOnChange(contentChange: vscode.TextDocumentContentChangeEvent) {
         // We will pass in a getFullLineRange() to handle removing intersecting occurrences.
         // This just makes everything so much easier as we are forcing updates per line.
         // We could be more particular, but the logic gets a lot harder.
         // TODO: Investigate why deletes do not work. This will involve removing this call to getFullLineRange.
-        const intersectingRangeData = this.removeIntersectingOccurrences(
-            this.getFullLineRange(contentChange.range),
-        );
+        const intersectingRangeData = this.removeIntersectingOccurrences(this.getFullLineRange(contentChange.range));
 
         if (intersectingRangeData.removed > 0 && !intersectingRangeData.range) {
-            throw Error(
-                'Intersecting Range Data should contain a range if removed > 0.',
-            );
+            throw Error('Intersecting Range Data should contain a range if removed > 0.');
         }
 
         //either expanded range over all intersecting matches
         //or just take the content change range and get the full line i.e. contentChange.range
-        const textRange = this.getFullLineRange(
-            intersectingRangeData.range ?? contentChange.range,
-        );
+        const textRange = this.getFullLineRange(intersectingRangeData.range ?? contentChange.range);
         const text = this.document.getText(textRange);
         console.log(`new text range to check over: ${text}`);
 
-        const regEx = new RegExp(
-            this.rule.regularExpression,
-            this.rule.regularExpressionFlags || 'g',
-        );
+        const regEx = new RegExp(this.rule.regularExpression, this.rule.regularExpressionFlags || 'g');
 
         let match;
 
@@ -135,15 +121,10 @@ export class DecorationTypeWrapper {
 
         const newDecorations: vscode.DecorationOptions[] = [];
         const newOccurrences: vscode.Range[] = [];
-        while (
-            (match = regEx.exec(text)) &&
-            this.decorationOptions.length < (this.rule.maxOccurrences ?? 1000)
-        ) {
+        while ((match = regEx.exec(text)) && this.decorationOptions.length < (this.rule.maxOccurrences ?? 1000)) {
             occurrence++;
             const startPos = this.document.positionAt(offset + match.index);
-            const endPos = this.document.positionAt(
-                offset + match.index + match[0].length,
-            );
+            const endPos = this.document.positionAt(offset + match.index + match[0].length);
             const range = new vscode.Range(startPos, endPos);
             const decoration = {
                 range: range,
@@ -173,9 +154,7 @@ export class DecorationTypeWrapper {
      * @param contentChangeRange
      * @returns vscode.Range - intersecting range built by the union of all intersecting ranges.
      */
-    removeIntersectingOccurrences(
-        contentChangeRange: vscode.Range,
-    ): IntersectingRangeData {
+    removeIntersectingOccurrences(contentChangeRange: vscode.Range): IntersectingRangeData {
         let left = 0;
         let right = this.activeOccurrences.length - 1;
 
@@ -191,9 +170,7 @@ export class DecorationTypeWrapper {
             const middle = Math.floor((left + right) / 2);
             const midRange = this.activeOccurrences[middle];
             if (midRange == undefined) {
-                console.error(
-                    `midRange is undefined: ${middle} not in [${left}, ${right})`,
-                );
+                console.error(`midRange is undefined: ${middle} not in [${left}, ${right})`);
                 return { removed: 0, insertIndex: left + 1 };
             }
 
@@ -205,24 +182,14 @@ export class DecorationTypeWrapper {
                 let newIntersection;
 
                 // go left and check all intersections
-                for (
-                    left = middle - 1;
-                    left >= 0 &&
-                    (newIntersection = contentChangeRange.intersection(
-                        this.activeOccurrences[left],
-                    ));
-                    left--
-                ) {
+                for (left = middle - 1; left >= 0 && (newIntersection = contentChangeRange.intersection(this.activeOccurrences[left])); left--) {
                     intersection = newIntersection.union(intersection);
                 }
 
                 // go right and check all intersections
                 for (
                     right = middle + 1;
-                    right < this.activeOccurrences.length &&
-                    (newIntersection = contentChangeRange.intersection(
-                        this.activeOccurrences[right],
-                    ));
+                    right < this.activeOccurrences.length && (newIntersection = contentChangeRange.intersection(this.activeOccurrences[right]));
                     right++
                 ) {
                     intersection = newIntersection.union(intersection);
@@ -237,9 +204,7 @@ export class DecorationTypeWrapper {
                     insertIndex: left + 1,
                 };
                 //if mid range is before
-            } else if (
-                midRange.start.isBeforeOrEqual(contentChangeRange.start)
-            ) {
+            } else if (midRange.start.isBeforeOrEqual(contentChangeRange.start)) {
                 left = middle + 1;
             } else {
                 right = middle - 1;
@@ -260,10 +225,7 @@ export class DecorationTypeWrapper {
                 `CANNOT APPLY DECORATIONS TO DIFFERENT DOCUMENT - obs -> ${activeEditor.document.fileName} != expected ->${this.document.fileName}`,
             );
         }
-        activeEditor.setDecorations(
-            this.decorationType,
-            this.decorationOptions,
-        );
+        activeEditor.setDecorations(this.decorationType, this.decorationOptions);
     }
 
     /**
@@ -279,18 +241,12 @@ export class DecorationTypeWrapper {
             rule = this.rule;
         }
 
-        const regEx = new RegExp(
-            rule.regularExpression,
-            rule.regularExpressionFlags || 'g',
-        );
+        const regEx = new RegExp(rule.regularExpression, rule.regularExpressionFlags || 'g');
         const decorations: vscode.DecorationOptions[] = [];
         const ranges: vscode.Range[] = [];
         let match;
         let occurrence = 0;
-        while (
-            (match = regEx.exec(document.getText())) &&
-            decorations.length < (rule.maxOccurrences ?? 1000)
-        ) {
+        while ((match = regEx.exec(document.getText())) && decorations.length < (rule.maxOccurrences ?? 1000)) {
             occurrence++;
             const startPos = document.positionAt(match.index);
             const endPos = document.positionAt(match.index + match[0].length);

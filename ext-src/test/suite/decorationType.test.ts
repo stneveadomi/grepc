@@ -21,27 +21,15 @@ suite('DecorationTypeWrapper', () => {
     });
 
     test('removeIntersectingOccurrences() -> single intersection', () => {
-        const contentChangeRange = new vscode.Range(
-            textDoc.positionAt(2),
-            textDoc.positionAt(7),
-        );
-        const expectedRange = new vscode.Range(
-            textDoc.positionAt(1),
-            textDoc.positionAt(7),
-        );
+        const contentChangeRange = new vscode.Range(textDoc.positionAt(2), textDoc.positionAt(7));
+        const expectedRange = new vscode.Range(textDoc.positionAt(1), textDoc.positionAt(7));
         const result = dt.removeIntersectingOccurrences(contentChangeRange);
         assert.ok(result.removed == 1);
-        assert.equal(
-            textDoc.getText(result.range),
-            textDoc.getText(expectedRange),
-        );
+        assert.equal(textDoc.getText(result.range), textDoc.getText(expectedRange));
     });
 
     test('removeIntersectingOccurrences() -> no intersection', () => {
-        const contentChangeRange = new vscode.Range(
-            textDoc.positionAt(0),
-            textDoc.positionAt(2),
-        );
+        const contentChangeRange = new vscode.Range(textDoc.positionAt(0), textDoc.positionAt(2));
         const result = dt.removeIntersectingOccurrences(contentChangeRange);
         assert.ok(result.removed == 0);
     });

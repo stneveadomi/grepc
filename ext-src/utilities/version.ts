@@ -1,14 +1,10 @@
-const semverRegex =
-    /^(\d+)\.(\d+)\.(\d+)(?:-([\da-z-]+(?:\.[\da-z-]+)*))?(?:\+([\da-z-]+(?:\.[\da-z-]+)*))?$/i;
+const semverRegex = /^(\d+)\.(\d+)\.(\d+)(?:-([\da-z-]+(?:\.[\da-z-]+)*))?(?:\+([\da-z-]+(?:\.[\da-z-]+)*))?$/i;
 
 export function isValidSemVer(version: string): boolean {
     return semverRegex.test(version);
 }
 
-export function compareVersions(
-    versionA: string,
-    versionB: string,
-): VersionDiff {
+export function compareVersions(versionA: string, versionB: string): VersionDiff {
     const [majorA, minorA, patchA] = versionA.split('.').map(Number);
     const [majorB, minorB, patchB] = versionB.split('.').map(Number);
 
