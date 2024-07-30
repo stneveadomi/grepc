@@ -103,6 +103,18 @@ export class DecorationTypeWrapper {
     }
 
     generateOccurrencesOnChange(contentChange: vscode.TextDocumentContentChangeEvent) {
+        // if there is a new line, we just need to recalculate everything.
+        // similarily if there is a deletion, ditto.
+        if ((contentChange.text.length == 0 && !contentChange.range.isSingleLine) || /[\n\r]/g.test(contentChange.text)) {
+            vscode.window.visibleTextEditors
+                .filter((editor) => editor.document === this.document)
+                .forEach((editor) => {
+                    this.clearDecorations(editor);
+                });
+            this.updateOccurrences(this.document, this.rule);
+            return;
+        }
+
         // We will pass in a getFullLineRange() to handle removing intersecting occurrences.
         // This just makes everything so much easier as we are forcing updates per line.
         // We could be more particular, but the logic gets a lot harder.
