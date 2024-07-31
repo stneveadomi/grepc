@@ -266,6 +266,17 @@ export class DecorationTypeWrapper {
         const regEx = new RegExp(rule.regularExpression, rule.regularExpressionFlags || 'g');
         const decorations: vscode.DecorationOptions[] = [];
         const ranges: vscode.Range[] = [];
+
+        if(rule.includedFiles && !(new RegExp(rule.includedFiles)).test(document.fileName)) {
+            this.clearOccurrenceData();
+            return;
+        }
+
+        if(rule.excludedFiles && (new RegExp(rule.excludedFiles)).test(document.fileName)) {
+            this.clearOccurrenceData();
+            return;
+        }
+
         let match;
         let occurrence = 0;
         while ((match = regEx.exec(document.getText())) && decorations.length < (rule.maxOccurrences ?? 1000)) {
