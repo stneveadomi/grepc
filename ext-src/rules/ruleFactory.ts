@@ -255,15 +255,32 @@ export class RuleFactory {
         await this.updateRules(rulesMap, rulesArray);
     }
 
-    pushOccurrences(ruleId: string, ranges: LineRange[], occurrences: number) {
+    /**
+     * Will attempt to push occurrences. If webview is not available (tab closed), it will no-op.
+     * @param ruleId 
+     * @param ranges
+     */
+    pushOccurrenceLineData(ruleId: string, ranges: LineRange[]) {
         if (!this._grepcProvider?.webview) {
-            this.logger.error(`[RF] [${reverseMap(this.location)}] Unable to push occurrences as grepc provider webview is undefined.`);
+            this.logger.debug(`[RF] [${reverseMap(this.location)}] Unable to push occurrences as grepc provider webview is undefined.`);
+            return;
         }
         this._grepcProvider?.webview?.postMessage({
-            type: 'ruleDecorationUpdate',
+            type: 'occurrenceLineDataUpdate',
             id: ruleId,
-            ranges: JSON.stringify(ranges),
-            occurrences: occurrences,
+            ranges: JSON.stringify(ranges)
+        });
+    }
+
+    pushOccurrenceCount(ruleId: string, count: number) {
+        if (!this._grepcProvider?.webview) {
+            this.logger.debug(`[RF] [${reverseMap(this.location)}] Unable to push occurrences as grepc provider webview is undefined.`);
+            return;
+        }
+        this._grepcProvider?.webview?.postMessage({
+            type: 'occurrenceCountUpdate',
+            id: ruleId,
+            count
         });
     }
 

@@ -89,15 +89,22 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
                     event.data?.arrayData,
                 );
                 break;
-            case 'ruleDecorationUpdate': {
+            case 'occurrenceLineDataUpdate': {
                 const id = event?.data?.id;
                 const ranges = event?.data?.ranges;
-                const occurences = event?.data?.occurrences;
-                this.ruleService.updateOccurrenceData(
+                this.ruleService.updateOccurrenceLineData(
                     id,
-                    JSON.parse(ranges),
-                    occurences,
+                    JSON.parse(ranges)
                 );
+                break;
+            }
+            case 'occurrenceCountUpdate': {
+                const id = event?.data?.id;
+                const count = event?.data?.count;
+                this.ruleService.setOnlyOccurrenceCount(
+                    id,
+                    parseInt(count, 10)
+                )
                 break;
             }
             case 'dragstart':

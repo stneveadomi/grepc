@@ -102,6 +102,11 @@ export class DecorationTypeWrapper {
         return new vscode.Range(newStart, newEnd);
     }
 
+    /**
+     * Another helper for occurrence changes
+     * @param contentChange 
+     * @returns boolean indicating if we need to apply decorations after this update.
+     */
     generateOccurrencesOnChange(contentChange: vscode.TextDocumentContentChangeEvent) {
         // if there is a new line, we just need to recalculate everything.
         // similarily if there is a deletion, ditto.
@@ -112,7 +117,7 @@ export class DecorationTypeWrapper {
                     this.clearDecorations(editor);
                 });
             this.updateOccurrences(this.document, this.rule);
-            return;
+            return true;
         }
 
         // We will pass in a getFullLineRange() to handle removing intersecting occurrences.
@@ -120,7 +125,6 @@ export class DecorationTypeWrapper {
         // We could be more particular, but the logic gets a lot harder.
         // TODO: Investigate why deletes do not work. This will involve removing this call to getFullLineRange.
         const intersectingRangeData = this.removeIntersectingOccurrences(this.getFullLineRange(contentChange.range));
-
         if (intersectingRangeData.removed > 0 && !intersectingRangeData.range) {
             throw Error('Intersecting Range Data should contain a range if removed > 0.');
         }
@@ -160,6 +164,9 @@ export class DecorationTypeWrapper {
         newOccurrences.forEach((occurrenceRange, i) => {
             this.activeOccurrences.splice(insertIndex + i, 0, occurrenceRange);
         });
+
+        // If no removed rules and no new decorations, no need to apply decorations.
+        return newDecorations.length !== 0 || intersectingRangeData.removed !== 0;
     }
 
     /**

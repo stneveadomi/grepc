@@ -10,9 +10,7 @@ export class DecorationTypeManager {
     private _subscriptions: Subscription[] = [];
     private _activeEditor: vscode.TextEditor | undefined = undefined;
     private _disposables: { dispose(): void }[] = [];
-
     private _oldEnabledRules: Map<LocationState, Rule[]> = new Map();
-    private _activeDecorations: Map<vscode.TextEditorDecorationType, vscode.DecorationOptions[]> = new Map();
 
     /**
      * TextDocument -> LocationState (factory) -> applied rule ids -> DecType
@@ -151,6 +149,7 @@ export class DecorationTypeManager {
                 this.updateOccurrenceData(newEditor.document);
                 this.applyDecorationsToEditor(newEditor);
             }
+
             if (newVisibleEditors.length > 0) {
                 this.pushAllActiveEditorOccurrenceData();
             }
@@ -218,8 +217,14 @@ export class DecorationTypeManager {
                     `[DTM] Text document changed, triggering update decorations on ${event.document.fileName} because of reason: ${event.reason}`,
                     event.contentChanges,
                 );
-                this.generateOccurrencesOnChange(event);
-                this.applyDecorationsToVisibleEditors();
+                if(this.generateOccurrencesOnChange(event)) {
+                    // If a substantive change, applyDecorationsToVisibleEditors.
+                    this.applyDecorationsToVisibleEditors();
+                    this.logger.debug('Applying decorations to visible editors on TextDocumentChangeEvent');
+                } else {
+                    this.logger.debug('No substantive change found needing a decoration apply.');
+                }
+
             },
             this,
             this._disposables,
@@ -298,7 +303,7 @@ export class DecorationTypeManager {
                         decorationType.clearDecorations(textEditor);
                         decorationType.updateOccurrences(textEditor.document, applyRule);
                     }
-                    this.logger.debug(`[DTM] Applying decoration ${applyRule.title} to editor: ${textEditor.document.fileName}`);
+                    //this.logger.debug(`[DTM] Applying decoration ${applyRule.title} to editor: ${textEditor.document.fileName}`);
                     decorationType.applyDecorationsToEditor(textEditor);
                     //if decorationType has not changed, no need to update.
                 } else {
@@ -322,17 +327,28 @@ export class DecorationTypeManager {
         }
     }
 
+    /**
+     * This handles a DocumentChangeEvent to update occurrence data (where decorations go).
+     * 
+     * @param event - the vscode.TextDocumentChangeEvent
+     * @returns boolean indicating if we need to apply decorations after updating occurrences.
+     */
     generateOccurrencesOnChange(event: vscode.TextDocumentChangeEvent) {
+        let needsDecorationApply = false;
         for (const ruleFactory of this._ruleFactories) {
             const appliedRuleToDecorationMap = this.getActiveDecorationMap(event.document, ruleFactory.location);
             if (appliedRuleToDecorationMap) {
                 for (const decorationType of appliedRuleToDecorationMap.values()) {
                     for (const contentChange of event.contentChanges) {
-                        decorationType.generateOccurrencesOnChange(contentChange);
+                        if(decorationType.generateOccurrencesOnChange(contentChange)) {
+                            needsDecorationApply = true;
+                        }
                     }
                 }
             }
         }
+
+        return needsDecorationApply;
     }
 
     /**
@@ -370,15 +386,6 @@ export class DecorationTypeManager {
         }
     }
 
-    applyDecorationsToActiveEditor() {
-        if (this._activeEditor) {
-            this._activeDecorations.forEach((decorations, decorationType) => {
-                this._activeEditor?.setDecorations(decorationType, decorations);
-            });
-            this.pushAllActiveEditorOccurrenceData();
-        }
-    }
-
     applyDecorationsToVisibleEditors() {
         for (const textEditor of vscode.window.visibleTextEditors) {
             this.applyDecorationsToEditor(textEditor);
@@ -404,6 +411,8 @@ export class DecorationTypeManager {
     /**
      * Push to all webviews the current occurrence data of the active editor.
      * References vscode.window.activeTextEditor.
+     * 
+     * <b>Warning: This can be a heavily intense operation</b>
      */
     pushAllActiveEditorOccurrenceData() {
         for (const ruleFactory of this._ruleFactories) {
@@ -414,13 +423,20 @@ export class DecorationTypeManager {
     pushActiveEditorOccurrenceData(ruleFactory: RuleFactory) {
         this.logger.debug('pushing active editor occurrence data');
         if (!vscode.window.activeTextEditor) {
-            throw new Error('Unable to push occurrence data as active editor is undefined.');
+            this.logger.error('Unable to push occurrence data as active editor is undefined.');
+            return;
         }
         const activeDecorationMap = this.getActiveDecorationMap(vscode.window.activeTextEditor!.document, ruleFactory.location);
         for (const entry of activeDecorationMap.entries()) {
             const ruleId = entry[0];
             const decType = entry[1];
-            ruleFactory.pushOccurrences(ruleId, DecorationTypeManager.toLineRanges(ruleId, decType.activeOccurrences), decType.activeOccurrences.length);
+            const rule = ruleFactory.getRule(ruleId);
+            //only if occurrences are expanded, push line data.
+            if(rule?.occurrencesExpanded) {
+                ruleFactory.pushOccurrenceLineData(ruleId, DecorationTypeManager.toLineRanges(ruleId, decType.activeOccurrences));
+            } else {
+                ruleFactory.pushOccurrenceCount(ruleId, decType.activeOccurrences.length);
+            }
         }
     }
 
