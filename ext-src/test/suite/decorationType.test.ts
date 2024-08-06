@@ -35,10 +35,4 @@ suite('DecorationTypeWrapper', () => {
         const result = dt.removeIntersectingOccurrences(contentChangeRange);
         assert.ok(result.removed == 0);
     });
-
-    test('Sample test', () => {
-        assert.strictEqual([1, 2, 3].indexOf(5), -1);
-        assert.strictEqual([1, 2, 3].indexOf(0), -1);
-        console.log(dt);
-    });
 });
