@@ -432,7 +432,7 @@ export class DecorationTypeManager {
             const decType = entry[1];
             const rule = ruleFactory.getRule(ruleId);
             //only if occurrences are expanded, push line data.
-            if(rule?.occurrencesExpanded) {
+            if(rule && rule.expanded && rule.occurrencesExpanded) {
                 ruleFactory.pushOccurrenceLineData(ruleId, DecorationTypeManager.toLineRanges(ruleId, decType.activeOccurrences));
             } else {
                 ruleFactory.pushOccurrenceCount(ruleId, decType.activeOccurrences.length);
