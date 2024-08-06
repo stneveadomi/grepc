@@ -36,12 +36,12 @@ export function activate(context: vscode.ExtensionContext) {
     globalRuleFactory.grepcProvider = globalWebviewProvider;
 
     const whatsNewWebviewProvider = new WhatsNewWebview('grepc.webview.whats-new', context, logger);
-    
+
     const enableContextRetention = {
         webviewOptions: {
-            retainContextWhenHidden: true
-        }
-    }
+            retainContextWhenHidden: true,
+        },
+    };
     context.subscriptions.push(
         vscode.window.registerWebviewViewProvider(localWebviewProvider.viewType, localWebviewProvider, enableContextRetention),
         vscode.window.registerWebviewViewProvider(globalWebviewProvider.viewType, globalWebviewProvider, enableContextRetention),

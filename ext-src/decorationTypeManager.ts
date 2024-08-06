@@ -217,14 +217,13 @@ export class DecorationTypeManager {
                     `[DTM] Text document changed, triggering update decorations on ${event.document.fileName} because of reason: ${event.reason}`,
                     event.contentChanges,
                 );
-                if(this.generateOccurrencesOnChange(event)) {
+                if (this.generateOccurrencesOnChange(event)) {
                     // If a substantive change, applyDecorationsToVisibleEditors.
                     this.applyDecorationsToVisibleEditors();
                     this.logger.debug('Applying decorations to visible editors on TextDocumentChangeEvent');
                 } else {
                     this.logger.debug('No substantive change found needing a decoration apply.');
                 }
-
             },
             this,
             this._disposables,
@@ -329,7 +328,7 @@ export class DecorationTypeManager {
 
     /**
      * This handles a DocumentChangeEvent to update occurrence data (where decorations go).
-     * 
+     *
      * @param event - the vscode.TextDocumentChangeEvent
      * @returns boolean indicating if we need to apply decorations after updating occurrences.
      */
@@ -340,7 +339,7 @@ export class DecorationTypeManager {
             if (appliedRuleToDecorationMap) {
                 for (const decorationType of appliedRuleToDecorationMap.values()) {
                     for (const contentChange of event.contentChanges) {
-                        if(decorationType.generateOccurrencesOnChange(contentChange)) {
+                        if (decorationType.generateOccurrencesOnChange(contentChange)) {
                             needsDecorationApply = true;
                         }
                     }
@@ -411,7 +410,7 @@ export class DecorationTypeManager {
     /**
      * Push to all webviews the current occurrence data of the active editor.
      * References vscode.window.activeTextEditor.
-     * 
+     *
      * <b>Warning: This can be a heavily intense operation</b>
      */
     pushAllActiveEditorOccurrenceData() {
@@ -432,7 +431,7 @@ export class DecorationTypeManager {
             const decType = entry[1];
             const rule = ruleFactory.getRule(ruleId);
             //only if occurrences are expanded, push line data.
-            if(rule && rule.expanded && rule.occurrencesExpanded) {
+            if (rule && rule.expanded && rule.occurrencesExpanded) {
                 ruleFactory.pushOccurrenceLineData(ruleId, DecorationTypeManager.toLineRanges(ruleId, decType.activeOccurrences));
             } else {
                 ruleFactory.pushOccurrenceCount(ruleId, decType.activeOccurrences.length);

@@ -203,7 +203,7 @@ export class RuleService {
 
     private _updateOccurrenceLineData(
         id: string,
-        ranges: OccurrenceLineData[]
+        ranges: OccurrenceLineData[],
     ) {
         const ruleComponent = this._ruleIdToComponent.get(id);
         if (ruleComponent) {
@@ -214,17 +214,11 @@ export class RuleService {
         }
     }
 
-    setOnlyOccurrenceCount(
-        id: string,
-        count: number
-    ) {
+    setOnlyOccurrenceCount(id: string, count: number) {
         const ruleComponent = this._ruleIdToComponent.get(id);
-        if(ruleComponent) {
-            ruleComponent.occurrenceData = new OccurrenceData(
-                count
-            );
+        if (ruleComponent) {
+            ruleComponent.occurrenceData = new OccurrenceData(count);
         }
-
     }
 
     public jumpToLine(lineRange: OccurrenceLineData) {

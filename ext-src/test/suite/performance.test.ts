@@ -1,11 +1,10 @@
-
 import * as vscode from 'vscode';
 import { DecorationTypeWrapper } from '../../decorations/decorationType';
 import { Rule } from '../../rules/rule';
 
 function generateMassiveContent() {
     let content = '';
-    for(let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 1000; i++) {
         content += 'abcdefghijklmnopqrstuvwxyz\n';
     }
     return content;
@@ -34,16 +33,16 @@ suite('Performance Testing', () => {
         await vscode.window.showTextDocument(textDoc, vscode.ViewColumn.Active, false);
 
         let avgTime = 0;
-        for(let test = 1; test <= 10; test++) {
+        for (let test = 1; test <= 10; test++) {
             const start = performance.now();
-           
+
             dt = new DecorationTypeWrapper(textDoc, rule, logger);
             dt.updateOccurrences(textDoc);
-            
-            if(vscode.window.activeTextEditor) {
+
+            if (vscode.window.activeTextEditor) {
                 dt.applyDecorationsToEditor(vscode.window.activeTextEditor);
             }
-    
+
             const timeElapsed = performance.now() - start;
             avgTime += timeElapsed;
             console.log(`updateOccurrences - test ${test} - time ${timeElapsed}`);
@@ -51,6 +50,6 @@ suite('Performance Testing', () => {
         }
         avgTime /= 10;
 
-        console.log(`avg time: ${avgTime}ms`)
+        console.log(`avg time: ${avgTime}ms`);
     });
 });

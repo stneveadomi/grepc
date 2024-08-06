@@ -94,7 +94,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
                 const ranges = event?.data?.ranges;
                 this.ruleService.updateOccurrenceLineData(
                     id,
-                    JSON.parse(ranges)
+                    JSON.parse(ranges),
                 );
                 break;
             }
@@ -103,8 +103,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
                 const count = event?.data?.count;
                 this.ruleService.setOnlyOccurrenceCount(
                     id,
-                    parseInt(count, 10)
-                )
+                    parseInt(count, 10),
+                );
                 break;
             }
             case 'dragstart':

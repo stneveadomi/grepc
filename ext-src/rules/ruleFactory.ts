@@ -257,7 +257,7 @@ export class RuleFactory {
 
     /**
      * Will attempt to push occurrences. If webview is not available (tab closed), it will no-op.
-     * @param ruleId 
+     * @param ruleId
      * @param ranges
      */
     pushOccurrenceLineData(ruleId: string, ranges: LineRange[]) {
@@ -268,7 +268,7 @@ export class RuleFactory {
         this._grepcProvider?.webview?.postMessage({
             type: 'occurrenceLineDataUpdate',
             id: ruleId,
-            ranges: JSON.stringify(ranges)
+            ranges: JSON.stringify(ranges),
         });
     }
 
@@ -280,7 +280,7 @@ export class RuleFactory {
         this._grepcProvider?.webview?.postMessage({
             type: 'occurrenceCountUpdate',
             id: ruleId,
-            count
+            count,
         });
     }
 

@@ -104,7 +104,7 @@ export class DecorationTypeWrapper {
 
     /**
      * Another helper for occurrence changes
-     * @param contentChange 
+     * @param contentChange
      * @returns boolean indicating if we need to apply decorations after this update.
      */
     generateOccurrencesOnChange(contentChange: vscode.TextDocumentContentChangeEvent) {
@@ -274,12 +274,12 @@ export class DecorationTypeWrapper {
         const decorations: vscode.DecorationOptions[] = [];
         const ranges: vscode.Range[] = [];
 
-        if(rule.includedFiles && !(new RegExp(rule.includedFiles)).test(document.fileName)) {
+        if (rule.includedFiles && !new RegExp(rule.includedFiles).test(document.fileName)) {
             this.clearOccurrenceData();
             return;
         }
 
-        if(rule.excludedFiles && (new RegExp(rule.excludedFiles)).test(document.fileName)) {
+        if (rule.excludedFiles && new RegExp(rule.excludedFiles).test(document.fileName)) {
             this.clearOccurrenceData();
             return;
         }
