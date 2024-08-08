@@ -4,7 +4,7 @@ import { getNonce } from '../utilities/getNonce';
 import Showdown from 'showdown';
 import { RuleFactory } from '../rules/ruleFactory';
 
-export class WhatsNewWebview {
+export class ReleaseNotesWebview {
     private webviewPanel: vscode.WebviewPanel | undefined;
     private currentVersion;
 
@@ -34,7 +34,7 @@ export class WhatsNewWebview {
                     this.logger.info('[EXT] New version detected. Displaying changelog.');
                     break;
                 case VersionDiff.PATCH_DIFF:
-                    this.logger.info('[EXT] New patch detected. To see the changelog, run grepc.whatsNew');
+                    this.logger.info('[EXT] New patch detected. To see the changelog, run grepc: Show Release Notes');
                     break;
                 case VersionDiff.NO_DIFF:
                 default:
@@ -49,7 +49,7 @@ export class WhatsNewWebview {
     }
 
     async showWebview() {
-        this.webviewPanel = vscode.window.createWebviewPanel(this.viewId, `grepc: What's New ${this.currentVersion}`, vscode.ViewColumn.One, {
+        this.webviewPanel = vscode.window.createWebviewPanel(this.viewId, `grepc: Release Notes ${this.currentVersion}`, vscode.ViewColumn.One, {
             localResourceRoots: [this.context.extensionUri],
         });
 
@@ -58,7 +58,7 @@ export class WhatsNewWebview {
 
     async getWebviewHtml(webview: vscode.Webview) {
         const nonce = getNonce();
-        const stylesUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'ext-src', 'whats-new-ui', 'whats-new.css'));
+        const stylesUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'ext-src', 'release-notes-ui', 'release-notes.css'));
         const bannerUri = webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', 'GREPC-grey-dark.svg'));
         const changelogUri = vscode.Uri.joinPath(this.context.extensionUri, 'CHANGELOG.md');
 
@@ -79,7 +79,7 @@ export class WhatsNewWebview {
                 <body>
                     <div class="banner">
                         <img src="${bannerUri}" alt="Grepc Icon">
-                        <h1>grepc: What's New in V${this.currentVersion}</h1>
+                        <h1>grepc: Release Notes for V${this.currentVersion}</h1>
                     </div>
                     <div>
                         <p dir="auto">

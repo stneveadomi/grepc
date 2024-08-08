@@ -4,7 +4,7 @@ import { window } from 'vscode';
 import { LocationState, reverseMap } from '../rules/locationState';
 import { RuleFactoryMediator } from '../rules/ruleFactoryMediator';
 import { Rule } from '../rules/rule';
-import { WhatsNewWebview } from '../viewProviders/whatsNewViewProvider';
+import { ReleaseNotesWebview } from '../viewProviders/releaseNotesViewProvider';
 
 export class CommandManager {
     COLORS = ['RED', 'ORANGE', 'YELLOW', 'GREEN', 'BLUE', 'PURPLE', 'VIOLET'];
@@ -13,7 +13,7 @@ export class CommandManager {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         private subscriptions: { dispose(): any }[],
         private rfm: RuleFactoryMediator,
-        private whatsNewWebview: WhatsNewWebview,
+        private releaseNotesWebview: ReleaseNotesWebview,
         private logger: vscode.LogOutputChannel,
     ) {
         this.commands = [
@@ -157,9 +157,9 @@ export class CommandManager {
                 this.logger,
             ),
             new Command(
-                'grepc.showWhatsNew',
+                'grepc.showReleaseNotes',
                 () => {
-                    this.whatsNewWebview.showWebview();
+                    this.releaseNotesWebview.showWebview();
                 },
                 this.logger,
             ),

@@ -129,8 +129,8 @@
                 "title": "grepc: Disable Global Workspace Rules"
             },
             {
-                "command": "grepc.showWhatsNew",
-                "title": "grepc: Show What's New"
+                "command": "grepc.showReleaseNotes",
+                "title": "grepc: Show Release Notes"
             }
         ],
         "menus": {
