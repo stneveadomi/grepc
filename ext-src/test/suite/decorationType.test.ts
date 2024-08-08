@@ -13,12 +13,12 @@ suite('DecorationTypeWrapper', () => {
     suiteSetup(async () => {
         // textDoc = new vscode.TextDocument();
         let content = '';
-        for(let i = 0; i < 1000; i++) {
+        for (let i = 0; i < 1000; i++) {
             content += '12345\n';
             content += 'abcdef\n';
         }
         textDoc = await vscode.workspace.openTextDocument({
-            content
+            content,
         });
         rule = new Rule('rule 1');
         rule.regularExpression = '[0-9]+';
@@ -33,7 +33,7 @@ suite('DecorationTypeWrapper', () => {
         const result = dt.removeIntersectingOccurrences(contentChangeRange);
         assert.ok(result.removed == 1);
         assert.equal(textDoc.getText(result.range), textDoc.getText(expectedRange));
-        assert.equal(result.insertIndex,  0);
+        assert.equal(result.insertIndex, 0);
     });
 
     test('removeIntersectingOccurrences() -> single intersection, first position', () => {
@@ -41,7 +41,7 @@ suite('DecorationTypeWrapper', () => {
         const result = dt.removeIntersectingOccurrences(expectedRange);
         assert.ok(result.removed == 1);
         assert.equal(textDoc.getText(result.range), textDoc.getText(expectedRange));
-        assert.equal(result.insertIndex,  0);
+        assert.equal(result.insertIndex, 0);
     });
 
     test('removeIntersectingOccurrences() -> single intersection, middle position', () => {
@@ -93,12 +93,11 @@ suite('DecorationTypeWrapper', () => {
     });
 
     test('removeIntersectingOccurrences() -> edge case, multiple intersections in one line', async () => {
-
         textDoc = await vscode.workspace.openTextDocument({
             content: `abc 123
             123 a 456 c 789
             abc 123
-            `
+            `,
         });
         rule = new Rule('rule 1');
         rule.regularExpression = '[0-9]+';

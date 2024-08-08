@@ -97,10 +97,7 @@ export class DecorationTypeWrapper {
      * @param range
      */
     getFullLineRange(range: vscode.Range) {
-        return new vscode.Range(
-            this.document.lineAt(range.start.line).range.start,
-            this.document.lineAt(range.end.line).range.end
-        );
+        return new vscode.Range(this.document.lineAt(range.start.line).range.start, this.document.lineAt(range.end.line).range.end);
     }
 
     /**
@@ -144,7 +141,7 @@ export class DecorationTypeWrapper {
         //or just take the content change range and get the full line i.e. contentChange.range
         const textRange = this.getFullLineRange(contentChange.range);
         const text = this.document.getText(textRange);
-        this.logger.error(`${this.toString()} checking matches over "${text}"`)
+        this.logger.error(`${this.toString()} checking matches over "${text}"`);
         const regEx = new RegExp(this.rule.regularExpression, this.rule.regularExpressionFlags || 'g');
 
         let match;
@@ -156,7 +153,6 @@ export class DecorationTypeWrapper {
         const newDecorations: vscode.DecorationOptions[] = [];
         const newOccurrences: vscode.Range[] = [];
         while ((match = regEx.exec(text)) && occurrence < (this.rule.maxOccurrences ?? 1000)) {
-            
             const startPos = this.document.positionAt(offset + match.index);
             const endPos = this.document.positionAt(offset + match.index + match[0].length);
             const range = new vscode.Range(startPos, endPos);
@@ -259,9 +255,7 @@ export class DecorationTypeWrapper {
     applyDecorationsToEditor(textEditor: vscode.TextEditor) {
         this.logger.debug(`[DTM] ${this.toString()} Applying decoration ${this.rule.title} to editor: ${textEditor.document.fileName}`);
         if (textEditor.document.fileName !== this.document.fileName) {
-            throw new Error(
-                `CANNOT APPLY DECORATIONS TO DIFFERENT DOCUMENT - obs -> ${textEditor.document.fileName} != expected ->${this.document.fileName}`,
-            );
+            throw new Error(`CANNOT APPLY DECORATIONS TO DIFFERENT DOCUMENT - obs -> ${textEditor.document.fileName} != expected ->${this.document.fileName}`);
         }
         // we must regenerate the decoration type here as to fix priorities since
         // vscode goes simply by newest decoration type to determine priority.

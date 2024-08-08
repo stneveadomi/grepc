@@ -303,7 +303,7 @@ export class DecorationTypeManager {
                         decorationType.clearDecorations(textEditor);
                         decorationType.updateOccurrences(textEditor.document, applyRule);
                     }
-                    
+
                     decorationType.applyDecorationsToEditor(textEditor);
                     //if decorationType has not changed, no need to update.
                 } else {
@@ -398,16 +398,16 @@ export class DecorationTypeManager {
     /**
      * WARNING: This will break priority.
      * I have deemed this as a benefit to prevent flickering in exchange for priority temporarily breaking on certain lines.
-     * 
+     *
      * Apply only a select set of decoration types to visible editors. This is utilized when there are only a few decorations that need updated e.g. a line change / deletion.
      * @param decTypes - the select decoration types to apply.
      */
     applySelectDecorationsToRespectiveEditors(event: vscode.TextDocumentChangeEvent, decTypes: Set<DecorationTypeWrapper>) {
-        for(const editor of vscode.window.visibleTextEditors.filter(editor => editor.document.fileName === event.document.fileName)) {
-            for(const decType of decTypes) {
+        for (const editor of vscode.window.visibleTextEditors.filter((editor) => editor.document.fileName === event.document.fileName)) {
+            for (const decType of decTypes) {
                 decType.applyDecorationsToEditor(editor);
             }
-           
+
             if (editor === vscode.window.activeTextEditor) {
                 this.pushSelectActiveEditorOccurrenceData(decTypes);
             }
@@ -432,9 +432,9 @@ export class DecorationTypeManager {
      * @param subset - set of decoration types to push occurrence data of
      */
     pushSelectActiveEditorOccurrenceData(subset: Set<DecorationTypeWrapper>) {
-        for(const ruleFactory of this._ruleFactories) {
-            for(const decType of subset) {
-                if(ruleFactory.hasRule(decType.rule.id)) {
+        for (const ruleFactory of this._ruleFactories) {
+            for (const decType of subset) {
+                if (ruleFactory.hasRule(decType.rule.id)) {
                     if (decType.rule && decType.rule.expanded && decType.rule.occurrencesExpanded) {
                         ruleFactory.pushOccurrenceLineData(decType.rule.id, DecorationTypeManager.toLineRanges(decType.rule.id, decType.activeOccurrences));
                     } else {
