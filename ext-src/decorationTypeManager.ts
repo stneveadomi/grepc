@@ -217,9 +217,10 @@ export class DecorationTypeManager {
                     `[DTM] Text document changed, triggering update decorations on ${event.document.fileName} because of reason: ${event.reason}`,
                     event.contentChanges,
                 );
-                if (this.generateOccurrencesOnChange(event)) {
+                const decTypesNeedingApplied = this.generateOccurrencesOnChange(event);
+                if (decTypesNeedingApplied.size > 0) {
                     // If a substantive change, applyDecorationsToVisibleEditors.
-                    this.applyDecorationsToVisibleEditors();
+                    this.applySelectDecorationsToRespectiveEditors(event, decTypesNeedingApplied);
                     this.logger.debug('Applying decorations to visible editors on TextDocumentChangeEvent');
                 } else {
                     this.logger.debug('No substantive change found needing a decoration apply.');
@@ -298,19 +299,19 @@ export class DecorationTypeManager {
                 if (appliedRuleToDecorationMap?.has(applyRule.id) && (decorationType = appliedRuleToDecorationMap.get(applyRule.id))) {
                     if (decorationType.hasDecorationChanged(applyRule)) {
                         //if decorationType has change, update occurrence data.
-                        this.logger.debug(`[DTM] applyDecorationsToEditor(): decorationType found. Updating occurrence data.`);
+                        this.logger.debug(`[DTM] ${decorationType.toString()} applyDecorationsToEditor(): decorationType found. Updating occurrence data.`);
                         decorationType.clearDecorations(textEditor);
                         decorationType.updateOccurrences(textEditor.document, applyRule);
                     }
-                    //this.logger.debug(`[DTM] Applying decoration ${applyRule.title} to editor: ${textEditor.document.fileName}`);
+                    
                     decorationType.applyDecorationsToEditor(textEditor);
                     //if decorationType has not changed, no need to update.
                 } else {
                     // if appliedRule does not have a decoration type
-                    this.logger.debug(`[DTM] applyDecorationsToEditor(): decorationType not found. Creating one and applying it.`);
                     decorationType = new DecorationTypeWrapper(textEditor.document, applyRule, this.logger);
                     decorationType.updateOccurrences(textEditor.document, applyRule);
                     decorationType.applyDecorationsToEditor(textEditor);
+                    this.logger.debug(`[DTM] ${decorationType.toString()} applyDecorationsToEditor(): decorationType not found. Creating one and applying it.`);
                     appliedRuleToDecorationMap?.set(applyRule.id, decorationType);
                 }
                 enabledRuleIds.add(applyRule.id);
@@ -330,24 +331,24 @@ export class DecorationTypeManager {
      * This handles a DocumentChangeEvent to update occurrence data (where decorations go).
      *
      * @param event - the vscode.TextDocumentChangeEvent
-     * @returns boolean indicating if we need to apply decorations after updating occurrences.
+     * @returns set of decoration types that need decorations applied after updating occurrences.
      */
-    generateOccurrencesOnChange(event: vscode.TextDocumentChangeEvent) {
-        let needsDecorationApply = false;
+    generateOccurrencesOnChange(event: vscode.TextDocumentChangeEvent): Set<DecorationTypeWrapper> {
+        const decorationSet = new Set<DecorationTypeWrapper>();
         for (const ruleFactory of this._ruleFactories) {
             const appliedRuleToDecorationMap = this.getActiveDecorationMap(event.document, ruleFactory.location);
             if (appliedRuleToDecorationMap) {
                 for (const decorationType of appliedRuleToDecorationMap.values()) {
                     for (const contentChange of event.contentChanges) {
                         if (decorationType.generateOccurrencesOnChange(contentChange)) {
-                            needsDecorationApply = true;
+                            decorationSet.add(decorationType);
                         }
                     }
                 }
             }
         }
 
-        return needsDecorationApply;
+        return decorationSet;
     }
 
     /**
@@ -394,6 +395,25 @@ export class DecorationTypeManager {
         }
     }
 
+    /**
+     * WARNING: This will break priority.
+     * I have deemed this as a benefit to prevent flickering in exchange for priority temporarily breaking on certain lines.
+     * 
+     * Apply only a select set of decoration types to visible editors. This is utilized when there are only a few decorations that need updated e.g. a line change / deletion.
+     * @param decTypes - the select decoration types to apply.
+     */
+    applySelectDecorationsToRespectiveEditors(event: vscode.TextDocumentChangeEvent, decTypes: Set<DecorationTypeWrapper>) {
+        for(const editor of vscode.window.visibleTextEditors.filter(editor => editor.document.fileName === event.document.fileName)) {
+            for(const decType of decTypes) {
+                decType.applyDecorationsToEditor(editor);
+            }
+           
+            if (editor === vscode.window.activeTextEditor) {
+                this.pushSelectActiveEditorOccurrenceData(decTypes);
+            }
+        }
+    }
+
     applyRuleDecorationsToVisibleEditors(ruleFactory: RuleFactory, rule: Rule) {
         for (const editor of vscode.window.visibleTextEditors) {
             const appliedRuleToDecorationMap = this.getActiveDecorationMap(editor.document, ruleFactory.location);
@@ -404,6 +424,24 @@ export class DecorationTypeManager {
 
             const decType = appliedRuleToDecorationMap.get(rule.id);
             decType?.applyDecorationsToEditor(editor);
+        }
+    }
+
+    /**
+     * Instead of applying all, only apply a select set of decoration types.
+     * @param subset - set of decoration types to push occurrence data of
+     */
+    pushSelectActiveEditorOccurrenceData(subset: Set<DecorationTypeWrapper>) {
+        for(const ruleFactory of this._ruleFactories) {
+            for(const decType of subset) {
+                if(ruleFactory.hasRule(decType.rule.id)) {
+                    if (decType.rule && decType.rule.expanded && decType.rule.occurrencesExpanded) {
+                        ruleFactory.pushOccurrenceLineData(decType.rule.id, DecorationTypeManager.toLineRanges(decType.rule.id, decType.activeOccurrences));
+                    } else {
+                        ruleFactory.pushOccurrenceCount(decType.rule.id, decType.activeOccurrences.length);
+                    }
+                }
+            }
         }
     }
 

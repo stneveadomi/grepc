@@ -13,12 +13,12 @@ import { IntersectingRangeData } from './intersectingRangeData';
 export class DecorationTypeWrapper {
     private decorationType: vscode.TextEditorDecorationType | undefined;
 
-    private decorationOptions: vscode.DecorationOptions[] = [];
+    public decorationOptions: vscode.DecorationOptions[] = [];
     public activeOccurrences: vscode.Range[] = [];
 
     constructor(
         private readonly document: vscode.TextDocument,
-        private rule: Rule,
+        public rule: Rule,
         private logger: vscode.LogOutputChannel,
     ) {
         this.generateDecorationType();
@@ -96,10 +96,11 @@ export class DecorationTypeWrapper {
      * For example, if the range is "b" in the text "abc\ndef". This will return a range of "abc\n".
      * @param range
      */
-    private getFullLineRange(range: vscode.Range) {
-        const newStart = range.start.with(range.start.line, 0);
-        const newEnd = range.end.with(range.end.line + 1, 0);
-        return new vscode.Range(newStart, newEnd);
+    getFullLineRange(range: vscode.Range) {
+        return new vscode.Range(
+            this.document.lineAt(range.start.line).range.start,
+            this.document.lineAt(range.end.line).range.end
+        );
     }
 
     /**
@@ -120,6 +121,16 @@ export class DecorationTypeWrapper {
             return true;
         }
 
+        if (this.rule.includedFiles && !new RegExp(this.rule.includedFiles).test(this.document.fileName)) {
+            this.clearOccurrenceData();
+            return false;
+        }
+
+        if (this.rule.excludedFiles && new RegExp(this.rule.excludedFiles).test(this.document.fileName)) {
+            this.clearOccurrenceData();
+            return false;
+        }
+
         // We will pass in a getFullLineRange() to handle removing intersecting occurrences.
         // This just makes everything so much easier as we are forcing updates per line.
         // We could be more particular, but the logic gets a lot harder.
@@ -131,9 +142,9 @@ export class DecorationTypeWrapper {
 
         //either expanded range over all intersecting matches
         //or just take the content change range and get the full line i.e. contentChange.range
-        const textRange = this.getFullLineRange(intersectingRangeData.range ?? contentChange.range);
+        const textRange = this.getFullLineRange(contentChange.range);
         const text = this.document.getText(textRange);
-
+        this.logger.error(`${this.toString()} checking matches over "${text}"`)
         const regEx = new RegExp(this.rule.regularExpression, this.rule.regularExpressionFlags || 'g');
 
         let match;
@@ -144,14 +155,14 @@ export class DecorationTypeWrapper {
 
         const newDecorations: vscode.DecorationOptions[] = [];
         const newOccurrences: vscode.Range[] = [];
-        while ((match = regEx.exec(text)) && this.decorationOptions.length < (this.rule.maxOccurrences ?? 1000)) {
-            occurrence++;
+        while ((match = regEx.exec(text)) && occurrence < (this.rule.maxOccurrences ?? 1000)) {
+            
             const startPos = this.document.positionAt(offset + match.index);
             const endPos = this.document.positionAt(offset + match.index + match[0].length);
             const range = new vscode.Range(startPos, endPos);
             const decoration = {
-                range: range,
-                hoverMessage: `Rule: ${this.rule.title}\n #${occurrence}`,
+                range,
+                hoverMessage: `Rule: ${this.rule.title}\n #${occurrence++}`,
             };
             newDecorations.push(decoration);
             newOccurrences.push(range);
@@ -237,24 +248,25 @@ export class DecorationTypeWrapper {
             }
         }
 
-        this.logger.debug('Unable to find an intersection. Returning undefined.');
-        return { removed: 0, insertIndex: left + 1 };
+        this.logger.debug(`${this.toString()} Unable to find an intersection.`);
+        return { removed: 0, insertIndex: left };
     }
 
     getDisposeHandle() {
         return this.decorationType?.dispose;
     }
 
-    applyDecorationsToEditor(activeEditor: vscode.TextEditor) {
-        if (activeEditor.document.fileName !== this.document.fileName) {
+    applyDecorationsToEditor(textEditor: vscode.TextEditor) {
+        this.logger.debug(`[DTM] ${this.toString()} Applying decoration ${this.rule.title} to editor: ${textEditor.document.fileName}`);
+        if (textEditor.document.fileName !== this.document.fileName) {
             throw new Error(
-                `CANNOT APPLY DECORATIONS TO DIFFERENT DOCUMENT - obs -> ${activeEditor.document.fileName} != expected ->${this.document.fileName}`,
+                `CANNOT APPLY DECORATIONS TO DIFFERENT DOCUMENT - obs -> ${textEditor.document.fileName} != expected ->${this.document.fileName}`,
             );
         }
         // we must regenerate the decoration type here as to fix priorities since
         // vscode goes simply by newest decoration type to determine priority.
         this.generateDecorationType();
-        activeEditor.setDecorations(this.decorationType!, this.decorationOptions);
+        textEditor.setDecorations(this.decorationType!, this.decorationOptions);
     }
 
     /**
@@ -310,6 +322,10 @@ export class DecorationTypeWrapper {
     clearOccurrenceData() {
         this.activeOccurrences = [];
         this.decorationOptions = [];
+    }
+
+    toString() {
+        return `[${this.rule.id.substring(0, 5)} - ${this.rule.title}]`;
     }
 
     dispose() {

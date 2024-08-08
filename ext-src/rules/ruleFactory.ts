@@ -110,6 +110,10 @@ export class RuleFactory {
         return enabledSet;
     }
 
+    hasRule(ruleId: string) {
+        return this.getRulesMap().has(ruleId);
+    }
+
     /**
      * This method is here for backwards compatibility.
      * @param rules
