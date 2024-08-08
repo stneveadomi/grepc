@@ -4,7 +4,7 @@ import { DecorationTypeManager } from './decorationTypeManager';
 import { CommandManager } from './commands/commandManager';
 import { RuleFactoryMediator } from './rules/ruleFactoryMediator';
 import { LocationState } from './rules/locationState';
-import { WhatsNewWebview } from './viewProviders/whatsNewViewProvider';
+import { ReleaseNotesWebview } from './viewProviders/releaseNotesViewProvider';
 import { DragService } from './dragService';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -35,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
     localRuleFactory.grepcProvider = localWebviewProvider;
     globalRuleFactory.grepcProvider = globalWebviewProvider;
 
-    const whatsNewWebviewProvider = new WhatsNewWebview('grepc.webview.whats-new', context, logger);
+    const releaseNotesWebviewProvider = new ReleaseNotesWebview('grepc.webview.release-notes', context, logger);
 
     const enableContextRetention = {
         webviewOptions: {
@@ -45,16 +45,16 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.window.registerWebviewViewProvider(localWebviewProvider.viewType, localWebviewProvider, enableContextRetention),
         vscode.window.registerWebviewViewProvider(globalWebviewProvider.viewType, globalWebviewProvider, enableContextRetention),
-        whatsNewWebviewProvider,
+        releaseNotesWebviewProvider,
         dtTypeManager,
     );
 
-    const commandManager = new CommandManager(context.subscriptions, ruleFactoryMediator, whatsNewWebviewProvider, logger);
+    const commandManager = new CommandManager(context.subscriptions, ruleFactoryMediator, releaseNotesWebviewProvider, logger);
     commandManager.registerCommands();
 
     dtTypeManager.enableDecorationDetection();
 
-    whatsNewWebviewProvider.showWebviewIfNewVersion();
+    releaseNotesWebviewProvider.showWebviewIfNewVersion();
 
     logger.info(`Grepc initialized in ${Date.now() - initStart} ms.`);
 }

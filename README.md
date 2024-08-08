@@ -67,7 +67,7 @@ Grepc is an approachable regular expression highlighter with advanced customizat
 | `grepc.disableAllRules`    | `grepc: Disable All Rules`              | Disable all rules.                                                                    |
 | `grepc.disableLocalRules`  | `grepc: Disable Local Workspace Rules`  | Disable local rules.                                                                  |
 | `grepc.disableGlobalRules` | `grepc: Disable Global Workspace Rules` | Disable global rules.                                                                 |
-| `grepc.showWhatsNew`       | `grepc: Show What's New`                | Show what's new page that displays for each major and minor update.                   |
+| `grepc.showReleaseNotes`   | `grepc: Show Release Notes`             | Show release notes page that displays for each major and minor update.                |
 
 ## Installation
 
@@ -79,7 +79,7 @@ Alternatively, you can install any version of grepc by going to the [releases](h
 
 See [releases](https://github.com/stneveadomi/grepc/releases)
 
-Also feel free to run the command `grepc: Show What's New`
+Also feel free to run the command `grepc: Show Release Notes`
 
 ## FAQ
 

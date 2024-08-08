@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   **Drag n Drop rules from workspace to global and vice versa!**
     -   _It was a struggle to get this working, including some crazy race conditions in TS (see the boolean lock in ruleFactory...)_
     -   _In a later story, we can move this to be a proper mutex lock._
--   **Introduced a What's New page that shows on any major or minor update.**
+-   **Introduced a release notes page that shows on any major or minor update.**
 -   **Introduced a walkthrough for grepc.**
 -   Added appropriate support for multi-line regex.
 -   Added more badges to the README.

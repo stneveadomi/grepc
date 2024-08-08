@@ -35,14 +35,7 @@ body {
     animation-iteration-count: infinite;
     animation-timing-function: linear;
     background: rgb(254, 254, 254);
-    background: radial-gradient(
-        circle,
-        rgba(254, 254, 254, 1) 0%,
-        rgba(149, 37, 124, 1) 25%,
-        rgba(101, 48, 124, 1) 46%,
-        rgba(51, 108, 111, 1) 73%,
-        rgba(0, 0, 0, 1) 100%
-    );
+    background: radial-gradient(circle, rgb(255 0 0) 0%, rgb(255 0 198) 25%, rgb(178 0 255) 46%, rgb(0 242 255) 73%, rgb(89 0 140) 100%);
     background-size: 500% 500%;
 
     img {
