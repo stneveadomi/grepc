@@ -13,6 +13,11 @@ vsc-extension-quickstart.md
 **/*.ts
 **/*.gif
 .github/**
+.prettierignore
+.vscode-test.mjs
+eslint.config.mjs
+.husky/**/*
+!ext-src/release-notes-ui/release-notes.css
 
 webview-ui/grepc-webview/.angular/**
 webview-ui/grepc-webview/.vscode/**
@@ -22,5 +27,9 @@ webview-ui/grepc-webview/coverage/**
 webview-ui/grepc-webview/.editorconfig
 webview-ui/grepc-webview/*.json
 webview-ui/grepc-webview/*.md
+webview-ui/grepc-webview/dist/grepc-webview/.gitignore
+webview-ui/grepc-webview/dist/grepc-webview/.prettierignore
+webview-ui/grepc-webview/dist/grepc-webview/.prettierrc
+webview-ui/grepc-webview/dist/grepc-webview/eslint.config.js
 webview-ui/grepc-webview/dist/grepc-webview/browser/index.html
 webview-ui/grepc-webview/dist/grepc-webview/browser/favicon.ico
