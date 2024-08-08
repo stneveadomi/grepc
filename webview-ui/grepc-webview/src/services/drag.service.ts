@@ -100,13 +100,11 @@ export class DragService {
         event.preventDefault();
         this.logger.debug('onBodyDrop');
         /* We only need to send drop event if it is in a external location */
-        if (this._location !== this.dragOriginLocation) {
-            this.extensionService.postMessage({
-                type: 'drop',
-                originLocation: event.dataTransfer?.getData('text/location'),
-                dragData: event.dataTransfer?.getData('text/uuid'),
-            });
-        }
+        this.extensionService.postMessage({
+            type: 'drop',
+            originLocation: event.dataTransfer?.getData('text/location'),
+            dragData: event.dataTransfer?.getData('text/uuid'),
+        });
     };
 
     onDragStart = (event: DragEvent) => {

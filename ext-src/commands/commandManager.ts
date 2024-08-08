@@ -45,9 +45,7 @@ export class CommandManager {
                     rule.backgroundColor = bgColor ?? '';
                     rule.enabled = true;
 
-                    this.rfm
-                        .getRuleFactory(<LocationState>location)
-                        ?.addRule(rule);
+                    this.rfm.getRuleFactory(<LocationState>location)?.addRule(rule);
                 },
                 this.logger,
             ),
@@ -70,9 +68,7 @@ export class CommandManager {
                     const selection = vscode.window.activeTextEditor?.selection;
                     let regEx = '';
                     if (selection && window.activeTextEditor?.document) {
-                        regEx = window.activeTextEditor.document.getText(
-                            new vscode.Range(selection.start, selection.end),
-                        );
+                        regEx = window.activeTextEditor.document.getText(new vscode.Range(selection.start, selection.end));
                         if (regEx === undefined) {
                             return;
                         }
@@ -88,38 +84,28 @@ export class CommandManager {
                     rule.backgroundColor = bgColor ?? '';
                     rule.enabled = true;
 
-                    this.rfm
-                        .getRuleFactory(<LocationState>location)
-                        ?.addRule(rule);
+                    this.rfm.getRuleFactory(<LocationState>location)?.addRule(rule);
                 },
                 this.logger,
             ),
             new Command(
                 'grepc.deleteRule',
                 async () => {
-                    const inputTitle =
-                        'Which rule location do you want to delete from?';
+                    const inputTitle = 'Which rule location do you want to delete from?';
 
                     const location = await this.showLocationInput(inputTitle);
                     if (!location) {
                         return;
                     }
 
-                    const ruleFactory = this.rfm.getRuleFactory(
-                        <LocationState>location,
-                    );
+                    const ruleFactory = this.rfm.getRuleFactory(<LocationState>location);
                     const currentRuleArray = ruleFactory!.getRulesArray();
-                    const ruleToBeRemoved = await this.showRulesInput(
-                        'Select a rule to be deleted:',
-                        currentRuleArray,
-                    );
+                    const ruleToBeRemoved = await this.showRulesInput('Select a rule to be deleted:', currentRuleArray);
                     if (!ruleToBeRemoved) {
                         return;
                     }
 
-                    window.showWarningMessage(
-                        'Deleting rule: ' + ruleToBeRemoved.label,
-                    );
+                    window.showWarningMessage('Deleting rule: ' + ruleToBeRemoved.label);
                     ruleFactory?.removeRule(ruleToBeRemoved.id);
                 },
                 this.logger,
@@ -145,9 +131,7 @@ export class CommandManager {
             new Command(
                 'grepc.disableLocalRules',
                 () => {
-                    this.rfm
-                        .getRuleFactory(LocationState.LOCAL)
-                        ?.disableRules();
+                    this.rfm.getRuleFactory(LocationState.LOCAL)?.disableRules();
                 },
                 this.logger,
             ),
@@ -161,18 +145,14 @@ export class CommandManager {
             new Command(
                 'grepc.disableGlobalRules',
                 () => {
-                    this.rfm
-                        .getRuleFactory(LocationState.GLOBAL)
-                        ?.disableRules();
+                    this.rfm.getRuleFactory(LocationState.GLOBAL)?.disableRules();
                 },
                 this.logger,
             ),
             new Command(
                 'grepc.enableGlobalRules',
                 () => {
-                    this.rfm
-                        .getRuleFactory(LocationState.GLOBAL)
-                        ?.enableRules();
+                    this.rfm.getRuleFactory(LocationState.GLOBAL)?.enableRules();
                 },
                 this.logger,
             ),
@@ -187,14 +167,10 @@ export class CommandManager {
     }
 
     showLocationInput(title: string) {
-        return vscode.window.showQuickPick(
-            [LocationState.LOCAL, LocationState.GLOBAL],
-            {
-                title,
-                placeHolder:
-                    'Enter the rule location <WORKSPACE|GLOBAL> (MANDATORY)',
-            },
-        );
+        return vscode.window.showQuickPick([LocationState.LOCAL, LocationState.GLOBAL], {
+            title,
+            placeHolder: 'Enter the rule location <WORKSPACE|GLOBAL> (MANDATORY)',
+        });
     }
 
     showRuleTitleInput(title: string) {
@@ -239,13 +215,7 @@ export class CommandManager {
 
     registerCommands() {
         this.commands.forEach((command) => {
-            this.subscriptions.push(
-                vscode.commands.registerCommand(
-                    command.id,
-                    command.callback,
-                    command,
-                ),
-            );
+            this.subscriptions.push(vscode.commands.registerCommand(command.id, command.callback, command));
         });
     }
 }

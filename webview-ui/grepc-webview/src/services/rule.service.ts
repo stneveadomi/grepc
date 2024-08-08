@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { OccurrenceData, Rule } from '../models/rule';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 import { ExtensionService } from './extension.service';
-import { LineRange } from '../models/line-range';
+import { LineRange as OccurrenceLineData } from '../models/line-range';
 import { RuleComponent } from '../app/rule/rule.component';
 import { LoggerService } from './logger.service';
 
@@ -86,7 +86,7 @@ export class RuleService {
                 JSON.stringify(Array.from(this._ruleMap.entries())),
         );
         this.pushRulesToExtension();
-        this._rules.next(this._rulesArray);
+        this.pushRulesLocally();
     }
 
     public pushRulesLocally() {
@@ -177,17 +177,19 @@ export class RuleService {
 
         this._rulesArray[ruleAIndex] = ruleB;
         this._rulesArray[ruleBIndex] = ruleA;
-        this._rules.next(this._rulesArray);
+        this.pushRules();
     }
 
-    updateOccurrenceData(id: string, ranges: LineRange[], occurrences: number) {
-        this.logger.debug(
-            `updateOccurrenceData: rule ${id} - occurrences - ${occurrences} `,
-        );
+    updateOccurrenceLineData(id: string, ranges: OccurrenceLineData[]) {
+        // this.logger.debug(
+        //     `updateOccurrenceData: rule ${id} - occurrences - ${occurrences} `,
+        // );
+        // TODO: Review occurrence update and usage of isAwaitingRulesResponse
+
         if (this._isAwaitingRulesResponse) {
             this._isAwaitingRulesResponse
                 .then(() => {
-                    this._updateOccurrencesHelper(id, ranges, occurrences);
+                    this._updateOccurrenceLineData(id, ranges);
                 })
                 .catch((reason) =>
                     this.logger.error(
@@ -195,25 +197,31 @@ export class RuleService {
                     ),
                 );
         } else {
-            this._updateOccurrencesHelper(id, ranges, occurrences);
+            this._updateOccurrenceLineData(id, ranges);
         }
     }
 
-    private _updateOccurrencesHelper(
+    private _updateOccurrenceLineData(
         id: string,
-        ranges: LineRange[],
-        occurrences: number,
+        ranges: OccurrenceLineData[],
     ) {
         const ruleComponent = this._ruleIdToComponent.get(id);
         if (ruleComponent) {
             ruleComponent.occurrenceData = new OccurrenceData(
-                occurrences,
+                ranges.length,
                 ranges,
             );
         }
     }
 
-    public jumpToLine(lineRange: LineRange) {
+    setOnlyOccurrenceCount(id: string, count: number) {
+        const ruleComponent = this._ruleIdToComponent.get(id);
+        if (ruleComponent) {
+            ruleComponent.occurrenceData = new OccurrenceData(count);
+        }
+    }
+
+    public jumpToLine(lineRange: OccurrenceLineData) {
         if (lineRange) {
             this.extensionService.postMessage({
                 type: 'jumpToLine',

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+-   **Decoration System Overhaul!**
+    -   **Multiple editor support introduced.**
+    -   **Significant performance improvements.**
+    -   **In-line changes update decorations.**
+    -   **Occurrence updates only occur when needed.**
+    -   Context retention is enabled for webviews.
 -   **Drag n Drop rules from workspace to global and vice versa!**
     -   _It was a struggle to get this working, including some crazy race conditions in TS (see the boolean lock in ruleFactory...)_
     -   _In a later story, we can move this to be a proper mutex lock._
@@ -16,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   **Introduced a walkthrough for grepc.**
 -   Added appropriate support for multi-line regex.
 -   Added more badges to the README.
+-   Introduced prettier and eslint for the codebase.
+-   Improved unit tests.
 
 ### Changed
 

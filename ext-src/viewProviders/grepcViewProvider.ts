@@ -19,9 +19,7 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
     ) {
         vscode.window.onDidChangeWindowState((event: vscode.WindowState) => {
             if (event.focused) {
-                this._logger.debug(
-                    `[EXT] [${reverseMap(_ruleFactory.location)}] Window focused! Pushing rules to webview.`,
-                );
+                this._logger.debug(`[EXT] [${reverseMap(_ruleFactory.location)}] Window focused! Pushing rules to webview.`);
                 this.pushRules();
             }
         });
@@ -66,9 +64,7 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         this.webview?.postMessage({
             type: 'rules',
             originLocation: this._ruleFactory.location,
-            mapData: JSON.stringify(
-                Array.from(this._ruleFactory.getRulesMap().entries()),
-            ),
+            mapData: JSON.stringify(Array.from(this._ruleFactory.getRulesMap().entries())),
             arrayData: JSON.stringify(this._ruleFactory.getRulesArray()),
         });
     }
@@ -113,38 +109,14 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
     private _getWebviewContent(webview: vscode.Webview) {
         // The CSS file from the Angular build output
         const stylesUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(
-                this._extensionUri,
-                'webview-ui',
-                'grepc-webview',
-                'dist',
-                'grepc-webview',
-                'browser',
-                'styles.css',
-            ),
+            vscode.Uri.joinPath(this._extensionUri, 'webview-ui', 'grepc-webview', 'dist', 'grepc-webview', 'browser', 'styles.css'),
         );
         // The JS files from the Angular build output
         const polyfillsUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(
-                this._extensionUri,
-                'webview-ui',
-                'grepc-webview',
-                'dist',
-                'grepc-webview',
-                'browser',
-                'polyfills.js',
-            ),
+            vscode.Uri.joinPath(this._extensionUri, 'webview-ui', 'grepc-webview', 'dist', 'grepc-webview', 'browser', 'polyfills.js'),
         );
         const scriptUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(
-                this._extensionUri,
-                'webview-ui',
-                'grepc-webview',
-                'dist',
-                'grepc-webview',
-                'browser',
-                'main.js',
-            ),
+            vscode.Uri.joinPath(this._extensionUri, 'webview-ui', 'grepc-webview', 'dist', 'grepc-webview', 'browser', 'main.js'),
         );
         const nonce = getNonce();
 
@@ -183,29 +155,20 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
 
                 switch (type) {
                     case 'rules':
-                        this._logger.debug(
-                            `[EXT] [${reverseMap(this._ruleFactory.location)}] Received rules event. Updating rules in storage.`,
-                        );
-                        this._ruleFactory.parseRules(
-                            message?.mapData,
-                            message?.arrayData,
-                        );
+                        this._logger.debug(`[EXT] [${reverseMap(this._ruleFactory.location)}] Received rules event. Updating rules in storage.`);
+                        this._ruleFactory.parseRules(message?.mapData, message?.arrayData);
                         return;
                     case 'rulesRequest':
                         //designed to send rules on startup to webviews
                         //especially if they are reopened without the extension closing.
-                        this._logger.debug(
-                            'Received rulesRequest event. Pushing rules to webview.',
-                        );
+                        this._logger.debug('Received rulesRequest event. Pushing rules to webview.');
                         this.pushRules();
+                        this._dtManager.pushActiveEditorOccurrenceData(this._ruleFactory);
                         return;
                     case 'jumpToLine': {
                         //when a selection is made, a user can jump their cursor to it.
                         const lineRange = JSON.parse(message.data);
-                        this._logger.debug(
-                            'Jumping to rule at line range:',
-                            lineRange,
-                        );
+                        this._logger.debug('Jumping to rule at line range:', lineRange);
                         this._dtManager.jumpToLine(lineRange);
                         return;
                     }
@@ -231,40 +194,25 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
                         }
                         return;
                     case 'drop':
-                        this._logger.debug(
-                            '[EXT] Received external drop event from origin: ',
-                            this._ruleFactory.location,
-                        );
+                        this._logger.debug('[EXT] Received external drop event from origin: ', this._ruleFactory.location);
                         this._dragService.dragData = message.dragData;
-                        if (
-                            this._dragService.originLocation ===
-                            this._ruleFactory.location
-                        ) {
+                        if (this._dragService.originLocation === this._ruleFactory.location) {
                             /* Return as we do not need to transfer rule */
+                            /* but we should reapply decorations as possible priority shift */
+                            this._dtManager.applyDecorationsToVisibleEditors();
                             return;
                         }
                         try {
-                            this._dragService.transferRule(
-                                this._ruleFactory.location,
-                            );
+                            this._dragService.transferRule(this._ruleFactory.location);
                         } catch (e) {
-                            this._logger.error(
-                                '[EXT] Drop failed due to the following: ',
-                                e,
-                            );
-                            vscode.window.showErrorMessage(
-                                'Drop failed due to the following: ' + e,
-                            );
+                            this._logger.error('[EXT] Drop failed due to the following: ', e);
+                            vscode.window.showErrorMessage('Drop failed due to the following: ' + e);
                         }
 
                         break;
                     case 'dragstart':
-                        this._logger.debug(
-                            '[EXT] Drag started from location: ',
-                            message.originLocation,
-                        );
-                        this._dragService.originLocation =
-                            message.originLocation;
+                        this._logger.debug('[EXT] Drag started from location: ', message.originLocation);
+                        this._dragService.originLocation = message.originLocation;
                         this._dragService.emitDragStart(message.originLocation);
                         break;
                     case 'dragend':

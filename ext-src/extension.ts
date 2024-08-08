@@ -14,45 +14,20 @@ export function activate(context: vscode.ExtensionContext) {
     const initStart = Date.now();
 
     const ruleFactoryMediator = new RuleFactoryMediator(context, logger);
-    const localRuleFactory = ruleFactoryMediator.getRuleFactory(
-        LocationState.LOCAL,
-    );
-    const globalRuleFactory = ruleFactoryMediator.getRuleFactory(
-        LocationState.GLOBAL,
-    );
+    const localRuleFactory = ruleFactoryMediator.getRuleFactory(LocationState.LOCAL);
+    const globalRuleFactory = ruleFactoryMediator.getRuleFactory(LocationState.GLOBAL);
 
     if (!localRuleFactory || !globalRuleFactory) {
         logger.error('Unable to instantiate rule factories. Throwing error.');
         throw new Error('Unable to instantiate rule factories');
     }
 
-    const dtTypeManager = new DecorationTypeManager(
-        [localRuleFactory, globalRuleFactory],
-        logger,
-    );
+    const dtTypeManager = new DecorationTypeManager([localRuleFactory, globalRuleFactory], logger);
 
-    const dragService = new DragService(
-        ruleFactoryMediator,
-        dtTypeManager,
-        logger,
-    );
+    const dragService = new DragService(ruleFactoryMediator, dtTypeManager, logger);
 
-    const localWebviewProvider = new GrepcViewProvider(
-        'grepc.webview.local',
-        context.extensionUri,
-        localRuleFactory,
-        dtTypeManager,
-        dragService,
-        logger,
-    );
-    const globalWebviewProvider = new GrepcViewProvider(
-        'grepc.webview.global',
-        context.extensionUri,
-        globalRuleFactory,
-        dtTypeManager,
-        dragService,
-        logger,
-    );
+    const localWebviewProvider = new GrepcViewProvider('grepc.webview.local', context.extensionUri, localRuleFactory, dtTypeManager, dragService, logger);
+    const globalWebviewProvider = new GrepcViewProvider('grepc.webview.global', context.extensionUri, globalRuleFactory, dtTypeManager, dragService, logger);
 
     dragService.register(LocationState.LOCAL, localWebviewProvider);
     dragService.register(LocationState.GLOBAL, globalWebviewProvider);
@@ -60,31 +35,21 @@ export function activate(context: vscode.ExtensionContext) {
     localRuleFactory.grepcProvider = localWebviewProvider;
     globalRuleFactory.grepcProvider = globalWebviewProvider;
 
-    const whatsNewWebviewProvider = new WhatsNewWebview(
-        'grepc.webview.whats-new',
-        context,
-        logger,
-    );
+    const whatsNewWebviewProvider = new WhatsNewWebview('grepc.webview.whats-new', context, logger);
 
+    const enableContextRetention = {
+        webviewOptions: {
+            retainContextWhenHidden: true,
+        },
+    };
     context.subscriptions.push(
-        vscode.window.registerWebviewViewProvider(
-            localWebviewProvider.viewType,
-            localWebviewProvider,
-        ),
-        vscode.window.registerWebviewViewProvider(
-            globalWebviewProvider.viewType,
-            globalWebviewProvider,
-        ),
+        vscode.window.registerWebviewViewProvider(localWebviewProvider.viewType, localWebviewProvider, enableContextRetention),
+        vscode.window.registerWebviewViewProvider(globalWebviewProvider.viewType, globalWebviewProvider, enableContextRetention),
         whatsNewWebviewProvider,
         dtTypeManager,
     );
 
-    const commandManager = new CommandManager(
-        context.subscriptions,
-        ruleFactoryMediator,
-        whatsNewWebviewProvider,
-        logger,
-    );
+    const commandManager = new CommandManager(context.subscriptions, ruleFactoryMediator, whatsNewWebviewProvider, logger);
     commandManager.registerCommands();
 
     dtTypeManager.enableDecorationDetection();

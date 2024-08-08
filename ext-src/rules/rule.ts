@@ -11,6 +11,7 @@ export interface IRule {
     enabled: boolean;
     expanded: boolean;
     decorationExpanded: boolean;
+    occurrencesExpanded: boolean;
     //uuid
     id: string;
     // custom name for rule.
@@ -55,6 +56,7 @@ export class Rule implements IRule {
         this.enabled = false;
         this.expanded = false;
         this.decorationExpanded = false;
+        this.occurrencesExpanded = false;
         this.overviewRulerColor = '';
         this.overviewRulerLane = vscode.OverviewRulerLane.Full;
         this.maxOccurrences = 1000;
@@ -79,6 +81,7 @@ export class Rule implements IRule {
     enabled: boolean;
     expanded: boolean;
     decorationExpanded: boolean;
+    occurrencesExpanded: boolean;
     id: string;
     title: string;
     overviewRulerLane: vscode.OverviewRulerLane;
