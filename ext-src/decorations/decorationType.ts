@@ -141,7 +141,7 @@ export class DecorationTypeWrapper {
         //or just take the content change range and get the full line i.e. contentChange.range
         const textRange = this.getFullLineRange(contentChange.range);
         const text = this.document.getText(textRange);
-        this.logger.error(`${this.toString()} checking matches over "${text}"`);
+        this.logger.debug(`${this.toString()} checking matches over "${text}"`);
         const regEx = new RegExp(this.rule.regularExpression, this.rule.regularExpressionFlags || 'g');
 
         let match;
