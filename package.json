@@ -131,6 +131,18 @@
             {
                 "command": "grepc.showReleaseNotes",
                 "title": "grepc: Show Release Notes"
+            },
+            {
+                "command": "grepc.minimizeAll",
+                "title": "grepc: Minimize All"
+            },
+            {
+                "command": "grepc.minimizeLocal",
+                "title": "grepc: Minimize Local"
+            },
+            {
+                "command": "grepc.minimizeGlobal",
+                "title": "grepc: Minimize Global"
             }
         ],
         "menus": {
@@ -177,6 +189,18 @@
                 {
                     "command": "grepc.enableGlobalRules",
                     "group": "grepc"
+                },
+                {
+                    "command": "grepc.minimizeAll",
+                    "title": "grepc: Minimize All"
+                },
+                {
+                    "command": "grepc.minimizeLocal",
+                    "title": "grepc: Minimize Local"
+                },
+                {
+                    "command": "grepc.minimizeGlobal",
+                    "title": "grepc: Minimize Global"
                 }
             ]
         },
@@ -254,7 +278,7 @@
         "uuid": "^10.0.0"
     },
     "lint-staged": {
-        "*.js": "eslint --cache --fix",
-        "*.{js,css,md}": "prettier --write"
+        "*.{ts,js}": "eslint --cache --fix",
+        "*.{ts,js,css,md}": "prettier --write"
     }
 }

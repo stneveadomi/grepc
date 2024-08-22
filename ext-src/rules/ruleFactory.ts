@@ -240,6 +240,27 @@ export class RuleFactory {
         );
     }
 
+    /**
+     * This will take each rule and set all drop down toggles to closed.
+     */
+    public async minimizeAll() {
+        const rulesArray = this.getRulesArray().map((rule) => {
+            rule.expanded = false;
+            rule.decorationExpanded = false;
+            rule.occurrencesExpanded = false;
+            return rule;
+        });
+        const rulesMap = this.getRulesMap();
+        const newRulesMap = new Map();
+        rulesMap.forEach((value, key) => {
+            value.expanded = false;
+            value.decorationExpanded = false;
+            value.occurrencesExpanded = false;
+            newRulesMap.set(key, value);
+        });
+        this.updateRules(newRulesMap, rulesArray);
+    }
+
     public async removeRule(id: string) {
         this.logger.info(`[EXT] [${reverseMap(this.location)}] Removing rule with ID: ${id}`);
         const rulesMap = this.getRulesMap();
