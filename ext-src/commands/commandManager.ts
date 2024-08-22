@@ -163,6 +163,29 @@ export class CommandManager {
                 },
                 this.logger,
             ),
+            new Command(
+                'grepc.minimizeAll',
+                () => {
+                    for (const ruleFactory of this.rfm.map.values()) {
+                        ruleFactory.minimizeAll();
+                    }
+                },
+                this.logger,
+            ),
+            new Command(
+                'grepc.minimizeLocal',
+                () => {
+                    this.rfm.getRuleFactory(LocationState.LOCAL)?.minimizeAll();
+                },
+                this.logger,
+            ),
+            new Command(
+                'grepc.minimizeGlobal',
+                () => {
+                    this.rfm.getRuleFactory(LocationState.GLOBAL)?.minimizeAll();
+                },
+                this.logger,
+            ),
         ];
     }
 
