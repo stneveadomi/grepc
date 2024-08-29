@@ -106,16 +106,9 @@ export class DecorationTypeWrapper {
      * @returns boolean indicating if we need to apply decorations after this update.
      */
     generateOccurrencesOnChange(contentChange: vscode.TextDocumentContentChangeEvent) {
-        // if there is a new line, we just need to recalculate everything.
-        // similarily if there is a deletion, ditto.
-        if ((contentChange.text.length == 0 && !contentChange.range.isSingleLine) || /[\n\r]/g.test(contentChange.text)) {
-            vscode.window.visibleTextEditors
-                .filter((editor) => editor.document === this.document)
-                .forEach((editor) => {
-                    this.clearDecorations(editor);
-                });
-            this.updateOccurrences(this.document, this.rule);
-            return true;
+        if (!this.rule.enabled) {
+            this.clearOccurrenceData();
+            return;
         }
 
         if (this.rule.includedFiles && !new RegExp(this.rule.includedFiles).test(this.document.fileName)) {
@@ -126,6 +119,18 @@ export class DecorationTypeWrapper {
         if (this.rule.excludedFiles && new RegExp(this.rule.excludedFiles).test(this.document.fileName)) {
             this.clearOccurrenceData();
             return false;
+        }
+
+        // if there is a new line, we just need to recalculate everything.
+        // similarily if there is a deletion, ditto.
+        if ((contentChange.text.length == 0 && !contentChange.range.isSingleLine) || /[\n\r]/g.test(contentChange.text)) {
+            vscode.window.visibleTextEditors
+                .filter((editor) => editor.document === this.document)
+                .forEach((editor) => {
+                    this.clearDecorations(editor);
+                });
+            this.updateOccurrences(this.document, this.rule);
+            return true;
         }
 
         // We will pass in a getFullLineRange() to handle removing intersecting occurrences.
@@ -279,6 +284,11 @@ export class DecorationTypeWrapper {
         const regEx = new RegExp(rule.regularExpression, rule.regularExpressionFlags || 'g');
         const decorations: vscode.DecorationOptions[] = [];
         const ranges: vscode.Range[] = [];
+
+        if (!rule.enabled) {
+            this.clearOccurrenceData();
+            return;
+        }
 
         if (rule.includedFiles && !new RegExp(rule.includedFiles).test(document.fileName)) {
             this.clearOccurrenceData();
