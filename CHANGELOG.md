@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Introduced 3 new minimize commands: All, local, and global.
 
+### Changed
+
+-   Addressed bug where disabled rules would apply if editing document.
+
 ### Removed
 
 -   Removed all non-contextual commands from context. (i.e. Only create rule from selection appears on right click).
