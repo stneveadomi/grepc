@@ -459,6 +459,16 @@
                             (blur)="onFormBlur()"
                             formControlName="isWholeLine" />
                     </div>
+
+                    <app-child-decoration
+                        [(rule)]="rule"
+                        [id]="CHILD_DECORATION_TYPE.BEFORE">
+                    </app-child-decoration>
+
+                    <app-child-decoration
+                        [(rule)]="rule"
+                        [id]="CHILD_DECORATION_TYPE.AFTER">
+                    </app-child-decoration>
                 </div>
             </div>
 

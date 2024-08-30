@@ -31,6 +31,7 @@ import {
     RegularExpressionValidator,
 } from '../../utilities/form-validators';
 import { LoggerService } from '../../services/logger.service';
+import { ChildDecorationComponent, ChildDecorationType } from './child-decoration/child-decoration.component';
 
 @Component({
     selector: 'app-rule',
@@ -42,6 +43,7 @@ import { LoggerService } from '../../services/logger.service';
         ColorPickerModule,
         DecorationPreviewComponent,
         OccurrencesComponent,
+        ChildDecorationComponent
     ],
     templateUrl: './rule.component.html',
     styleUrl: './rule.component.css',
@@ -140,6 +142,8 @@ export class RuleComponent
     override onDrop: (event: DragEvent) => void = () => {
         this.drag.disableDraggable();
     };
+
+    public CHILD_DECORATION_TYPE = ChildDecorationType;
 
     constructor(
         private ruleService: RuleService,

@@ -5,6 +5,8 @@ export interface IRule {
     enabled: boolean | null;
     expanded: boolean | null;
     decorationExpanded: boolean | null;
+    beforeChildDecorationExpanded: boolean;
+    
     occurrencesExpanded: boolean | null;
     id: string;
     title: string | null;

@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { v4 as uuidv4 } from 'uuid';
+import { ThemableDecorationAttachmentRenderOptions } from 'vscode';
 
 // export class Rule implements Rule {
 //     constructor(id: string) {
@@ -47,6 +48,9 @@ export interface IRule {
     color: string;
 
     isWholeLine: boolean;
+
+    before: ThemableDecorationAttachmentRenderOptions;
+    after: ThemableDecorationAttachmentRenderOptions;
 }
 
 export class Rule implements IRule {
@@ -77,6 +81,8 @@ export class Rule implements IRule {
         this.cursor = '';
         this.color = '';
         this.isWholeLine = false;
+        this.before = {};
+        this.after = {};
     }
     enabled: boolean;
     expanded: boolean;
@@ -104,6 +110,8 @@ export class Rule implements IRule {
     cursor: string;
     color: string;
     isWholeLine: boolean;
+    before: ThemableDecorationAttachmentRenderOptions;
+    after: ThemableDecorationAttachmentRenderOptions;
 
     valueOf() {
         return this.id;

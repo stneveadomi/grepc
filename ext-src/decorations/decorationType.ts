@@ -29,6 +29,12 @@ export class DecorationTypeWrapper {
             this.decorationType.dispose();
         }
         this.decorationType = vscode.window.createTextEditorDecorationType({
+            // Decoration range will not widen when edits occur at the start or end
+            rangeBehavior: 1,
+
+            before: this.rule.before,
+            after: this.rule.after,
+
             backgroundColor: this.rule.backgroundColor ?? '',
             outline: this.rule.outline ?? '',
             outlineColor: this.rule.outlineColor ?? '',

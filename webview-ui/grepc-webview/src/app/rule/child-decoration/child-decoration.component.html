@@ -1,0 +1,28 @@
+<header
+    class="child-decoration clickable"
+    tabindex="0"
+    (keydown.enter)="toggleExpand($event)"
+    (click)="toggleExpand($event)">
+    <div class="rule-header-container clickable">
+        <div
+            tabindex="0"
+            (keydown.enter)="toggleExpand($event)"
+            (click)="toggleExpand($event)"
+            [ngClass]="this.rule.occurrencesExpanded ? 'open' : 'closed'"
+            class="drop-down codicon codicon-chevron-right"></div>
+
+        <span
+            class="rule-id clickable"
+            tabindex="0"
+            (keydown.enter)="toggleExpand($event)"
+            (click)="toggleExpand($event)">
+            {{getTitle()}}
+        </span>
+    </div>
+</header>
+
+<div
+    class="occurrences-body"
+    [style.display]="getExpandedStyle(this.rule.occurrencesExpanded)">
+    insert body here.
+</div>
