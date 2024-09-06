@@ -2,26 +2,21 @@ import * as vscode from 'vscode';
 import { v4 as uuidv4 } from 'uuid';
 import { ThemableDecorationAttachmentRenderOptions } from 'vscode';
 
-// export class Rule implements Rule {
-//     constructor(id: string) {
-//         this.id = id;
-//     }
-// }
-
 export interface IRule {
+    id: string;
     enabled: boolean;
     expanded: boolean;
     decorationExpanded: boolean;
+    beforeExpanded: boolean;
+    afterExpanded: boolean;
     occurrencesExpanded: boolean;
-    //uuid
-    id: string;
-    // custom name for rule.
+
     title: string;
 
     overviewRulerLane: vscode.OverviewRulerLane;
     overviewRulerColor: string;
 
-    maxOccurrences: number | null;
+    maxOccurrences: number;
 
     regularExpression: string;
     regularExpressionFlags: string;
@@ -48,7 +43,6 @@ export interface IRule {
     color: string;
 
     isWholeLine: boolean;
-
     before: ThemableDecorationAttachmentRenderOptions;
     after: ThemableDecorationAttachmentRenderOptions;
 }
@@ -60,6 +54,8 @@ export class Rule implements IRule {
         this.enabled = false;
         this.expanded = false;
         this.decorationExpanded = false;
+        this.beforeExpanded = false;
+        this.afterExpanded = false;
         this.occurrencesExpanded = false;
         this.overviewRulerColor = '';
         this.overviewRulerLane = vscode.OverviewRulerLane.Full;
@@ -88,11 +84,14 @@ export class Rule implements IRule {
     expanded: boolean;
     decorationExpanded: boolean;
     occurrencesExpanded: boolean;
+    beforeExpanded: boolean;
+    afterExpanded: boolean;
+
     id: string;
     title: string;
     overviewRulerLane: vscode.OverviewRulerLane;
     overviewRulerColor: string;
-    maxOccurrences: number | null;
+    maxOccurrences: number;
     regularExpression: string;
     regularExpressionFlags: string;
     includedFiles: string;

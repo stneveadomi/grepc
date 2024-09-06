@@ -45,8 +45,12 @@ input {
     gap: 5px;
 }
 
-.indent {
+.block {
     margin-left: 1em;
+    width: 100%;
+}
+
+.indent {
     border-left: solid 1px rgb(73, 73, 73);
 }
 

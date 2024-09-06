@@ -28,11 +28,11 @@
         <div class="row">
             <div class="indent"></div>
             <div class="input-label">
-                <label [htmlFor]="this.rule.id + '-content-text'">
+                <label [htmlFor]="rule.id + '-' + getTitle() + '-content-text'">
                     content text:
                 </label>
                 <input
-                    [id]="this.rule.id + '-content-text'"
+                    [id]="rule.id + '-' + getTitle() + '-content-text'"
                     formControlName="contentText"
                     title="This represents the text that will surround the selection."
                     (focus)="onFormFocus()"
@@ -45,11 +45,11 @@
         <div class="row">
             <div class="indent"></div>
             <div class="input-label">
-                <label [htmlFor]="this.rule.id + '-content-icon-path'">
+                <label [htmlFor]="rule.id + '-' + getTitle() + '-content-icon-path'">
                     content icon path:
                 </label>
                 <input
-                    [id]="this.rule.id + '-content-icon-path'"
+                    [id]="rule.id + '-' + getTitle() + '-content-icon-path'"
                     formControlName="contentIconPath"
                     title="This represents the URI to the icon that will surround the selection."
                     (focus)="onFormFocus()"
@@ -61,8 +61,8 @@
         </div>
         <div class="row">
             <div class="indent"></div>
-            <div class="input-label">
-                <label [htmlFor]="this.rule.id + '-backgroundColor'">
+            <div class="block">
+                <label [htmlFor]="rule.id + '-' + getTitle() + '-backgroundColor'">
                     background color:
                     <a
                         title="MDN Reference"
@@ -70,7 +70,7 @@
                         class="codicon codicon-info"></a>
                 </label>
                 <input
-                    [id]="this.rule.id + '-backgroundColor'"
+                    [id]="rule.id + '-' + getTitle() + '-backgroundColor'"
                     formControlName="backgroundColor"
                     [value]="formGroup.value.backgroundColor"
                     [style.background]="formGroup.value.backgroundColor"
@@ -83,8 +83,8 @@
         </div>
         <div class="row">
             <div class="indent"></div>
-            <div class="input-label">
-                <label [htmlFor]="this.rule.id + '-color'">
+            <div class="block">
+                <label [htmlFor]="rule.id + '-' + getTitle() + '-color'">
                     color:
                     <a
                         title="MDN Reference"
@@ -92,7 +92,7 @@
                         class="codicon codicon-info"></a>
                 </label>
                 <input
-                    [id]="this.rule.id + '-color'"
+                    [id]="rule.id + '-' + getTitle() + '-color'"
                     formControlName="color"
                     type="text"
                     name="include-files"
@@ -108,7 +108,7 @@
         <div class="row">
             <div class="indent"></div>
             <div class="input-label">
-                <label [htmlFor]="this.rule.id + '-border'">
+                <label [htmlFor]="rule.id + '-' + getTitle() + '-border'">
                     border:
                     <a
                         title="MDN Reference"
@@ -116,7 +116,7 @@
                         class="codicon codicon-info"></a>
                 </label>
                 <input
-                    [id]="this.rule.id + '-border'"
+                    [id]="rule.id + '-' + getTitle() + '-border'"
                     formControlName="border"
                     title="You can either put the entire border value in this input or for organization, across the following fields."
                     (focus)="onFormFocus()"
@@ -129,12 +129,12 @@
         </div>
         <div class="row">
             <div class="indent"></div>
-            <div class="input-label">
-                <label [htmlFor]="this.rule.id + '-borderColor'">
+            <div class="block">
+                <label [htmlFor]="rule.id + '-' + getTitle() + '-borderColor'">
                     border color:
                 </label>
                 <input
-                    [id]="this.rule.id + '-borderColor'"
+                    [id]="rule.id + '-' + getTitle() + '-borderColor'"
                     formControlName="borderColor"
                     type="text"
                     name="border-color"
@@ -149,7 +149,7 @@
         <div class="row">
             <div class="indent"></div>
             <div class="input-label">
-                <label [htmlFor]="this.rule.id + '-fontStyle'">
+                <label [htmlFor]="rule.id + '-' + getTitle() + '-fontStyle'">
                     font style:
                     <a
                         title="MDN Reference"
@@ -157,7 +157,7 @@
                         class="codicon codicon-info"></a>
                 </label>
                 <input
-                    [id]="this.rule.id + '-fontStyle'"
+                    [id]="rule.id + '-' + getTitle() + '-fontStyle'"
                     formControlName="fontStyle"
                     (focus)="onFormFocus()"
                     (blur)="onFormBlur()"
@@ -170,7 +170,7 @@
         <div class="row">
             <div class="indent"></div>
             <div class="input-label">
-                <label [htmlFor]="this.rule.id + '-fontWeight'">
+                <label [htmlFor]="rule.id + '-' + getTitle() + '-fontWeight'">
                     font weight:
                     <a
                         title="MDN Reference"
@@ -178,7 +178,7 @@
                         class="codicon codicon-info"></a>
                 </label>
                 <input
-                    [id]="this.rule.id + '-fontWeight'"
+                    [id]="rule.id + '-' + getTitle() + '-fontWeight'"
                     formControlName="fontWeight"
                     (focus)="onFormFocus()"
                     (blur)="onFormBlur()"
@@ -191,7 +191,7 @@
         <div class="row">
             <div class="indent"></div>
             <div class="input-label">
-                <label [htmlFor]="this.rule.id + '-textDecoration'">
+                <label [htmlFor]="rule.id + '-' + getTitle() + '-textDecoration'">
                     text decoration:
                     <a
                         title="MDN Reference"
@@ -199,7 +199,7 @@
                         class="codicon codicon-info"></a>
                 </label>
                 <input
-                    [id]="this.rule.id + '-textDecoration'"
+                    [id]="rule.id + '-' + getTitle() + '-textDecoration'"
                     formControlName="textDecoration"
                     (focus)="onFormFocus()"
                     (blur)="onFormBlur()"
@@ -212,7 +212,7 @@
         <div class="row">
             <div class="indent"></div>
             <div class="input-label">
-                <label [htmlFor]="this.rule.id + '-margin'">
+                <label [htmlFor]="rule.id + '-' + getTitle() + '-margin'">
                     margin:
                     <a
                         title="MDN Reference"
@@ -220,7 +220,7 @@
                         class="codicon codicon-info"></a>
                 </label>
                 <input
-                    [id]="this.rule.id + '-margin'"
+                    [id]="rule.id + '-' + getTitle() + '-margin'"
                     formControlName="margin"
                     (focus)="onFormFocus()"
                     (blur)="onFormBlur()"

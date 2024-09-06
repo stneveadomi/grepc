@@ -37,8 +37,8 @@ export class ChildDecorationComponent implements ControlValueAccessor {
     @Input({ required: true })
     rule!: Rule;
 
-    @Output()
-    ruleChange = new EventEmitter<Rule>();
+    // @Output()
+    // ruleChange = new EventEmitter<Rule>();
 
     isEditing = false;
 
@@ -116,8 +116,7 @@ export class ChildDecorationComponent implements ControlValueAccessor {
     }
 
     updateColorPicker(control: string, value: string) {
-        // TODO:  Fix this
-        //this.ruleForm.get(control)?.setValue(value);
+        this.formGroup.get(control)?.setValue(value);
         this.ruleService.updateRule(this.rule);
         this.ruleService.pushRules();
     }

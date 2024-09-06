@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
 import { LineRange } from './line-range';
-import { Uri, ThemeColor } from 'vscode';
 
 export interface IRule {
     id: string;
@@ -152,20 +151,25 @@ export class Rule implements IRule {
         return JSON.stringify(a) === JSON.stringify(b);
     }
 
-    overwrite(partialRule: Partial<Rule>): Rule {
-        const updatedRule = new Rule(partialRule.title || '');
 
-        // Copy properties from the partialRule to the new instance
-        for (const key of Object.keys(partialRule)) {
+}
+
+export function overwrite(rule: Rule, partialRule: Partial<Rule>): Rule {
+    const updatedRule = new Rule(partialRule.title || '');
+
+    // Copy properties from the partialRule to the new instance
+    for (const key of Object.keys(rule)) {
+        // @ts-ignore: TypeScript may need this ignore to properly handle dynamic keys
+        if (partialRule.hasOwnProperty(key) && partialRule[key] !== undefined) {
             // @ts-ignore: TypeScript may need this ignore to properly handle dynamic keys
-            if (partialRule.hasOwnProperty(key) && partialRule[key] !== undefined) {
-                // @ts-ignore: TypeScript may need this ignore to properly handle dynamic keys
-                updatedRule[key] = partialRule[key];
-            }
+            updatedRule[key] = partialRule[key];
+        } else {
+            // @ts-ignore: TypeScript may need this ignore to properly handle dynamic keys
+            updatedRule[key] = rule[key];
         }
-
-        return updatedRule;
     }
+
+    return updatedRule;
 }
 
 export interface ThemableDecorationAttachmentRenderOptions {

@@ -51,7 +51,7 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
         webviewView.onDidDispose(() => this.dispose(), null, this._disposables);
         webviewView.webview.html = this._getWebviewContent(webviewView.webview);
 
-        if (vscode.workspace.getConfiguration('grepc').get('grepc.debugMode')) {
+        if (vscode.workspace.getConfiguration('grepc').get('debugMode')) {
             this.pushDebugMode(true);
         }
 
@@ -71,7 +71,7 @@ export class GrepcViewProvider implements vscode.WebviewViewProvider {
 
     handleConfigurationChange = (event: vscode.ConfigurationChangeEvent): void => {
         if (event.affectsConfiguration('grepc')) {
-            this.pushDebugMode(vscode.workspace.getConfiguration('grepc').get('grepc.debugMode') ?? false);
+            this.pushDebugMode(vscode.workspace.getConfiguration('grepc').get('debugMode') ?? false);
         }
     };
 

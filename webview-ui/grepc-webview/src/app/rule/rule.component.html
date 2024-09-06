@@ -462,13 +462,13 @@
 
                     <app-child-decoration
                         formGroupName="before"
-                        [(rule)]="rule"
+                        [rule]="rule"
                         [id]="CHILD_DECORATION_TYPE.BEFORE">
                     </app-child-decoration>
 
                     <app-child-decoration
                         formGroupName="after"
-                        [(rule)]="rule"
+                        [rule]="rule"
                         [id]="CHILD_DECORATION_TYPE.AFTER">
                     </app-child-decoration>
                 </div>
@@ -484,4 +484,4 @@
 </div>
 
 
-<pre *ngIf="extensionService.debugMode">{{ruleForm.value | json }}</pre>
+<pre *ngIf="extensionService.debugMode">{{ ruleForm.value | json }}</pre>
