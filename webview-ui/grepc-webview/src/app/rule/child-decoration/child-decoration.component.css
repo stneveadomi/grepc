@@ -10,13 +10,47 @@
     cursor: pointer;
 }
 
-.selection-title {
-    text-transform: uppercase;
-    font-weight: 700;
+.child-decoration-header {
+    margin-top: 13px;
+    padding-left: 0;
 }
 
-.child-decoration {
-    display: inline-flex;
+.codicon-chevron-right {
+    padding: 0;
+}
+
+.rule-header-container {
     gap: 5px;
-    align-items: center;
+}
+
+input {
+    margin-left: 0;
+}
+
+.child-decoration-body {
+    margin-left: 0;
+    flex-grow: 0;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+
+    overflow: hidden;
+    padding-top: 1em;
+}
+
+.row {
+    display: inline-flex;
+    width: 100%;
+    gap: 5px;
+}
+
+.indent {
+    margin-left: 1em;
+    border-left: solid 1px rgb(73, 73, 73);
+}
+
+.input-label {
+    width: 100%;
+    margin-left: 1em;
 }

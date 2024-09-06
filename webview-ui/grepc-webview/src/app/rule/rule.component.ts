@@ -63,7 +63,7 @@ export class RuleComponent
     isEditingTitle = false;
     override dragData: string | undefined = undefined;
 
-    ruleForm = this.fb.group({
+    ruleForm = this.fb.nonNullable.group({
         title: [
             '',
             [
@@ -103,6 +103,34 @@ export class RuleComponent
         cursor: ['', [CSSValidator.classValidator('cursor')]],
         color: ['', [CSSValidator.classValidator('color')]],
         isWholeLine: [false],
+        before: this.fb.nonNullable.group({
+            contentText: [<string | undefined> ''],
+            contentIconPath: [<string | undefined> ''],
+            border: [''],
+            borderColor: [<string | undefined> ''],
+            fontStyle: [''],
+            fontWeight: [''],
+            textDecoration: [''],
+            color: [''],
+            backgroundColor: [''],
+            margin: [''],
+            width: [''],
+            height: ['']
+        }),
+        after: this.fb.nonNullable.group({
+            contentText: [<string | undefined> ''],
+            contentIconPath: [<string | undefined> ''],
+            border: [''],
+            borderColor: [<string | undefined> ''],
+            fontStyle: [''],
+            fontWeight: [''],
+            textDecoration: [''],
+            color: [''],
+            backgroundColor: [''],
+            margin: [''],
+            width: [''],
+            height: ['']
+        })
     });
 
     @ViewChild('container')
@@ -116,10 +144,8 @@ export class RuleComponent
                         return;
                     }
 
-                    const newRule = {
-                        ...this.rule,
-                        ...this.ruleForm.value,
-                    };
+                    
+                    const newRule = this.rule.overwrite(this.ruleForm.value);
 
                     if (Rule.equals(this.rule, newRule)) {
                         return;
@@ -231,7 +257,7 @@ export class RuleComponent
         this.isEditingTitle = !this.isEditingTitle;
         // if no longer editing title, reset form value for title.
         if (!this.isEditingTitle) {
-            this.ruleForm.controls.title.setValue(this.rule.title);
+            this.ruleForm.controls.title.setValue(this.rule.title ?? '');
         }
     }
 

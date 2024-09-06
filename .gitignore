@@ -4,3 +4,4 @@ dist
 out
 !.husky/_/husky.sh
 .vscode-test
+.eslintcache

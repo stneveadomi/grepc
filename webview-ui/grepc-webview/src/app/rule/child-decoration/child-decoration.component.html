@@ -1,28 +1,233 @@
-<header
-    class="child-decoration clickable"
+<form [formGroup]="formGroup">
+    <header
+    class="child-decoration-header clickable"
     tabindex="0"
     (keydown.enter)="toggleExpand($event)"
     (click)="toggleExpand($event)">
-    <div class="rule-header-container clickable">
-        <div
-            tabindex="0"
-            (keydown.enter)="toggleExpand($event)"
-            (click)="toggleExpand($event)"
-            [ngClass]="this.rule.occurrencesExpanded ? 'open' : 'closed'"
-            class="drop-down codicon codicon-chevron-right"></div>
+        <div class="rule-header-container clickable">
+            <div
+                tabindex="0"
+                (keydown.enter)="toggleExpand($event)"
+                (click)="toggleExpand($event)"
+                [ngClass]="this.isEnabled ? 'open' : 'closed'"
+                class="drop-down codicon codicon-chevron-right"></div>
 
-        <span
-            class="rule-id clickable"
-            tabindex="0"
-            (keydown.enter)="toggleExpand($event)"
-            (click)="toggleExpand($event)">
-            {{getTitle()}}
-        </span>
+            <span
+                class="rule-id clickable"
+                tabindex="0"
+                (keydown.enter)="toggleExpand($event)"
+                (click)="toggleExpand($event)">
+                {{ getTitle() }}
+            </span>
+        </div>
+    </header>
+
+    <div
+        class="child-decoration-body"
+        [style.display]="getExpandedStyle(this.isEnabled)">
+        <div class="row">
+            <div class="indent"></div>
+            <div class="input-label">
+                <label [htmlFor]="this.rule.id + '-content-text'">
+                    content text:
+                </label>
+                <input
+                    [id]="this.rule.id + '-content-text'"
+                    formControlName="contentText"
+                    title="This represents the text that will surround the selection."
+                    (focus)="onFormFocus()"
+                    (blur)="onFormBlur()"
+                    type="text"
+                    name="content-text"
+                    placeholder="e.g. 💩,👀,❌" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="indent"></div>
+            <div class="input-label">
+                <label [htmlFor]="this.rule.id + '-content-icon-path'">
+                    content icon path:
+                </label>
+                <input
+                    [id]="this.rule.id + '-content-icon-path'"
+                    formControlName="contentIconPath"
+                    title="This represents the URI to the icon that will surround the selection."
+                    (focus)="onFormFocus()"
+                    (blur)="onFormBlur()"
+                    type="text"
+                    name="border"
+                    placeholder="e.g. https://icon.com/path.png" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="indent"></div>
+            <div class="input-label">
+                <label [htmlFor]="this.rule.id + '-backgroundColor'">
+                    background color:
+                    <a
+                        title="MDN Reference"
+                        href="https://developer.mozilla.org/en-US/docs/Web/CSS/background-color"
+                        class="codicon codicon-info"></a>
+                </label>
+                <input
+                    [id]="this.rule.id + '-backgroundColor'"
+                    formControlName="backgroundColor"
+                    [value]="formGroup.value.backgroundColor"
+                    [style.background]="formGroup.value.backgroundColor"
+                    [(colorPicker)]="formGroup.value.backgroundColor!"
+                    [cpPosition]="'bottom'"
+                    (colorPickerSelect)="
+                        updateColorPicker('backgroundColor', $event)
+                    " />
+            </div>
+        </div>
+        <div class="row">
+            <div class="indent"></div>
+            <div class="input-label">
+                <label [htmlFor]="this.rule.id + '-color'">
+                    color:
+                    <a
+                        title="MDN Reference"
+                        href="https://developer.mozilla.org/en-US/docs/Web/CSS/color"
+                        class="codicon codicon-info"></a>
+                </label>
+                <input
+                    [id]="this.rule.id + '-color'"
+                    formControlName="color"
+                    type="text"
+                    name="include-files"
+                    [value]="formGroup.value.color"
+                    [style.background]="formGroup.value.color"
+                    [(colorPicker)]="formGroup.value.color!"
+                    [cpPosition]="'bottom'"
+                    (colorPickerSelect)="
+                        updateColorPicker('color', $event)
+                    " />
+            </div>
+        </div>
+        <div class="row">
+            <div class="indent"></div>
+            <div class="input-label">
+                <label [htmlFor]="this.rule.id + '-border'">
+                    border:
+                    <a
+                        title="MDN Reference"
+                        href="https://developer.mozilla.org/en-US/docs/Web/CSS/border"
+                        class="codicon codicon-info"></a>
+                </label>
+                <input
+                    [id]="this.rule.id + '-border'"
+                    formControlName="border"
+                    title="You can either put the entire border value in this input or for organization, across the following fields."
+                    (focus)="onFormFocus()"
+                    (blur)="onFormBlur()"
+                    type="text"
+                    name="border"
+                    placeholder="e.g. solid 1px red, ridge"
+                    [(value)]="formGroup.value.border" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="indent"></div>
+            <div class="input-label">
+                <label [htmlFor]="this.rule.id + '-borderColor'">
+                    border color:
+                </label>
+                <input
+                    [id]="this.rule.id + '-borderColor'"
+                    formControlName="borderColor"
+                    type="text"
+                    name="border-color"
+                    [value]="formGroup.value.borderColor"
+                    [style.background]="formGroup.value.borderColor"
+                    [(colorPicker)]="formGroup.value.borderColor!"
+                    (colorPickerSelect)="
+                        updateColorPicker('borderColor', $event)
+                    " />
+            </div>
+        </div>
+        <div class="row">
+            <div class="indent"></div>
+            <div class="input-label">
+                <label [htmlFor]="this.rule.id + '-fontStyle'">
+                    font style:
+                    <a
+                        title="MDN Reference"
+                        href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-style"
+                        class="codicon codicon-info"></a>
+                </label>
+                <input
+                    [id]="this.rule.id + '-fontStyle'"
+                    formControlName="fontStyle"
+                    (focus)="onFormFocus()"
+                    (blur)="onFormBlur()"
+                    type="text"
+                    name="font-style"
+                    placeholder="e.g. normal, italic, oblique"
+                    [(value)]="formGroup.value.fontStyle" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="indent"></div>
+            <div class="input-label">
+                <label [htmlFor]="this.rule.id + '-fontWeight'">
+                    font weight:
+                    <a
+                        title="MDN Reference"
+                        href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight"
+                        class="codicon codicon-info"></a>
+                </label>
+                <input
+                    [id]="this.rule.id + '-fontWeight'"
+                    formControlName="fontWeight"
+                    (focus)="onFormFocus()"
+                    (blur)="onFormBlur()"
+                    type="text"
+                    name="font-weight"
+                    placeholder="(100-900) e.g. 700, bold"
+                    [(value)]="formGroup.value.fontWeight" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="indent"></div>
+            <div class="input-label">
+                <label [htmlFor]="this.rule.id + '-textDecoration'">
+                    text decoration:
+                    <a
+                        title="MDN Reference"
+                        href="https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration"
+                        class="codicon codicon-info"></a>
+                </label>
+                <input
+                    [id]="this.rule.id + '-textDecoration'"
+                    formControlName="textDecoration"
+                    (focus)="onFormFocus()"
+                    (blur)="onFormBlur()"
+                    type="text"
+                    name="text-decoration"
+                    placeholder="e.g. dashed, double, wavy, underline"
+                    [(value)]="formGroup.value.textDecoration" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="indent"></div>
+            <div class="input-label">
+                <label [htmlFor]="this.rule.id + '-margin'">
+                    margin:
+                    <a
+                        title="MDN Reference"
+                        href="https://developer.mozilla.org/en-US/docs/Web/CSS/margin"
+                        class="codicon codicon-info"></a>
+                </label>
+                <input
+                    [id]="this.rule.id + '-margin'"
+                    formControlName="margin"
+                    (focus)="onFormFocus()"
+                    (blur)="onFormBlur()"
+                    type="text"
+                    name="margin"
+                    placeholder="e.g. solid 1px blue, dashed, dotted, double" />
+            </div>
+        </div>
     </div>
-</header>
-
-<div
-    class="occurrences-body"
-    [style.display]="getExpandedStyle(this.rule.occurrencesExpanded)">
-    insert body here.
-</div>
+</form>
