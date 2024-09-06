@@ -38,6 +38,16 @@
     ],
     "main": "./dist/extension.js",
     "contributes": {
+        "configuration": {
+            "title": "grepc",
+            "properties": {
+                "grepc.debugMode": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable debug mode within the grepc extension."
+                }
+            }
+        },
         "walkthroughs": [
             {
                 "id": "grepc.walkthrough",

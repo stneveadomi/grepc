@@ -114,6 +114,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
             case 'dragend':
                 this.dragService.dragOriginLocation = undefined;
                 break;
+            case 'debugMode':
+                this.extension.debugMode = !this.extension.debugMode;
+                break;
         }
     }
 }

@@ -10,7 +10,7 @@ import {
     SimpleChanges,
     ViewChild,
 } from '@angular/core';
-import { OccurrenceData, OverviewRulerLane, Rule } from '../../models/rule';
+import { OccurrenceData, OverviewRulerLane, overwrite, Rule } from '../../models/rule';
 import { CommonModule } from '@angular/common';
 import { SliderCheckboxComponent } from '../slider-checkbox/slider-checkbox.component';
 import { ColorPickerModule } from 'ngx-color-picker';
@@ -32,6 +32,7 @@ import {
 } from '../../utilities/form-validators';
 import { LoggerService } from '../../services/logger.service';
 import { ChildDecorationComponent, ChildDecorationType } from './child-decoration/child-decoration.component';
+import { ExtensionService } from '../../services/extension.service';
 
 @Component({
     selector: 'app-rule',
@@ -145,7 +146,7 @@ export class RuleComponent
                     }
 
                     
-                    const newRule = this.rule.overwrite(this.ruleForm.value);
+                    const newRule = overwrite(this.rule, this.ruleForm.value);
 
                     if (Rule.equals(this.rule, newRule)) {
                         return;
@@ -177,6 +178,7 @@ export class RuleComponent
         private cdr: ChangeDetectorRef,
         logger: LoggerService,
         drag: DragService,
+        public extensionService: ExtensionService
     ) {
         super(drag, logger);
     }
