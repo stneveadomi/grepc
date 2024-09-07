@@ -61,7 +61,7 @@
         "typescript-eslint": "8.0.0-alpha.38"
     },
     "lint-staged": {
-        "*.js": "eslint --cache --fix",
-        "*.{js,css,md}": "prettier --write"
+        "*.{ts,js}": "eslint --cache --fix",
+        "*.{ts,js,css,md}": "prettier --write"
     }
 }
