@@ -1,13 +1,22 @@
-import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, forwardRef, Input, Output } from "@angular/core";
-import { ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule } from "@angular/forms";
-import { ColorPickerModule } from "ngx-color-picker";
-import { DecorationPreviewComponent } from "../../decoration-preview/decoration-preview.component";
-import { OccurrencesComponent } from "../../occurrences/occurrences.component";
-import { SliderCheckboxComponent } from "../../slider-checkbox/slider-checkbox.component";
-import { Rule } from "../../../models/rule";
-import { RuleService } from "../../../services/rule.service";
-import { CSSValidator } from "../../../utilities/form-validators";
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+    AbstractControl,
+    ControlValueAccessor,
+    FormBuilder,
+    NG_VALIDATORS,
+    NG_VALUE_ACCESSOR,
+    ReactiveFormsModule,
+    ValidationErrors,
+    Validator,
+} from '@angular/forms';
+import { ColorPickerModule } from 'ngx-color-picker';
+import { DecorationPreviewComponent } from '../../decoration-preview/decoration-preview.component';
+import { OccurrencesComponent } from '../../occurrences/occurrences.component';
+import { SliderCheckboxComponent } from '../../slider-checkbox/slider-checkbox.component';
+import { Rule, ChildDecorationModel } from '../../../models/rule';
+import { CSSValidator } from '../../../utilities/form-validators';
+import { LoggerService } from '../../../services/logger.service';
 
 @Component({
     selector: 'app-child-decoration',
@@ -23,57 +32,83 @@ import { CSSValidator } from "../../../utilities/form-validators";
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => ChildDecorationComponent),
+            useExisting: ChildDecorationComponent,
+            multi: true,
+        },
+        {
+            provide: NG_VALIDATORS,
+            useExisting: ChildDecorationComponent,
             multi: true,
         },
     ],
     templateUrl: './child-decoration.component.html',
     styleUrl: './child-decoration.component.css',
 })
-export class ChildDecorationComponent implements ControlValueAccessor {
+export class ChildDecorationComponent
+    implements ControlValueAccessor, Validator
+{
     @Input({ required: true })
     id!: ChildDecorationType;
 
     @Input({ required: true })
     rule!: Rule;
 
-    // @Output()
-    // ruleChange = new EventEmitter<Rule>();
+    @Output()
+    ruleChange = new EventEmitter<Rule>();
 
     isEditing = false;
 
-    formGroup = this.fb.nonNullable.group({
-        contentText: [<string | undefined> ''],
-        contentIconPath: [<string | undefined> '', [CSSValidator.classValidator('url')]],
-        border: ['', [CSSValidator.classValidator('border')]],
-        borderColor: [<string | undefined> '', [CSSValidator.classValidator('border-color')]],
-        fontStyle: ['', [CSSValidator.classValidator('font-style')]],
-        fontWeight: ['', [CSSValidator.classValidator('font-weight')]],
-        textDecoration: ['', [CSSValidator.classValidator('text-decoration')]],
-        color: ['', [CSSValidator.classValidator('cursor')]],
-        backgroundColor: ['', [CSSValidator.classValidator('background-color')]],
-        margin: ['', [CSSValidator.classValidator('margin')]],
-        width: ['', [CSSValidator.classValidator('width')]],
-        height: ['', [CSSValidator.classValidator('height')]]
-    });
+    formGroup = this.fb.nonNullable.group(
+        {
+            contentText: ['' as string | undefined],
+            border: ['', [CSSValidator.classValidator('border')]],
+            borderColor: [
+                '' as string | undefined,
+                [CSSValidator.classValidator('border-color')],
+            ],
+            fontStyle: ['', [CSSValidator.classValidator('font-style')]],
+            fontWeight: ['', [CSSValidator.classValidator('font-weight')]],
+            textDecoration: [
+                '',
+                [CSSValidator.classValidator('text-decoration')],
+            ],
+            color: ['', [CSSValidator.classValidator('color')]],
+            backgroundColor: [
+                '',
+                [CSSValidator.classValidator('background-color')],
+            ],
+            margin: ['', [CSSValidator.classValidator('margin')]],
+            width: ['', [CSSValidator.classValidator('width')]],
+            height: ['', [CSSValidator.classValidator('height')]],
+        },
+        { updateOn: 'blur' },
+    );
 
     constructor(
         private fb: FormBuilder,
-        private ruleService: RuleService
-    ) {
+        private logger: LoggerService,
+    ) {}
 
-    }
-    
-    writeValue(value: any) {
-        this.formGroup.setValue(value);
-    }
-
-    registerOnChange(fn: Function) {
-        this.formGroup.valueChanges.subscribe((val) => fn(val));
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    validate(_control: AbstractControl): ValidationErrors | null {
+        return this.formGroup.errors;
     }
 
-    registerOnTouched(fn: Function) {
-        this.formGroup.valueChanges.subscribe((val) => fn(val));
+    registerOnValidatorChange?(fn: () => void): void {
+        this.formGroup.statusChanges.subscribe(fn);
+    }
+
+    writeValue(value: ChildDecorationModel) {
+        this.formGroup.patchValue(value);
+    }
+
+    registerOnChange(fn: (value: unknown) => void) {
+        this.formGroup.valueChanges.subscribe(fn);
+    }
+
+    onTouched: () => void = () => this.logger.error('NO REGISTRATION');
+    registerOnTouched(fn: () => void) {
+        this.onTouched = fn;
     }
 
     getExpandedStyle(isExpanded: boolean | null) {
@@ -111,28 +146,24 @@ export class ChildDecorationComponent implements ControlValueAccessor {
                 this.rule.afterExpanded = !this.rule.afterExpanded;
                 break;
         }
-        this.ruleService.updateRule(this.rule);
-        this.ruleService.pushRulesToExtension();
     }
 
     updateColorPicker(control: string, value: string) {
         this.formGroup.get(control)?.setValue(value);
-        this.ruleService.updateRule(this.rule);
-        this.ruleService.pushRules();
     }
 
     onFormFocus() {
         this.isEditing = true;
+        this.onTouched();
     }
 
     onFormBlur() {
         this.isEditing = false;
-        // this.STATUS_CHANGE_OBSERVER.next(this.ruleForm.status);
+        this.onTouched();
     }
-
 }
 
 export enum ChildDecorationType {
-    BEFORE = "before",
-    AFTER = "after",
+    BEFORE = 'before',
+    AFTER = 'after',
 }

@@ -244,7 +244,7 @@
         "uuid": "^10.0.0"
     },
     "lint-staged": {
-        "*.{ts,js}": "eslint --cache --fix",
-        "*.{ts,js,css,md,json}": "prettier --write"
+        "*.{ts,js}": "eslint ./ext-src/ --fix",
+        "*.{ts,js,css,md,json}": "prettier . --write"
     }
 }

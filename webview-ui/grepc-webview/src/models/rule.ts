@@ -42,8 +42,8 @@ export interface IRule {
     color?: string;
 
     isWholeLine?: boolean;
-    before?: ThemableDecorationAttachmentRenderOptions
-    after?: ThemableDecorationAttachmentRenderOptions
+    before?: ChildDecorationModel;
+    after?: ChildDecorationModel;
 }
 
 export class OccurrenceData {
@@ -118,13 +118,13 @@ export class Rule implements IRule {
     beforeExpanded: boolean;
     afterExpanded: boolean;
     occurrencesExpanded: boolean;
-    
+
     id: string;
 
     title?: string;
     overviewRulerLane?: OverviewRulerLane;
     overviewRulerColor?: string;
-    
+
     maxOccurrences?: number;
     regularExpression?: string;
     regularExpressionFlags?: string;
@@ -143,15 +143,13 @@ export class Rule implements IRule {
     cursor?: string;
     color?: string;
     isWholeLine?: boolean;
-    before: ThemableDecorationAttachmentRenderOptions | {};
-    after: ThemableDecorationAttachmentRenderOptions | {};
+    before: ChildDecorationModel;
+    after: ChildDecorationModel;
 
     // TODO: If this is a performance bottleneck, improve.
     static equals(a: Rule, b: Rule): boolean {
         return JSON.stringify(a) === JSON.stringify(b);
     }
-
-
 }
 
 export function overwrite(rule: Rule, partialRule: Partial<Rule>): Rule {
@@ -159,12 +157,12 @@ export function overwrite(rule: Rule, partialRule: Partial<Rule>): Rule {
 
     // Copy properties from the partialRule to the new instance
     for (const key of Object.keys(rule)) {
-        // @ts-ignore: TypeScript may need this ignore to properly handle dynamic keys
-        if (partialRule.hasOwnProperty(key) && partialRule[key] !== undefined) {
-            // @ts-ignore: TypeScript may need this ignore to properly handle dynamic keys
+        // @ts-expect-error: TypeScript may need this ignore to properly handle dynamic keys
+        if (Object.hasOwn(partialRule, key) && partialRule[key] !== undefined) {
+            // @ts-expect-error: TypeScript may need this ignore to properly handle dynamic keys
             updatedRule[key] = partialRule[key];
         } else {
-            // @ts-ignore: TypeScript may need this ignore to properly handle dynamic keys
+            // @ts-expect-error: TypeScript may need this ignore to properly handle dynamic keys
             updatedRule[key] = rule[key];
         }
     }
@@ -172,16 +170,11 @@ export function overwrite(rule: Rule, partialRule: Partial<Rule>): Rule {
     return updatedRule;
 }
 
-export interface ThemableDecorationAttachmentRenderOptions {
+export interface ChildDecorationModel {
     /**
      * Defines a text content that is shown in the attachment. Either an icon or a text can be shown, but not both.
      */
     contentText?: string;
-    /**
-     * An **absolute path** or an URI to an image to be rendered in the attachment. Either an icon
-     * or a text can be shown, but not both.
-     */
-    contentIconPath?: string;
     /**
      * CSS styling property that will be applied to the decoration attachment.
      */

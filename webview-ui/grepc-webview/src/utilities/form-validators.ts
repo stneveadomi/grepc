@@ -53,6 +53,14 @@ export class CSSValidator {
                 return /^(auto|default|none|context-menu|help|pointer|progress|wait|cell|crosshair|text|vertical-text|alias|copy|move|no-drop|not-allowed|grab|grabbing|all-scroll|col-resize|row-resize|n-resize|e-resize|s-resize|w-resize|ne-resize|nw-resize|se-resize|sw-resize|ew-resize|ns-resize|nesw-resize|nwse-resize|zoom-in|zoom-out|inherit|initial|unset)$/.test(
                     propertyValue,
                 );
+            case 'url':
+                try {
+                    new URL(propertyValue);
+                    return true;
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                } catch (error: unknown) {
+                    return false;
+                }
         }
         option.style.setProperty(property, propertyValue);
         return !!option.style.getPropertyValue(property);

@@ -44,23 +44,6 @@
         </div>
         <div class="row">
             <div class="indent"></div>
-            <div class="input-label">
-                <label [htmlFor]="rule.id + '-' + getTitle() + '-content-icon-path'">
-                    content icon path:
-                </label>
-                <input
-                    [id]="rule.id + '-' + getTitle() + '-content-icon-path'"
-                    formControlName="contentIconPath"
-                    title="This represents the URI to the icon that will surround the selection."
-                    (focus)="onFormFocus()"
-                    (blur)="onFormBlur()"
-                    type="text"
-                    name="border"
-                    placeholder="e.g. https://icon.com/path.png" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="indent"></div>
             <div class="block">
                 <label [htmlFor]="rule.id + '-' + getTitle() + '-backgroundColor'">
                     background color:
@@ -227,6 +210,46 @@
                     type="text"
                     name="margin"
                     placeholder="e.g. solid 1px blue, dashed, dotted, double" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="indent"></div>
+            <div class="input-label">
+                <label [htmlFor]="rule.id + '-' + getTitle() + '-width'">
+                    width:
+                    <a
+                        title="MDN Reference"
+                        href="https://developer.mozilla.org/en-US/docs/Web/CSS/width"
+                        class="codicon codicon-info"></a>
+                </label>
+                <input
+                    [id]="rule.id + '-' + getTitle() + '-width'"
+                    formControlName="width"
+                    (focus)="onFormFocus()"
+                    (blur)="onFormBlur()"
+                    type="text"
+                    name="width"
+                    placeholder="e.g. 10px, 1em, 3rem" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="indent"></div>
+            <div class="input-label">
+                <label [htmlFor]="rule.id + '-' + getTitle() + '-height'">
+                    height:
+                    <a
+                        title="MDN Reference"
+                        href="https://developer.mozilla.org/en-US/docs/Web/CSS/height"
+                        class="codicon codicon-info"></a>
+                </label>
+                <input
+                    [id]="rule.id + '-' + getTitle() + '-height'"
+                    formControlName="height"
+                    (focus)="onFormFocus()"
+                    (blur)="onFormBlur()"
+                    type="text"
+                    name="height"
+                    placeholder="e.g. 10px, 1em, 3rem" />
             </div>
         </div>
     </div>
