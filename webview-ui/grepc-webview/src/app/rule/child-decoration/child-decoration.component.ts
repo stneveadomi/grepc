@@ -11,9 +11,6 @@ import {
     Validator,
 } from '@angular/forms';
 import { ColorPickerModule } from 'ngx-color-picker';
-import { DecorationPreviewComponent } from '../../decoration-preview/decoration-preview.component';
-import { OccurrencesComponent } from '../../occurrences/occurrences.component';
-import { SliderCheckboxComponent } from '../../slider-checkbox/slider-checkbox.component';
 import { Rule, ChildDecorationModel } from '../../../models/rule';
 import { CSSValidator } from '../../../utilities/form-validators';
 import { LoggerService } from '../../../services/logger.service';
@@ -21,14 +18,7 @@ import { LoggerService } from '../../../services/logger.service';
 @Component({
     selector: 'app-child-decoration',
     standalone: true,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        SliderCheckboxComponent,
-        ColorPickerModule,
-        DecorationPreviewComponent,
-        OccurrencesComponent,
-    ],
+    imports: [CommonModule, ReactiveFormsModule, ColorPickerModule],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
