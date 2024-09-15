@@ -1,9 +1,9 @@
 <form [formGroup]="formGroup">
     <header
-    class="child-decoration-header clickable"
-    tabindex="0"
-    (keydown.enter)="toggleExpand($event)"
-    (click)="toggleExpand($event)">
+        class="child-decoration-header clickable"
+        tabindex="0"
+        (keydown.enter)="toggleExpand($event)"
+        (click)="toggleExpand($event)">
         <div class="rule-header-container clickable">
             <div
                 tabindex="0"
@@ -45,7 +45,8 @@
         <div class="row">
             <div class="indent"></div>
             <div class="block">
-                <label [htmlFor]="rule.id + '-' + getTitle() + '-backgroundColor'">
+                <label
+                    [htmlFor]="rule.id + '-' + getTitle() + '-backgroundColor'">
                     background color:
                     <a
                         title="MDN Reference"
@@ -83,9 +84,7 @@
                     [style.background]="formGroup.value.color"
                     [(colorPicker)]="formGroup.value.color!"
                     [cpPosition]="'bottom'"
-                    (colorPickerSelect)="
-                        updateColorPicker('color', $event)
-                    " />
+                    (colorPickerSelect)="updateColorPicker('color', $event)" />
             </div>
         </div>
         <div class="row">
@@ -174,7 +173,8 @@
         <div class="row">
             <div class="indent"></div>
             <div class="input-label">
-                <label [htmlFor]="rule.id + '-' + getTitle() + '-textDecoration'">
+                <label
+                    [htmlFor]="rule.id + '-' + getTitle() + '-textDecoration'">
                     text decoration:
                     <a
                         title="MDN Reference"

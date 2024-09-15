@@ -42,4 +42,7 @@ module.exports = tseslint.config(
         ],
         rules: {},
     },
+    {
+        ignores: ['node_modules', 'dist', '.angular'],
+    },
 );
