@@ -41,7 +41,7 @@ export class DecorationTypeManager {
             this._subscriptions.push(
                 ruleFactory.$enabledRules.subscribe({
                     next: (enabledRules: Rule[]) => {
-                        this.logger.debug(`[DTM][${reverseMap(ruleFactory.location)}] $enabledRules cast`);
+                        this.logger.debug(`[DTM] [${reverseMap(ruleFactory.location)}] $enabledRules cast`);
 
                         const addedRules = enabledRules.filter((rule) => !this.getOldEnabledRuleIdSet(ruleFactory.location).has(rule.id));
                         this.logger.debug(`[DTM] $enabled rules - ${addedRules.length} added.`);

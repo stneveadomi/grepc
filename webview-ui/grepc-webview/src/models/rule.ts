@@ -2,43 +2,48 @@ import { v4 as uuidv4 } from 'uuid';
 import { LineRange } from './line-range';
 
 export interface IRule {
-    enabled: boolean | null;
-    expanded: boolean | null;
-    decorationExpanded: boolean | null;
-    occurrencesExpanded: boolean | null;
     id: string;
-    title: string | null;
+    enabled: boolean;
+    expanded: boolean;
+    decorationExpanded: boolean;
+    beforeExpanded: boolean;
+    afterExpanded: boolean;
+    occurrencesExpanded: boolean;
 
-    overviewRulerLane: OverviewRulerLane | null;
-    overviewRulerColor: string | null;
+    title?: string;
 
-    maxOccurrences: number | null;
+    overviewRulerLane?: OverviewRulerLane;
+    overviewRulerColor?: string;
 
-    regularExpression: string | null;
-    regularExpressionFlags: string | null;
-    includedFiles: string | null;
-    excludedFiles: string | null;
+    maxOccurrences?: number;
 
-    backgroundColor: string | null;
+    regularExpression?: string;
+    regularExpressionFlags?: string;
+    includedFiles?: string;
+    excludedFiles?: string;
 
-    outline: string | null;
-    outlineColor: string | null;
-    outlineWidth: string | null;
+    backgroundColor?: string;
 
-    border: string | null;
-    borderColor: string | null;
-    borderWidth: string | null;
+    outline?: string;
+    outlineColor?: string;
+    outlineWidth?: string;
 
-    fontStyle: string | null;
-    fontWeight: string | null;
+    border?: string;
+    borderColor?: string;
+    borderWidth?: string;
 
-    textDecoration: string | null;
+    fontStyle?: string;
+    fontWeight?: string;
 
-    cursor: string | null;
+    textDecoration?: string;
 
-    color: string | null;
+    cursor?: string;
 
-    isWholeLine: boolean | null;
+    color?: string;
+
+    isWholeLine?: boolean;
+    before?: ChildDecorationModel;
+    after?: ChildDecorationModel;
 }
 
 export class OccurrenceData {
@@ -80,6 +85,8 @@ export class Rule implements IRule {
         this.enabled = false;
         this.expanded = false;
         this.decorationExpanded = false;
+        this.beforeExpanded = false;
+        this.afterExpanded = false;
         this.occurrencesExpanded = false;
         this.overviewRulerColor = '';
         this.overviewRulerLane = OverviewRulerLane.Full;
@@ -101,37 +108,111 @@ export class Rule implements IRule {
         this.cursor = '';
         this.color = '';
         this.isWholeLine = false;
+        this.before = {};
+        this.after = {};
     }
 
-    enabled: boolean | null;
-    expanded: boolean | null;
-    decorationExpanded: boolean | null;
-    occurrencesExpanded: boolean | null;
+    enabled: boolean;
+    expanded: boolean;
+    decorationExpanded: boolean;
+    beforeExpanded: boolean;
+    afterExpanded: boolean;
+    occurrencesExpanded: boolean;
+
     id: string;
-    title: string | null;
-    overviewRulerLane: OverviewRulerLane | null;
-    overviewRulerColor: string | null;
-    maxOccurrences: number | null;
-    regularExpression: string | null;
-    regularExpressionFlags: string | null;
-    includedFiles: string | null;
-    excludedFiles: string | null;
-    backgroundColor: string | null;
-    outline: string | null;
-    outlineColor: string | null;
-    outlineWidth: string | null;
-    border: string | null;
-    borderColor: string | null;
-    borderWidth: string | null;
-    fontStyle: string | null;
-    fontWeight: string | null;
-    textDecoration: string | null;
-    cursor: string | null;
-    color: string | null;
-    isWholeLine: boolean | null;
+
+    title?: string;
+    overviewRulerLane?: OverviewRulerLane;
+    overviewRulerColor?: string;
+
+    maxOccurrences?: number;
+    regularExpression?: string;
+    regularExpressionFlags?: string;
+    includedFiles?: string;
+    excludedFiles?: string;
+    backgroundColor?: string;
+    outline?: string;
+    outlineColor?: string;
+    outlineWidth?: string;
+    border?: string;
+    borderColor?: string;
+    borderWidth?: string;
+    fontStyle?: string;
+    fontWeight?: string;
+    textDecoration?: string;
+    cursor?: string;
+    color?: string;
+    isWholeLine?: boolean;
+    before: ChildDecorationModel;
+    after: ChildDecorationModel;
 
     // TODO: If this is a performance bottleneck, improve.
     static equals(a: Rule, b: Rule): boolean {
         return JSON.stringify(a) === JSON.stringify(b);
     }
+}
+
+export function overwrite(rule: Rule, partialRule: Partial<Rule>): Rule {
+    const updatedRule = new Rule(partialRule.title || '');
+
+    // Copy properties from the partialRule to the new instance
+    for (const key of Object.keys(rule)) {
+        // @ts-expect-error: TypeScript may need this ignore to properly handle dynamic keys
+        if (Object.hasOwn(partialRule, key) && partialRule[key] !== undefined) {
+            // @ts-expect-error: TypeScript may need this ignore to properly handle dynamic keys
+            updatedRule[key] = partialRule[key];
+        } else {
+            // @ts-expect-error: TypeScript may need this ignore to properly handle dynamic keys
+            updatedRule[key] = rule[key];
+        }
+    }
+
+    return updatedRule;
+}
+
+export interface ChildDecorationModel {
+    /**
+     * Defines a text content that is shown in the attachment. Either an icon or a text can be shown, but not both.
+     */
+    contentText?: string;
+    /**
+     * CSS styling property that will be applied to the decoration attachment.
+     */
+    border?: string;
+    /**
+     * CSS styling property that will be applied to text enclosed by a decoration.
+     */
+    borderColor?: string;
+    /**
+     * CSS styling property that will be applied to the decoration attachment.
+     */
+    fontStyle?: string;
+    /**
+     * CSS styling property that will be applied to the decoration attachment.
+     */
+    fontWeight?: string;
+    /**
+     * CSS styling property that will be applied to the decoration attachment.
+     */
+    textDecoration?: string;
+    /**
+     * CSS styling property that will be applied to the decoration attachment.
+     */
+    color?: string;
+    /**
+     * CSS styling property that will be applied to the decoration attachment.
+     */
+    backgroundColor?: string;
+    /**
+     * CSS styling property that will be applied to the decoration attachment.
+     */
+    margin?: string;
+    /**
+     * CSS styling property that will be applied to the decoration attachment.
+     */
+    width?: string;
+    /**
+     * CSS styling property that will be applied to the decoration attachment.
+     */
+    height?: string;
 }

@@ -459,6 +459,18 @@
                             (blur)="onFormBlur()"
                             formControlName="isWholeLine" />
                     </div>
+
+                    <app-child-decoration
+                        formControlName="before"
+                        [rule]="rule"
+                        [id]="CHILD_DECORATION_TYPE.BEFORE">
+                    </app-child-decoration>
+
+                    <app-child-decoration
+                        formControlName="after"
+                        [rule]="rule"
+                        [id]="CHILD_DECORATION_TYPE.AFTER">
+                    </app-child-decoration>
                 </div>
             </div>
 
@@ -470,3 +482,5 @@
         </div>
     </form>
 </div>
+
+<pre *ngIf="extensionService.debugMode">{{ ruleForm.value | json }}</pre>

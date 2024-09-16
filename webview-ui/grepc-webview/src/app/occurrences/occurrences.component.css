@@ -40,6 +40,10 @@ app-occurrence-display {
     padding: 6px;
 }
 
+.occurrences-list-container {
+    flex-direction: column;
+}
+
 .occurrences-list-header {
     border: solid 1px rgb(73, 73, 73);
     display: inline-flex;
@@ -63,6 +67,7 @@ app-occurrence-display {
 .selection-text {
     padding-left: 4.5em;
     font-size: 11px;
+    gap: 1em;
 }
 
 .selection-title {

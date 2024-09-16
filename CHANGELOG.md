@@ -10,10 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 -   Introduced 3 new minimize commands: All, local, and global.
+-   Added debug setting for showing rule states.
+-   Introduce before and after decoration states with corresponding UX.
 
 ### Changed
 
 -   Addressed bug where disabled rules would apply if editing document.
+-   Fixed UX bug with occurrence drop down.
 
 ### Removed
 

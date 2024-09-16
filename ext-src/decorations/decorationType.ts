@@ -1,4 +1,4 @@
-import { Rule } from '../rules/rule';
+import { ChildDecorationModel, Rule } from '../rules/rule';
 import * as vscode from 'vscode';
 import { IntersectingRangeData } from './intersectingRangeData';
 
@@ -29,6 +29,12 @@ export class DecorationTypeWrapper {
             this.decorationType.dispose();
         }
         this.decorationType = vscode.window.createTextEditorDecorationType({
+            // Decoration range will not widen when edits occur at the start or end
+            rangeBehavior: 1,
+
+            before: this.rule.before,
+            after: this.rule.after,
+
             backgroundColor: this.rule.backgroundColor ?? '',
             outline: this.rule.outline ?? '',
             outlineColor: this.rule.outlineColor ?? '',
@@ -76,7 +82,25 @@ export class DecorationTypeWrapper {
             this.rule.outlineWidth !== current.outlineWidth ||
             this.rule.overviewRulerColor !== current.overviewRulerColor ||
             this.rule.overviewRulerLane !== current.overviewRulerLane ||
-            this.rule.textDecoration !== current.textDecoration
+            this.rule.textDecoration !== current.textDecoration ||
+            this.hasChildDecorationChanged(this.rule.before, current.before) ||
+            this.hasChildDecorationChanged(this.rule.after, current.after)
+        );
+    }
+
+    private hasChildDecorationChanged(a: ChildDecorationModel, b: ChildDecorationModel) {
+        return (
+            a.contentText !== b.contentText ||
+            a.border !== b.border ||
+            a.borderColor !== b.borderColor ||
+            a.fontStyle !== b.fontStyle ||
+            a.fontWeight !== b.fontWeight ||
+            a.textDecoration !== b.textDecoration ||
+            a.color !== b.color ||
+            a.backgroundColor !== b.backgroundColor ||
+            a.margin !== b.margin ||
+            a.width !== b.width ||
+            a.height !== b.height
         );
     }
 
@@ -106,7 +130,7 @@ export class DecorationTypeWrapper {
      * @returns boolean indicating if we need to apply decorations after this update.
      */
     generateOccurrencesOnChange(contentChange: vscode.TextDocumentContentChangeEvent) {
-        if (!this.rule.enabled) {
+        if (!this.rule.enabled || !this.rule.regularExpression) {
             this.clearOccurrenceData();
             return;
         }
@@ -281,11 +305,10 @@ export class DecorationTypeWrapper {
             rule = this.rule;
         }
 
-        const regEx = new RegExp(rule.regularExpression, rule.regularExpressionFlags || 'g');
         const decorations: vscode.DecorationOptions[] = [];
         const ranges: vscode.Range[] = [];
 
-        if (!rule.enabled) {
+        if (!rule.enabled || !rule.regularExpression) {
             this.clearOccurrenceData();
             return;
         }
@@ -300,6 +323,7 @@ export class DecorationTypeWrapper {
             return;
         }
 
+        const regEx = new RegExp(rule.regularExpression, rule.regularExpressionFlags || 'g');
         let match;
         let occurrence = 0;
         while ((match = regEx.exec(document.getText())) && decorations.length < (rule.maxOccurrences ?? 1000)) {

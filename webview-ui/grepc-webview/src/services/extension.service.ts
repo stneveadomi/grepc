@@ -7,6 +7,7 @@ import { Injectable } from '@angular/core';
 export class ExtensionService {
     public vscodeApi: any;
     public location: string | undefined = undefined;
+    public debugMode = false;
 
     constructor() {
         this.vscodeApi = (window as any)?.['acquireVsCodeApi']?.();

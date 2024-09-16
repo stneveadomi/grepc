@@ -10,18 +10,18 @@ import {
     SimpleChanges,
     ViewChild,
 } from '@angular/core';
-import { OccurrenceData, OverviewRulerLane, Rule } from '../../models/rule';
+import {
+    ChildDecorationModel,
+    OccurrenceData,
+    OverviewRulerLane,
+    overwrite,
+    Rule,
+} from '../../models/rule';
 import { CommonModule } from '@angular/common';
 import { SliderCheckboxComponent } from '../slider-checkbox/slider-checkbox.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { RuleService } from '../../services/rule.service';
-import {
-    FormBuilder,
-    FormControlStatus,
-    ReactiveFormsModule,
-    Validators,
-} from '@angular/forms';
-import { debounceTime } from 'rxjs';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Draggable } from '../../utilities/draggable';
 import { DragService } from '../../services/drag.service';
 import { DecorationPreviewComponent } from '../decoration-preview/decoration-preview.component';
@@ -31,6 +31,11 @@ import {
     RegularExpressionValidator,
 } from '../../utilities/form-validators';
 import { LoggerService } from '../../services/logger.service';
+import {
+    ChildDecorationComponent,
+    ChildDecorationType,
+} from './child-decoration/child-decoration.component';
+import { ExtensionService } from '../../services/extension.service';
 
 @Component({
     selector: 'app-rule',
@@ -42,6 +47,7 @@ import { LoggerService } from '../../services/logger.service';
         ColorPickerModule,
         DecorationPreviewComponent,
         OccurrencesComponent,
+        ChildDecorationComponent,
     ],
     templateUrl: './rule.component.html',
     styleUrl: './rule.component.css',
@@ -57,89 +63,98 @@ export class RuleComponent
 
     gripperClass = '';
     showEditIcon = false;
-    isEditing = false;
+
     isEditingTitle = false;
     override dragData: string | undefined = undefined;
 
-    ruleForm = this.fb.group({
-        title: [
-            '',
-            [
-                Validators.minLength(1),
-                Validators.maxLength(50),
-                Validators.required,
+    ruleForm = this.fb.nonNullable.group(
+        {
+            title: [
+                '',
+                [
+                    Validators.minLength(1),
+                    Validators.maxLength(50),
+                    Validators.required,
+                ],
             ],
-        ],
-        enabled: [false],
-        overviewRulerColor: [''],
-        overviewRulerLane: [OverviewRulerLane.Full],
-        regularExpression: ['', [RegularExpressionValidator()]],
-        regularExpressionFlags: [
-            'g',
-            [
-                Validators.minLength(1),
-                Validators.maxLength(5),
-                Validators.pattern(/^[dgimsuvy]*$/i),
+            enabled: [false],
+            overviewRulerColor: [''],
+            overviewRulerLane: [OverviewRulerLane.Full],
+            regularExpression: ['', [RegularExpressionValidator()]],
+            regularExpressionFlags: [
+                'g',
+                [
+                    Validators.minLength(1),
+                    Validators.maxLength(5),
+                    Validators.pattern(/^[dgimsuvy]*$/i),
+                ],
             ],
-        ],
-        maxOccurrences: [1000],
-        includedFiles: ['', [RegularExpressionValidator()]],
-        excludedFiles: ['', [RegularExpressionValidator()]],
-        backgroundColor: [
-            '',
-            [CSSValidator.classValidator('background-color')],
-        ],
-        outline: ['', [CSSValidator.classValidator('outline')]],
-        outlineColor: ['', [CSSValidator.classValidator('outline-color')]],
-        outlineWidth: ['', [CSSValidator.classValidator('outline-width')]],
-        border: ['', [CSSValidator.classValidator('border')]],
-        borderColor: ['', [CSSValidator.classValidator('border-color')]],
-        borderWidth: ['', [CSSValidator.classValidator('border-width')]],
-        fontStyle: ['', [CSSValidator.classValidator('font-style')]],
-        fontWeight: ['', [CSSValidator.classValidator('font-weight')]],
-        textDecoration: ['', [CSSValidator.classValidator('text-decoration')]],
-        cursor: ['', [CSSValidator.classValidator('cursor')]],
-        color: ['', [CSSValidator.classValidator('color')]],
-        isWholeLine: [false],
-    });
+            maxOccurrences: [1000],
+            includedFiles: ['', [RegularExpressionValidator()]],
+            excludedFiles: ['', [RegularExpressionValidator()]],
+            backgroundColor: [
+                '',
+                [CSSValidator.classValidator('background-color')],
+            ],
+            outline: ['', [CSSValidator.classValidator('outline')]],
+            outlineColor: ['', [CSSValidator.classValidator('outline-color')]],
+            outlineWidth: ['', [CSSValidator.classValidator('outline-width')]],
+            border: ['', [CSSValidator.classValidator('border')]],
+            borderColor: ['', [CSSValidator.classValidator('border-color')]],
+            borderWidth: ['', [CSSValidator.classValidator('border-width')]],
+            fontStyle: ['', [CSSValidator.classValidator('font-style')]],
+            fontWeight: ['', [CSSValidator.classValidator('font-weight')]],
+            textDecoration: [
+                '',
+                [CSSValidator.classValidator('text-decoration')],
+            ],
+            cursor: ['', [CSSValidator.classValidator('cursor')]],
+            color: ['', [CSSValidator.classValidator('color')]],
+            isWholeLine: [false],
+            before: [
+                {
+                    contentText: '' as string | undefined,
+                    border: '',
+                    borderColor: '' as string | undefined,
+                    fontStyle: '',
+                    fontWeight: '',
+                    textDecoration: '',
+                    color: '',
+                    backgroundColor: '',
+                    margin: '',
+                    width: '',
+                    height: '',
+                } as ChildDecorationModel,
+                { updateOn: 'blur' },
+            ],
+            after: [
+                {
+                    contentText: '' as string | undefined,
+                    border: '',
+                    borderColor: '' as string | undefined,
+                    fontStyle: '',
+                    fontWeight: '',
+                    textDecoration: '',
+                    color: '',
+                    backgroundColor: '',
+                    margin: '',
+                    width: '',
+                    height: '',
+                } as ChildDecorationModel,
+                { updateOn: 'blur' },
+            ],
+        },
+        { updateOn: 'blur' },
+    );
 
     @ViewChild('container')
     override droppableElement!: ElementRef;
 
-    private STATUS_CHANGE_OBSERVER = {
-        next: (status: FormControlStatus) => {
-            switch (status) {
-                case 'VALID': {
-                    if (this.isEditing || this.isEditingTitle) {
-                        return;
-                    }
-
-                    const newRule = {
-                        ...this.rule,
-                        ...this.ruleForm.value,
-                    };
-
-                    if (Rule.equals(this.rule, newRule)) {
-                        return;
-                    }
-
-                    // override title as only this::updateTitle should update title.
-                    newRule.title = this.rule.title;
-                    this.ruleService.updateRule(newRule);
-                    this.ruleService.pushRules();
-                    return;
-                }
-                case 'INVALID':
-                case 'PENDING':
-                case 'DISABLED':
-                //explicit no op.
-            }
-        },
-    };
-
     override onDrop: (event: DragEvent) => void = () => {
         this.drag.disableDraggable();
     };
+
+    public CHILD_DECORATION_TYPE = ChildDecorationType;
 
     constructor(
         private ruleService: RuleService,
@@ -147,9 +162,39 @@ export class RuleComponent
         private cdr: ChangeDetectorRef,
         logger: LoggerService,
         drag: DragService,
+        public extensionService: ExtensionService,
     ) {
         super(drag, logger);
     }
+
+    /**
+     * TODO: REVIEW THAT updateOn 'blur' didnt break everything...
+     * we got most fo the control stuff working.
+     *
+     * @returns
+     */
+    onValueChange = () => {
+        if (this.isEditingTitle) {
+            this.logger.debug(
+                'rule.component.ts - isEditingTitle, not pushing value change.',
+            );
+            return;
+        }
+
+        const newRule = overwrite(this.rule, this.ruleForm.value);
+
+        if (Rule.equals(this.rule, newRule)) {
+            this.logger.debug(
+                'rule.component.ts - rule is equal, not pushing value change.',
+            );
+            return;
+        }
+
+        // override title as only this::updateTitle should update title.
+        newRule.title = this.rule.title;
+        this.ruleService.updateRule(newRule);
+        this.ruleService.pushRules();
+    };
 
     ngOnChanges(changes: SimpleChanges): void {
         const change = changes['rule'];
@@ -165,9 +210,7 @@ export class RuleComponent
     ngOnInit() {
         this.dragData = this.rule.id;
         this.ruleForm.patchValue(this.rule);
-        this.ruleForm.statusChanges
-            .pipe(debounceTime(300))
-            .subscribe(this.STATUS_CHANGE_OBSERVER);
+        this.ruleForm.valueChanges.subscribe(this.onValueChange);
         this.ruleService.register(this.rule.id, this);
     }
 
@@ -193,12 +236,11 @@ export class RuleComponent
     }
 
     onFormFocus() {
-        this.isEditing = true;
+        // NO-OP
     }
 
     onFormBlur() {
-        this.isEditing = false;
-        this.STATUS_CHANGE_OBSERVER.next(this.ruleForm.status);
+        // NO-OP
     }
 
     toggleExpand(event: Event) {
@@ -227,7 +269,7 @@ export class RuleComponent
         this.isEditingTitle = !this.isEditingTitle;
         // if no longer editing title, reset form value for title.
         if (!this.isEditingTitle) {
-            this.ruleForm.controls.title.setValue(this.rule.title);
+            this.ruleForm.controls.title.setValue(this.rule.title ?? '');
         }
     }
 

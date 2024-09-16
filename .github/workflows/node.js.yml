@@ -53,7 +53,7 @@ jobs:
     - shell: pwsh
       run: echo "target=${{ matrix.platform }}-${{ matrix.arch }}" >> $env:GITHUB_ENV
     - run: npx vsce package --target ${{ env.target }}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: ${{ env.target }}
         path: "*.vsix"
@@ -62,3 +62,8 @@ jobs:
       run: npm run deploy
       env:
         VSCE_PAT: ${{ secrets.VSCE_PAT }}
+    - name: GH Release
+      if: success() && startsWith(github.ref, 'refs/tags/') && matrix.os == 'ubuntu-latest'
+      uses: softprops/action-gh-release@v2.0.8
+      with:
+        files: ${{ env.target }}

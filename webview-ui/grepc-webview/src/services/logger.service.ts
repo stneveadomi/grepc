@@ -7,8 +7,6 @@ import { ExtensionService, LogLevel } from './extension.service';
 export class LoggerService {
     public location: string | undefined = undefined;
 
-    public printToConsole = false;
-
     constructor(protected extension: ExtensionService) {}
 
     private getFormattedLocation() {
@@ -16,7 +14,7 @@ export class LoggerService {
     }
 
     info(message: string, ...objs: unknown[]) {
-        if (this.printToConsole) {
+        if (this.extension.debugMode) {
             console.log(this.getFormattedLocation(), message, ...objs);
         }
         this.extension.log(
@@ -26,7 +24,7 @@ export class LoggerService {
     }
 
     error(message: string, ...objs: unknown[]) {
-        if (this.printToConsole) {
+        if (this.extension.debugMode) {
             console.error(this.getFormattedLocation(), message, objs);
         }
         this.extension.log(
@@ -36,7 +34,7 @@ export class LoggerService {
     }
 
     debug(message: string, ...objs: unknown[]) {
-        if (this.printToConsole) {
+        if (this.extension.debugMode) {
             console.debug(this.getFormattedLocation(), message, objs);
         }
         this.extension.log(
@@ -46,7 +44,7 @@ export class LoggerService {
     }
 
     warn(message: string, ...objs: unknown[]) {
-        if (this.printToConsole) {
+        if (this.extension.debugMode) {
             console.warn(this.getFormattedLocation(), message, objs);
         }
         this.extension.log(
@@ -56,7 +54,7 @@ export class LoggerService {
     }
 
     trace(message: string, ...objs: unknown[]) {
-        if (this.printToConsole) {
+        if (this.extension.debugMode) {
             console.log(this.getFormattedLocation(), message, objs);
         }
         this.extension.log(

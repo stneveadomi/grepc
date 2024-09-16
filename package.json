@@ -38,6 +38,16 @@
     ],
     "main": "./dist/extension.js",
     "contributes": {
+        "configuration": {
+            "title": "grepc",
+            "properties": {
+                "grepc.debugMode": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable debug mode within the grepc extension."
+                }
+            }
+        },
         "walkthroughs": [
             {
                 "id": "grepc.walkthrough",
@@ -234,7 +244,7 @@
         "uuid": "^10.0.0"
     },
     "lint-staged": {
-        "*.{ts,js}": "eslint --cache --fix",
-        "*.{ts,js,css,md,json}": "prettier --write"
+        "*.{ts,js}": "eslint ./ext-src/ --fix",
+        "*.{ts,js,css,md,json}": "prettier . --write"
     }
 }
