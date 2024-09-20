@@ -186,6 +186,36 @@ export class CommandManager {
                 },
                 this.logger,
             ),
+            new Command(
+                'grepc.editRulesLocal',
+                () => {
+                    this.rfm.getRuleFactory(LocationState.LOCAL)?.pushEditRules();
+                },
+                this.logger,
+            ),
+            new Command(
+                'grepc.editRulesGlobal',
+                () => {
+                    this.rfm.getRuleFactory(LocationState.GLOBAL)?.pushEditRules();
+                },
+                this.logger,
+            ),
+            new Command(
+                'grepc.exportRulesLocal',
+                () => {
+                    vscode.env.clipboard.writeText(JSON.stringify(this.rfm.getRuleFactory(LocationState.LOCAL)?.getRulesArray()));
+                    vscode.window.showInformationMessage('✅ Copied local rules to clipboard.');
+                },
+                this.logger,
+            ),
+            new Command(
+                'grepc.exportRulesGlobal',
+                () => {
+                    vscode.env.clipboard.writeText(JSON.stringify(this.rfm.getRuleFactory(LocationState.GLOBAL)?.getRulesArray()));
+                    vscode.window.showInformationMessage('✅ Copied global rules to clipboard.');
+                },
+                this.logger,
+            ),
         ];
     }
 

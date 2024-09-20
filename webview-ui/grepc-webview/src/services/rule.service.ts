@@ -137,6 +137,28 @@ export class RuleService {
         return this._ruleMap.get(id);
     }
 
+    areValidRules(innerHTML: string): boolean {
+        try {
+            JSON.parse(innerHTML) as Rule[];
+            return true;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (_) {
+            return false;
+        }
+    }
+
+    pushNewRuleArray(innerHTML: string) {
+        const ruleArray = JSON.parse(innerHTML) as Rule[];
+        const ruleMap = new Map<string, Rule>();
+        for (const rule of ruleArray) {
+            ruleMap.set(rule.id, rule);
+        }
+
+        this._rulesArray = ruleArray;
+        this._ruleMap = ruleMap;
+        this.pushRules();
+    }
+
     /**
      * Update the rule in the current map and array.
      * @param rule rule to be updated by id in the map and array

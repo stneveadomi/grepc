@@ -8,6 +8,7 @@ export class ExtensionService {
     public vscodeApi: any;
     public location: string | undefined = undefined;
     public debugMode = false;
+    public editMode = false;
 
     constructor() {
         this.vscodeApi = (window as any)?.['acquireVsCodeApi']?.();

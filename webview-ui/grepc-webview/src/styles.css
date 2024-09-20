@@ -230,3 +230,11 @@ input[type='text'].rule-id-input {
 
     text-transform: uppercase;
 }
+
+.edit-mode-container {
+    width: 100%;
+}
+
+app-edit-mode {
+    width: 100%;
+}
