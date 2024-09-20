@@ -84,7 +84,7 @@ export class ReleaseNotesWebview {
                     <div>
                         <p dir="auto">
                             <a href="https://github.com/stneveadomi/grepc/">
-                                <img nonce="${nonce}" src="https://camo.githubusercontent.com/e51b657236415672754f02dfef0bc6873e979346fa0107f9c4219fe1589a5c6c/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6c6963656e73652d4d49542d626c75652e7376673f7374796c653d666c61742d737175617265" alt="GitHub license" data-canonical-src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" style="max-width: 100%;">
+                                <img nonce="${nonce}" src="https://img.shields.io/github/license/stneveadomi/grepc">
                             </a>
                             <a href="https://github.com/stneveadomi/grepc/releases">
                                 <img alt="GitHub package.json version" nonce="${nonce}" src="https://img.shields.io/github/package-json/v/stneveadomi/grepc?color=limegreen">
