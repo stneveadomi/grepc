@@ -67,55 +67,49 @@ export class RuleComponent
     isEditingTitle = false;
     override dragData: string | undefined = undefined;
 
-    ruleForm = this.fb.nonNullable.group(
-        {
-            title: [
-                '',
-                [
-                    Validators.minLength(1),
-                    Validators.maxLength(50),
-                    Validators.required,
-                ],
+    ruleForm = this.fb.nonNullable.group({
+        title: [
+            '',
+            [
+                Validators.minLength(1),
+                Validators.maxLength(50),
+                Validators.required,
             ],
-            enabled: [false],
-            overviewRulerColor: [''],
-            overviewRulerLane: [OverviewRulerLane.Full],
-            regularExpression: ['', [RegularExpressionValidator()]],
-            regularExpressionFlags: [
-                'g',
-                [
-                    Validators.minLength(1),
-                    Validators.maxLength(5),
-                    Validators.pattern(/^[dgimsuvy]*$/i),
-                ],
+        ],
+        enabled: [false],
+        overviewRulerColor: [''],
+        overviewRulerLane: [OverviewRulerLane.Full],
+        regularExpression: ['', [RegularExpressionValidator()]],
+        regularExpressionFlags: [
+            'g',
+            [
+                Validators.minLength(1),
+                Validators.maxLength(5),
+                Validators.pattern(/^[dgimsuvy]*$/i),
             ],
-            maxOccurrences: [1000],
-            includedFiles: ['', [RegularExpressionValidator()]],
-            excludedFiles: ['', [RegularExpressionValidator()]],
-            backgroundColor: [
-                '',
-                [CSSValidator.classValidator('background-color')],
-            ],
-            outline: ['', [CSSValidator.classValidator('outline')]],
-            outlineColor: ['', [CSSValidator.classValidator('outline-color')]],
-            outlineWidth: ['', [CSSValidator.classValidator('outline-width')]],
-            border: ['', [CSSValidator.classValidator('border')]],
-            borderColor: ['', [CSSValidator.classValidator('border-color')]],
-            borderWidth: ['', [CSSValidator.classValidator('border-width')]],
-            fontStyle: ['', [CSSValidator.classValidator('font-style')]],
-            fontWeight: ['', [CSSValidator.classValidator('font-weight')]],
-            textDecoration: [
-                '',
-                [CSSValidator.classValidator('text-decoration')],
-            ],
-            cursor: ['', [CSSValidator.classValidator('cursor')]],
-            color: ['', [CSSValidator.classValidator('color')]],
-            isWholeLine: [false],
-            before: [{} as ChildDecorationModel, { updateOn: 'blur' }],
-            after: [{} as ChildDecorationModel, { updateOn: 'blur' }],
-        },
-        { updateOn: 'blur' },
-    );
+        ],
+        maxOccurrences: [1000],
+        includedFiles: ['', [RegularExpressionValidator()]],
+        excludedFiles: ['', [RegularExpressionValidator()]],
+        backgroundColor: [
+            '',
+            [CSSValidator.classValidator('background-color')],
+        ],
+        outline: ['', [CSSValidator.classValidator('outline')]],
+        outlineColor: ['', [CSSValidator.classValidator('outline-color')]],
+        outlineWidth: ['', [CSSValidator.classValidator('outline-width')]],
+        border: ['', [CSSValidator.classValidator('border')]],
+        borderColor: ['', [CSSValidator.classValidator('border-color')]],
+        borderWidth: ['', [CSSValidator.classValidator('border-width')]],
+        fontStyle: ['', [CSSValidator.classValidator('font-style')]],
+        fontWeight: ['', [CSSValidator.classValidator('font-weight')]],
+        textDecoration: ['', [CSSValidator.classValidator('text-decoration')]],
+        cursor: ['', [CSSValidator.classValidator('cursor')]],
+        color: ['', [CSSValidator.classValidator('color')]],
+        isWholeLine: [false],
+        before: [{} as ChildDecorationModel, { updateOn: 'blur' }],
+        after: [{} as ChildDecorationModel, { updateOn: 'blur' }],
+    });
 
     @ViewChild('container')
     override droppableElement!: ElementRef;
