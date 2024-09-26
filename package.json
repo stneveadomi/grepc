@@ -299,6 +299,6 @@
     },
     "lint-staged": {
         "*.{ts,js}": "eslint ./ext-src/ --fix",
-        "*.{ts,js,css,md,json}": "prettier . --write"
+        "*.{html,ts,js,css,md,json}": "prettier . --write"
     }
 }
