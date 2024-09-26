@@ -10,6 +10,7 @@ import { RuleService } from '../../services/rule.service';
 })
 export class EditModeComponent implements OnInit {
     ruleArray = '';
+    isValid = true;
 
     constructor(protected ruleService: RuleService) {}
 
@@ -18,13 +19,17 @@ export class EditModeComponent implements OnInit {
             this.ruleService.getRuleArray(),
             undefined,
             '    ',
-        );
+        ).trim();
     }
 
     onBlur(rules: EventTarget | null) {
         if (rules instanceof HTMLElement) {
             const htmlEvent = rules as HTMLElement;
-            if (this.ruleService.areValidRules(htmlEvent.innerHTML)) {
+            if (
+                (this.isValid = this.ruleService.areValidRules(
+                    htmlEvent.innerHTML,
+                ))
+            ) {
                 this.ruleService.pushNewRuleArray(htmlEvent.innerHTML);
             }
         }
