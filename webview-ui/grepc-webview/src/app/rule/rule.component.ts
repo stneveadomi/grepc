@@ -174,7 +174,6 @@ export class RuleComponent
     ngOnInit() {
         this.dragData = this.rule.id;
         this.ruleForm.patchValue(this.rule);
-        this.ruleForm.valueChanges.subscribe(this.onValueChange);
         this.ruleService.register(this.rule.id, this);
     }
 
@@ -204,7 +203,7 @@ export class RuleComponent
     }
 
     onFormBlur() {
-        // NO-OP
+        this.onValueChange();
     }
 
     toggleExpand(event: Event) {
