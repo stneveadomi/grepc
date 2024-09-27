@@ -1,6 +1,10 @@
-<div class="main-container">
+<div *ngIf="!extension.editMode" class="main-container">
     <app-rule *ngFor="let r of $rules | async" [rule]="r"> </app-rule>
     <app-add-rule> </app-add-rule>
+</div>
+
+<div class="edit-mode-container" *ngIf="extension.editMode">
+    <app-edit-mode> </app-edit-mode>
 </div>
 
 <div #dropOverlay class="drop-overlay" *ngIf="showDropOverlay()"></div>

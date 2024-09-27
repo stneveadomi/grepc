@@ -1,0 +1,8 @@
+<pre
+    class="edit-block"
+    [class.invalid]="!isValid"
+    (blur)="onBlur($event.target)"
+    tabindex="0"
+    contenteditable
+    >{{ ruleArray }}
+</pre>

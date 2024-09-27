@@ -148,11 +148,33 @@
             },
             {
                 "command": "grepc.minimizeLocal",
-                "title": "grepc: Minimize Local"
+                "title": "grepc: Minimize Local",
+                "icon": "$(collapse-all)"
             },
             {
                 "command": "grepc.minimizeGlobal",
-                "title": "grepc: Minimize Global"
+                "title": "grepc: Minimize Global",
+                "icon": "$(collapse-all)"
+            },
+            {
+                "command": "grepc.editRulesLocal",
+                "title": "Edit Rules",
+                "icon": "$(code)"
+            },
+            {
+                "command": "grepc.editRulesGlobal",
+                "title": "Edit Rules",
+                "icon": "$(code)"
+            },
+            {
+                "command": "grepc.exportRulesLocal",
+                "title": "Export Rules to Clipboard",
+                "icon": "$(export)"
+            },
+            {
+                "command": "grepc.exportRulesGlobal",
+                "title": "Export Rules to Clipboard",
+                "icon": "$(export)"
             }
         ],
         "menus": {
@@ -167,6 +189,38 @@
                     "command": "grepc.addTextRule",
                     "group": "grepc",
                     "when": "editorHasSelection"
+                }
+            ],
+            "view/title": [
+                {
+                    "command": "grepc.minimizeLocal",
+                    "group": "navigation",
+                    "when": "view == grepc.webview.local"
+                },
+                {
+                    "command": "grepc.minimizeGlobal",
+                    "group": "navigation",
+                    "when": "view == grepc.webview.global"
+                },
+                {
+                    "command": "grepc.editRulesLocal",
+                    "group": "navigation",
+                    "when": "view == grepc.webview.local"
+                },
+                {
+                    "command": "grepc.editRulesGlobal",
+                    "group": "navigation",
+                    "when": "view == grepc.webview.global"
+                },
+                {
+                    "command": "grepc.exportRulesLocal",
+                    "group": "navigation",
+                    "when": "view == grepc.webview.local"
+                },
+                {
+                    "command": "grepc.exportRulesGlobal",
+                    "group": "navigation",
+                    "when": "view == grepc.webview.global"
                 }
             ]
         },
@@ -245,6 +299,6 @@
     },
     "lint-staged": {
         "*.{ts,js}": "eslint ./ext-src/ --fix",
-        "*.{ts,js,css,md,json}": "prettier . --write"
+        "*.{html,ts,js,css,md,json}": "prettier . --write"
     }
 }

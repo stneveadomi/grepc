@@ -17,11 +17,18 @@ import { ExtensionService } from '../services/extension.service';
 import { GlobalStylesService } from '../services/global-styles.service';
 import { DragService } from '../services/drag.service';
 import { LoggerService } from '../services/logger.service';
+import { EditModeComponent } from './edit-mode/edit-mode.component';
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [CommonModule, RouterOutlet, RuleComponent, AddRuleComponent],
+    imports: [
+        CommonModule,
+        RouterOutlet,
+        RuleComponent,
+        AddRuleComponent,
+        EditModeComponent,
+    ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
 })
@@ -34,7 +41,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
     constructor(
         protected ruleService: RuleService,
-        protected extension: ExtensionService,
+        public extension: ExtensionService,
         protected globalStylesService: GlobalStylesService,
         protected dragService: DragService,
         protected logger: LoggerService,
@@ -116,6 +123,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
                 break;
             case 'debugMode':
                 this.extension.debugMode = event.data?.value;
+                break;
+            case 'editMode':
+                this.extension.editMode = event.data?.value;
                 break;
         }
     }

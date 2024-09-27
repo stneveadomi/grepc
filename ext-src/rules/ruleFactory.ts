@@ -12,6 +12,7 @@ export class RuleFactory {
     private localState: vscode.Memento | undefined = undefined;
     private globalState: GlobalState | undefined = undefined;
     private _enabledRules = new Subject<Rule[]>();
+    private editMode = false;
 
     private _grepcProvider: GrepcViewProvider | undefined = undefined;
     private static RULES_MAP_KEY_ID = 'rulesMap';
@@ -306,6 +307,14 @@ export class RuleFactory {
             type: 'occurrenceCountUpdate',
             id: ruleId,
             count,
+        });
+    }
+
+    pushEditRules() {
+        this.editMode = !this.editMode;
+        this._grepcProvider?.webview?.postMessage({
+            type: 'editMode',
+            value: this.editMode,
         });
     }
 
