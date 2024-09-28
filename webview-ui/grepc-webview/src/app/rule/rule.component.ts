@@ -107,8 +107,8 @@ export class RuleComponent
         cursor: ['', [CSSValidator.classValidator('cursor')]],
         color: ['', [CSSValidator.classValidator('color')]],
         isWholeLine: [false],
-        before: [{} as ChildDecorationModel, { updateOn: 'blur' }],
-        after: [{} as ChildDecorationModel, { updateOn: 'blur' }],
+        before: [{} as ChildDecorationModel],
+        after: [{} as ChildDecorationModel],
     });
 
     @ViewChild('container')
@@ -138,6 +138,14 @@ export class RuleComponent
      * For example, this is a separate method from onToggle as we only want onToggle to push rule state to the extension.
      */
     onValueChange = () => {
+        if (this.ruleForm.status !== 'VALID') {
+            this.logger.debug(
+                'rule.component.ts - status is not valid: ',
+                this.ruleForm.status,
+            );
+            return;
+        }
+
         if (this.isEditingTitle) {
             this.logger.debug(
                 'rule.component.ts - isEditingTitle, not pushing value change.',

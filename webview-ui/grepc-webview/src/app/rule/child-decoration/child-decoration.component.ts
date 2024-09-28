@@ -134,6 +134,7 @@ export class ChildDecorationComponent
 
     updateColorPicker(control: string, value: string) {
         this.formGroup.get(control)?.setValue(value);
+        this.blurred.emit();
     }
 
     onFormFocus() {
