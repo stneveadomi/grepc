@@ -6,7 +6,7 @@ import {
     transition,
 } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -37,7 +37,11 @@ export class SliderCheckboxComponent {
     @Input({ required: true })
     control!: FormControl;
 
+    @Output()
+    toggles = new EventEmitter<void>();
+
     toggle() {
         this.control.setValue(!this.control.value);
+        this.toggles.emit();
     }
 }

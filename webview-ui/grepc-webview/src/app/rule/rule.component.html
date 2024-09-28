@@ -81,6 +81,7 @@
                         {{ this.occurrenceData.occurrences }}
                     </span>
                     <app-slider-checkbox
+                        (toggles)="onToggle()"
                         [control]="this.ruleForm.controls['enabled']">
                     </app-slider-checkbox>
                 </div>
@@ -195,7 +196,7 @@
                     [style.display]="
                         getExpandedStyle(this.rule.decorationExpanded)
                     ">
-                    <div class="block">
+                    <div class="input-label">
                         <label [htmlFor]="this.rule.id + '-backgroundColor'">
                             background color:
                             <a
@@ -456,7 +457,7 @@
                             [id]="this.rule.id + '-isWholeLine'"
                             type="checkbox"
                             title="Check this to have the decoration apply for the whole line."
-                            (blur)="onFormBlur()"
+                            (change)="onValueChange()"
                             formControlName="isWholeLine" />
                     </div>
 

@@ -132,10 +132,10 @@ export class RuleComponent
     }
 
     /**
-     * TODO: REVIEW THAT updateOn 'blur' didnt break everything...
-     * we got most fo the control stuff working.
+     * This method should only be called when we want to update local and extension rule states.
+     * This method will only update states when there is a confirmed difference between this.rule and the ruleForm value.
      *
-     * @returns
+     * For example, this is a separate method from onToggle as we only want onToggle to push rule state to the extension.
      */
     onValueChange = () => {
         if (this.isEditingTitle) {
@@ -158,6 +158,16 @@ export class RuleComponent
         newRule.title = this.rule.title;
         this.ruleService.updateRule(newRule);
         this.ruleService.pushRules();
+    };
+
+    /**
+     * Specifically only used for toggle enabled.
+     */
+    onToggle = () => {
+        this.rule.enabled = !this.rule.enabled;
+
+        this.ruleService.updateRule(this.rule);
+        this.ruleService.pushRulesToExtension();
     };
 
     ngOnChanges(changes: SimpleChanges): void {
