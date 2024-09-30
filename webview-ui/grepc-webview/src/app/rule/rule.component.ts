@@ -107,8 +107,8 @@ export class RuleComponent
         cursor: ['', [CSSValidator.classValidator('cursor')]],
         color: ['', [CSSValidator.classValidator('color')]],
         isWholeLine: [false],
-        before: [{} as ChildDecorationModel, { updateOn: 'blur' }],
-        after: [{} as ChildDecorationModel, { updateOn: 'blur' }],
+        before: [{} as ChildDecorationModel],
+        after: [{} as ChildDecorationModel],
     });
 
     @ViewChild('container')
@@ -132,12 +132,20 @@ export class RuleComponent
     }
 
     /**
-     * TODO: REVIEW THAT updateOn 'blur' didnt break everything...
-     * we got most fo the control stuff working.
+     * This method should only be called when we want to update local and extension rule states.
+     * This method will only update states when there is a confirmed difference between this.rule and the ruleForm value.
      *
-     * @returns
+     * For example, this is a separate method from onToggle as we only want onToggle to push rule state to the extension.
      */
     onValueChange = () => {
+        if (this.ruleForm.status !== 'VALID') {
+            this.logger.debug(
+                'rule.component.ts - status is not valid: ',
+                this.ruleForm.status,
+            );
+            return;
+        }
+
         if (this.isEditingTitle) {
             this.logger.debug(
                 'rule.component.ts - isEditingTitle, not pushing value change.',
@@ -160,6 +168,16 @@ export class RuleComponent
         this.ruleService.pushRules();
     };
 
+    /**
+     * Specifically only used for toggle enabled.
+     */
+    onToggle = () => {
+        this.rule.enabled = !this.rule.enabled;
+
+        this.ruleService.updateRule(this.rule);
+        this.ruleService.pushRulesToExtension();
+    };
+
     ngOnChanges(changes: SimpleChanges): void {
         const change = changes['rule'];
         if (change) {
@@ -174,7 +192,6 @@ export class RuleComponent
     ngOnInit() {
         this.dragData = this.rule.id;
         this.ruleForm.patchValue(this.rule);
-        this.ruleForm.valueChanges.subscribe(this.onValueChange);
         this.ruleService.register(this.rule.id, this);
     }
 
@@ -204,7 +221,7 @@ export class RuleComponent
     }
 
     onFormBlur() {
-        // NO-OP
+        this.onValueChange();
     }
 
     toggleExpand(event: Event) {

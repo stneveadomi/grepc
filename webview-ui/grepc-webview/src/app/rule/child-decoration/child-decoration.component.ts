@@ -44,35 +44,29 @@ export class ChildDecorationComponent
     rule!: Rule;
 
     @Output()
-    ruleChange = new EventEmitter<Rule>();
+    blurred = new EventEmitter<void>();
 
     isEditing = false;
 
-    formGroup = this.fb.nonNullable.group(
-        {
-            contentText: ['' as string | undefined],
-            border: ['', [CSSValidator.classValidator('border')]],
-            borderColor: [
-                '' as string | undefined,
-                [CSSValidator.classValidator('border-color')],
-            ],
-            fontStyle: ['', [CSSValidator.classValidator('font-style')]],
-            fontWeight: ['', [CSSValidator.classValidator('font-weight')]],
-            textDecoration: [
-                '',
-                [CSSValidator.classValidator('text-decoration')],
-            ],
-            color: ['', [CSSValidator.classValidator('color')]],
-            backgroundColor: [
-                '',
-                [CSSValidator.classValidator('background-color')],
-            ],
-            margin: ['', [CSSValidator.classValidator('margin')]],
-            width: ['', [CSSValidator.classValidator('width')]],
-            height: ['', [CSSValidator.classValidator('height')]],
-        },
-        { updateOn: 'blur' },
-    );
+    formGroup = this.fb.nonNullable.group({
+        contentText: ['' as string | undefined],
+        border: ['', [CSSValidator.classValidator('border')]],
+        borderColor: [
+            '' as string | undefined,
+            [CSSValidator.classValidator('border-color')],
+        ],
+        fontStyle: ['', [CSSValidator.classValidator('font-style')]],
+        fontWeight: ['', [CSSValidator.classValidator('font-weight')]],
+        textDecoration: ['', [CSSValidator.classValidator('text-decoration')]],
+        color: ['', [CSSValidator.classValidator('color')]],
+        backgroundColor: [
+            '',
+            [CSSValidator.classValidator('background-color')],
+        ],
+        margin: ['', [CSSValidator.classValidator('margin')]],
+        width: ['', [CSSValidator.classValidator('width')]],
+        height: ['', [CSSValidator.classValidator('height')]],
+    });
 
     constructor(
         private fb: FormBuilder,
@@ -140,6 +134,7 @@ export class ChildDecorationComponent
 
     updateColorPicker(control: string, value: string) {
         this.formGroup.get(control)?.setValue(value);
+        this.blurred.emit();
     }
 
     onFormFocus() {
@@ -150,6 +145,7 @@ export class ChildDecorationComponent
     onFormBlur() {
         this.isEditing = false;
         this.onTouched();
+        this.blurred.emit();
     }
 }
 
