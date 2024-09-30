@@ -5,13 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.0]
+
+### Notes
+
+-   With the advent of VSC 1.92+, to drag and drop between webviews you must hold shift.
 
 ### Added
 
 -   Introduced 3 new minimize commands: All, local, and global.
 -   Added debug setting for showing rule states.
--   Introduce before and after decoration states with corresponding UX.
+-   **Introduce before and after decoration states with corresponding UX.**
 -   Introduced new webview actions:
     -   **Minimize all rules**
     -   **Edit Mode. Raw editing of the rules.**
