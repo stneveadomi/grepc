@@ -3,7 +3,7 @@
     "displayName": "grepc: Regex Highlighting",
     "description": "An approachable regular expression highlighter with advanced customization for VS Code.",
     "icon": "media/GREPC_enhanced-standard-circle-128.png",
-    "version": "1.2.1",
+    "version": "1.3.0",
     "engines": {
         "vscode": "^1.84.0"
     },
@@ -299,6 +299,6 @@
     },
     "lint-staged": {
         "*.{ts,js}": "eslint ./ext-src/ --fix",
-        "*.{html,ts,js,css,md,json}": "prettier . --write"
+        "*.{json,html,ts,js,css,md,json}": "prettier . --write"
     }
 }
