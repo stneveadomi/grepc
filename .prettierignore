@@ -4,3 +4,4 @@ dist
 media
 node_modules
 webview-ui
+package-lock.json
