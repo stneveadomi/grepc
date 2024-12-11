@@ -7,7 +7,6 @@ import { OccurrenceDisplayComponent } from '../occurrence-display/occurrence-dis
 
 @Component({
     selector: 'app-occurrences',
-    standalone: true,
     imports: [CommonModule, OccurrenceDisplayComponent],
     templateUrl: './occurrences.component.html',
     styleUrl: './occurrences.component.css',

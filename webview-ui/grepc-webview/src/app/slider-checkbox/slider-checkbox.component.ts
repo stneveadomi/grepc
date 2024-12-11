@@ -11,7 +11,6 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-slider-checkbox',
-    standalone: true,
     imports: [CommonModule, ReactiveFormsModule],
     animations: [
         trigger('slider', [

@@ -3,7 +3,6 @@ import { Rule } from '../../models/rule';
 
 @Component({
     selector: 'app-decoration-preview',
-    standalone: true,
     imports: [],
     templateUrl: './decoration-preview.component.html',
     styleUrl: './decoration-preview.component.css',

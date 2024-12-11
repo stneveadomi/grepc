@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-occurrence-display',
-    standalone: true,
     imports: [CommonModule],
     templateUrl: './occurrence-display.component.html',
     styleUrl: './occurrence-display.component.css',
