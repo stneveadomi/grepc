@@ -39,7 +39,6 @@ import { ExtensionService } from '../../services/extension.service';
 
 @Component({
     selector: 'app-rule',
-    standalone: true,
     imports: [
         CommonModule,
         ReactiveFormsModule,

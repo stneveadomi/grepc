@@ -17,7 +17,6 @@ import { LoggerService } from '../../../services/logger.service';
 
 @Component({
     selector: 'app-child-decoration',
-    standalone: true,
     imports: [CommonModule, ReactiveFormsModule, ColorPickerModule],
     providers: [
         {

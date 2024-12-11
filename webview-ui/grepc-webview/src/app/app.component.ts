@@ -8,7 +8,6 @@ import {
     ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
 import { RuleComponent } from './rule/rule.component';
 import { Rule } from '../models/rule';
 import { RuleService } from '../services/rule.service';
@@ -21,14 +20,7 @@ import { EditModeComponent } from './edit-mode/edit-mode.component';
 
 @Component({
     selector: 'app-root',
-    standalone: true,
-    imports: [
-        CommonModule,
-        RouterOutlet,
-        RuleComponent,
-        AddRuleComponent,
-        EditModeComponent,
-    ],
+    imports: [CommonModule, RuleComponent, AddRuleComponent, EditModeComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
 })
