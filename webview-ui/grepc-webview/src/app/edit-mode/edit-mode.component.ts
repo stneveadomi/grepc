@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RuleService } from '../../services/rule.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { decode } from 'html-entities';
 
 @Component({
     selector: 'app-edit-mode',
@@ -12,7 +14,10 @@ export class EditModeComponent implements OnInit {
     ruleArray = '';
     isValid = true;
 
-    constructor(protected ruleService: RuleService) {}
+    constructor(
+        protected ruleService: RuleService,
+        private sanitizer: DomSanitizer,
+    ) {}
 
     ngOnInit() {
         this.ruleArray = JSON.stringify(
@@ -30,7 +35,7 @@ export class EditModeComponent implements OnInit {
                     htmlEvent.innerHTML,
                 ))
             ) {
-                this.ruleService.pushNewRuleArray(htmlEvent.innerHTML);
+                this.ruleService.pushNewRuleArray(decode(htmlEvent.innerHTML));
             }
         }
     }

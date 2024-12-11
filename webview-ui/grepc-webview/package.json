@@ -36,6 +36,7 @@
         "@angular/router": "^18.2.6",
         "@types/node": "^20.14.9",
         "@vscode/codicons": "^0.0.35",
+        "html-entities": "^2.5.2",
         "ngx-color-picker": "^16.0.0",
         "rimraf": "^5.0.5",
         "rxjs": "~7.8.0",
