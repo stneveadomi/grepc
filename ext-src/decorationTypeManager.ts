@@ -356,7 +356,7 @@ export class DecorationTypeManager {
      *
      * @param document - the document text to update occurrence data with.
      */
-    updateOccurrenceData(document: vscode.TextDocument) {
+    public updateOccurrenceData(document: vscode.TextDocument) {
         for (const ruleFactory of this._ruleFactories) {
             const activeDecorationMap = this.getActiveDecorationMap(document, ruleFactory.location);
             for (const decType of activeDecorationMap.values()) {
@@ -402,7 +402,7 @@ export class DecorationTypeManager {
      * Apply only a select set of decoration types to visible editors. This is utilized when there are only a few decorations that need updated e.g. a line change / deletion.
      * @param decTypes - the select decoration types to apply.
      */
-    applySelectDecorationsToRespectiveEditors(event: vscode.TextDocumentChangeEvent, decTypes: Set<DecorationTypeWrapper>) {
+    public applySelectDecorationsToRespectiveEditors(event: vscode.TextDocumentChangeEvent, decTypes: Set<DecorationTypeWrapper>) {
         for (const editor of vscode.window.visibleTextEditors.filter((editor) => editor.document.fileName === event.document.fileName)) {
             for (const decType of decTypes) {
                 decType.applyDecorationsToEditor(editor);
@@ -414,7 +414,7 @@ export class DecorationTypeManager {
         }
     }
 
-    applyRuleDecorationsToVisibleEditors(ruleFactory: RuleFactory, rule: Rule) {
+    public applyRuleDecorationsToVisibleEditors(ruleFactory: RuleFactory, rule: Rule) {
         for (const editor of vscode.window.visibleTextEditors) {
             const appliedRuleToDecorationMap = this.getActiveDecorationMap(editor.document, ruleFactory.location);
             if (!appliedRuleToDecorationMap.has(rule.id)) {
@@ -431,7 +431,7 @@ export class DecorationTypeManager {
      * Instead of applying all, only apply a select set of decoration types.
      * @param subset - set of decoration types to push occurrence data of
      */
-    pushSelectActiveEditorOccurrenceData(subset: Set<DecorationTypeWrapper>) {
+    public pushSelectActiveEditorOccurrenceData(subset: Set<DecorationTypeWrapper>) {
         for (const ruleFactory of this._ruleFactories) {
             for (const decType of subset) {
                 if (ruleFactory.hasRule(decType.rule.id)) {
@@ -451,13 +451,13 @@ export class DecorationTypeManager {
      *
      * <b>Warning: This can be a heavily intense operation</b>
      */
-    pushAllActiveEditorOccurrenceData() {
+    public pushAllActiveEditorOccurrenceData() {
         for (const ruleFactory of this._ruleFactories) {
             this.pushActiveEditorOccurrenceData(ruleFactory);
         }
     }
 
-    pushActiveEditorOccurrenceData(ruleFactory: RuleFactory) {
+    public pushActiveEditorOccurrenceData(ruleFactory: RuleFactory) {
         this.logger.debug('pushing active editor occurrence data');
         if (!vscode.window.activeTextEditor) {
             this.logger.error('Unable to push occurrence data as active editor is undefined.');
@@ -511,7 +511,7 @@ export class DecorationTypeManager {
      *
      * @param editor - the intended editor to clear data from.
      */
-    clearDecorationsOnEditor(editor: vscode.TextEditor) {
+    public clearDecorationsOnEditor(editor: vscode.TextEditor) {
         this.logger.debug(`[DTM] clearDecorationsOnEditor: ${editor.document.fileName}`);
         for (const ruleFactory of this._ruleFactories) {
             const activeDecMap = this.getActiveDecorationMap(editor.document, ruleFactory.location);
@@ -526,7 +526,7 @@ export class DecorationTypeManager {
         this.disableDecorationDetection();
     }
 
-    jumpToLine(lineRange: LineRange) {
+    public jumpToLine(lineRange: LineRange) {
         const range = new vscode.Range(new vscode.Position(lineRange.lineNumbers[0], 0), new vscode.Position(lineRange.lineNumbers[0], 0));
         if (range) {
             this.logger.debug('[DTM] jumpToLine() - range found, jumping to in editor', this._activeEditor);
