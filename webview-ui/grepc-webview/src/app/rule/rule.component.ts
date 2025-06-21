@@ -19,7 +19,7 @@ import {
 } from '../../models/rule';
 import { CommonModule } from '@angular/common';
 import { SliderCheckboxComponent } from '../slider-checkbox/slider-checkbox.component';
-import { ColorPickerModule } from 'ngx-color-picker';
+import { ColorPickerDirective } from 'ngx-color-picker';
 import { RuleService } from '../../services/rule.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Draggable } from '../../utilities/draggable';
@@ -43,10 +43,10 @@ import { ExtensionService } from '../../services/extension.service';
         CommonModule,
         ReactiveFormsModule,
         SliderCheckboxComponent,
-        ColorPickerModule,
         DecorationPreviewComponent,
         OccurrencesComponent,
         ChildDecorationComponent,
+        ColorPickerDirective,
     ],
     templateUrl: './rule.component.html',
     styleUrl: './rule.component.css',
