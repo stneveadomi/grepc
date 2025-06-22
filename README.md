@@ -87,6 +87,8 @@ Check out the [FAQ](docs/FAQ.md). Don't see your question? Create an issue and o
 
 ## Contributing
 
+[How to Build](docs/HOW_TO_BUILD.md)
+
 Find an issue or a potential new feature? Create an issue on the GitHub page.
 
 Feel free to review the current issues if interested in contributing.
