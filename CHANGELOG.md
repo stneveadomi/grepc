@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1]
+
+### Notes
+
+-   The long awaited bug fix release.
+
+### Added
+
+-   Better documentation on how to build and contribute
+-   Usage of the extension now prefers UI then Workspace for better accessibility with remote workspaces.
+
+### Changed
+
+-   Fixed UX bug with color dropdown (finally)
+-   Fixed serialization issue with opening the code representation of the rules
+
 ## [1.3.0]
 
 ### Notes
