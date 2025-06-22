@@ -10,14 +10,14 @@ import {
     ValidationErrors,
     Validator,
 } from '@angular/forms';
-import { ColorPickerModule } from 'ngx-color-picker';
+import { ColorPickerDirective } from 'ngx-color-picker';
 import { Rule, ChildDecorationModel } from '../../../models/rule';
 import { CSSValidator } from '../../../utilities/form-validators';
 import { LoggerService } from '../../../services/logger.service';
 
 @Component({
     selector: 'app-child-decoration',
-    imports: [CommonModule, ReactiveFormsModule, ColorPickerModule],
+    imports: [CommonModule, ReactiveFormsModule, ColorPickerDirective],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
