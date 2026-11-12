@@ -274,16 +274,15 @@
         "@eslint/js": "^9.9.0",
         "@types/mocha": "^10.0.10",
         "@types/node": "^22.15.32",
+        "@types/showdown": "^2.0.6",
         "@types/vscode": "~1.84.0",
         "@typescript-eslint/eslint-plugin": "^8.2.0",
         "@typescript-eslint/parser": "^8.2.0",
-        "@vscode/codicons": "^0.0.36",
         "@vscode/test-cli": "^0.0.10",
         "@vscode/test-electron": "^2.5.2",
         "@vscode/vsce": "^4.0.0",
         "eslint": "^9.29.0",
         "eslint-config-prettier": "^9.1.0",
-        "glob": "^11.0.3",
         "globals": "^15.15.0",
         "husky": "^9.1.7",
         "lint-staged": "^17.6.0",
@@ -296,8 +295,6 @@
         "webpack-cli": "^5.1.4"
     },
     "dependencies": {
-        "@types/showdown": "^2.0.6",
-        "debounce": "^2.2.0",
         "rxjs": "^7.8.2",
         "showdown": "^2.1.0"
     },
