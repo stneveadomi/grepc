@@ -147,7 +147,7 @@ export class DecorationTypeWrapper {
 
         // if there is a new line, we just need to recalculate everything.
         // similarily if there is a deletion, ditto.
-        if ((contentChange.text.length == 0 && !contentChange.range.isSingleLine) || /[\n\r]/g.test(contentChange.text)) {
+        if ((contentChange.text.length === 0 && !contentChange.range.isSingleLine) || /[\n\r]/g.test(contentChange.text)) {
             vscode.window.visibleTextEditors
                 .filter((editor) => editor.document === this.document)
                 .forEach((editor) => {
@@ -231,7 +231,7 @@ export class DecorationTypeWrapper {
         while (left <= right) {
             const middle = Math.floor((left + right) / 2);
             const midRange = this.activeOccurrences[middle];
-            if (midRange == undefined) {
+            if (midRange === undefined) {
                 this.logger.debug(`midRange is undefined: ${middle} not in [${left}, ${right})`);
                 return { removed: 0, insertIndex: left + 1 };
             }
