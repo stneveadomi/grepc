@@ -48,7 +48,6 @@
         "angular-eslint": "^22.6.0",
         "eslint": "^10.14.0",
         "eslint-config-prettier": "^10.1.8",
-        "globals": "^17.14.0",
         "jest": "^30.5.2",
         "jest-environment-jsdom": "^30.5.2",
         "jest-preset-angular": "^17.0.3",
