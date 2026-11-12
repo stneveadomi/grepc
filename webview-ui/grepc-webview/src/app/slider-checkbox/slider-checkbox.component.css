@@ -14,7 +14,9 @@
     cursor: pointer;
 
     /* Replaces the former @angular/animations `slider` trigger: animate('0.3s') with no
-       easing ran a Web Animation with the default linear easing. */
+       easing ran a Web Animation with the default linear easing. Unlike the trigger, this
+       transition also runs on a theme change, because the disabled background is a theme
+       variable. */
     transition: background 0.3s linear;
 }
 

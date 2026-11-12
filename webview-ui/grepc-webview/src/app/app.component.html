@@ -1,5 +1,8 @@
 @if (!extension.editMode) {
     <div class="main-container">
+        <!-- Tracking by identity is deliberate and matches the old *ngFor. The extension re-sends
+             fresh rule objects, so dev builds log NG0956; tracking by id would instead reuse
+             components across updates and change their lifetimes. -->
         @for (r of $rules | async; track r) {
             <app-rule [rule]="r"> </app-rule>
         }
