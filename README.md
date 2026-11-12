@@ -9,7 +9,7 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/stneveadomi/grepc/)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/stneveadomi/grepc?color=green)
 ![GitHub Release Date](https://img.shields.io/github/release-date/stneveadomi/grepc)
-[![CI Tests](https://github.com/stneveadomi/grepc/actions/workflows/node.js.yml/badge.svg)](https://github.com/stneveadomi/grepc/actions/workflows/node.js.yml)
+[![CI Tests](https://github.com/stneveadomi/grepc/actions/workflows/ci.yml/badge.svg)](https://github.com/stneveadomi/grepc/actions/workflows/ci.yml)
 ![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/stneveadomi.grepc)
 ![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/stars/stneveadomi.grepc)
 

@@ -1,0 +1,109 @@
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+    workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  persist-credentials: false
+            - uses: actions/setup-node@v7
+              with:
+                  node-version-file: .nvmrc
+                  cache: npm
+                  cache-dependency-path: |
+                      package-lock.json
+                      webview-ui/grepc-webview/package-lock.json
+            - name: Install extension dependencies
+              run: npm ci
+            - name: Install webview dependencies
+              run: npm ci
+              working-directory: webview-ui/grepc-webview
+            - name: Prettier (extension)
+              run: npm run prettier
+            - name: Prettier (webview)
+              run: npm run prettier:spa
+            - name: ESLint (extension)
+              run: npm run lint
+            - name: ESLint (webview)
+              run: npm run lint:spa
+
+    test:
+        name: test (${{ matrix.os }})
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, windows-latest]
+        runs-on: ${{ matrix.os }}
+        permissions:
+            contents: read
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  persist-credentials: false
+            - uses: actions/setup-node@v7
+              with:
+                  node-version-file: .nvmrc
+                  cache: npm
+                  cache-dependency-path: |
+                      package-lock.json
+                      webview-ui/grepc-webview/package-lock.json
+            - name: Install extension dependencies
+              run: npm ci
+            - name: Install webview dependencies
+              if: runner.os == 'Linux'
+              run: npm ci
+              working-directory: webview-ui/grepc-webview
+            - name: Webview unit tests
+              if: runner.os == 'Linux'
+              run: npm run test:coverage
+              working-directory: webview-ui/grepc-webview
+            - name: Extension tests (Linux)
+              if: runner.os == 'Linux'
+              run: xvfb-run -a npm test
+            - name: Extension tests (Windows)
+              if: runner.os == 'Windows'
+              run: npm test
+
+    package:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  persist-credentials: false
+            - uses: actions/setup-node@v7
+              with:
+                  node-version-file: .nvmrc
+                  cache: npm
+                  cache-dependency-path: |
+                      package-lock.json
+                      webview-ui/grepc-webview/package-lock.json
+            - name: Install extension dependencies
+              run: npm ci
+            # vscode:prepublish installs and builds the webview, then bundles the extension.
+            - name: Package universal VSIX
+              run: npx vsce package
+            - name: List VSIX contents
+              run: npx vsce ls
+            - uses: actions/upload-artifact@v7
+              with:
+                  name: vsix
+                  path: '*.vsix'
+                  if-no-files-found: error

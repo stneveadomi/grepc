@@ -23,6 +23,7 @@ suite('Performance Testing', () => {
 
         rule = new Rule('def');
         rule.regularExpression = 'def';
+        rule.enabled = true;
     });
 
     suiteTeardown(async () => {
