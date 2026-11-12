@@ -73,12 +73,25 @@ jobs:
               if: runner.os == 'Linux'
               run: npm run test:coverage
               working-directory: webview-ui/grepc-webview
+            # @vscode/test-electron falls back to an installed VS Code under .vscode-test when its
+            # version lookup fails, so a restored copy lets the tests run through that network flake.
+            # Only the vscode-<platform>-<version> folders are cached (user-data would carry state
+            # between runs). The per-run key saves any newer VS Code after each successful job.
+            - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+              with:
+                  path: .vscode-test/vscode-*
+                  key: vscode-test-${{ runner.os }}-${{ github.run_id }}
+                  restore-keys: vscode-test-${{ runner.os }}-
             - name: Extension tests (Linux)
               if: runner.os == 'Linux'
               run: xvfb-run -a npm test
             - name: Extension tests (Windows)
               if: runner.os == 'Windows'
               run: npm test
+            # Keep only the newest VS Code so the saved cache does not grow with every release.
+            - name: Prune cached VS Code builds
+              shell: bash
+              run: find .vscode-test -maxdepth 1 -type d -name 'vscode-*' | sort -V | head -n -1 | xargs -r rm -rf
 
     package:
         runs-on: ubuntu-latest
