@@ -32,6 +32,13 @@ module.exports = tseslint.config(
                     style: 'kebab-case',
                 },
             ],
+            // angular-eslint 20 dropped these from `tsRecommended`; keep enforcing them as before.
+            '@angular-eslint/component-class-suffix': 'error',
+            '@angular-eslint/directive-class-suffix': 'error',
+            // angular-eslint 20 added `prefer-inject` to `tsRecommended`. The app uses constructor
+            // injection throughout (including the Draggable/Droppable base classes that take
+            // services via `super(...)`); moving to `inject()` is a separate refactor.
+            '@angular-eslint/prefer-inject': 'off',
         },
     },
     {
