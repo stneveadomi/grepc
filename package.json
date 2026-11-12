@@ -9,7 +9,8 @@
         "workspace"
     ],
     "engines": {
-        "vscode": "^1.84.0"
+        "vscode": "^1.84.0",
+        "node": ">=24"
     },
     "galleryBanner": {
         "color": "#000000",
@@ -256,13 +257,13 @@
         "vscode:prepublish": "npm run build:spa && npm run package",
         "compile": "webpack",
         "watch": "webpack --watch",
-        "build:spa": "cd webview-ui/grepc-webview && npm ci --force && npm run test:coverage && npm run build:production",
+        "build:spa": "cd webview-ui/grepc-webview && npm ci && npm run test:coverage && npm run build:production",
         "package": "webpack --mode production --devtool hidden-source-map",
         "compile-tests": "tsc -p . --outDir out",
         "watch-tests": "tsc -p . -w --outDir out",
         "pretest": "npm run compile-tests && npm run compile && npm run lint",
         "lint": "eslint ./ext-src/",
-        "lint:spa": "cd webview-ui/grepc-webview && npm ci --force && eslint .",
+        "lint:spa": "cd webview-ui/grepc-webview && npm run lint",
         "prettier": "prettier . --check",
         "prettier:spa": "cd webview-ui/grepc-webview && prettier . --check",
         "test": "vscode-test",
@@ -280,12 +281,13 @@
         "@vscode/codicons": "^0.0.36",
         "@vscode/test-cli": "^0.0.10",
         "@vscode/test-electron": "^2.5.2",
-        "@vscode/vsce": "^3.5.0",
+        "@vscode/vsce": "^4.0.0",
         "eslint": "^9.29.0",
         "eslint-config-prettier": "^9.1.0",
         "glob": "^11.0.3",
         "globals": "^15.15.0",
         "husky": "^9.1.7",
+        "lint-staged": "^17.6.0",
         "mocha": "^10.8.2",
         "prettier": "3.3.3",
         "ts-loader": "^9.5.2",
@@ -302,7 +304,7 @@
         "uuid": "^10.0.0"
     },
     "lint-staged": {
-        "*.{ts,js}": "eslint ./ext-src/ --fix",
-        "*.{json,html,ts,js,css,md,json}": "prettier . --write"
+        "*.ts": "eslint --fix",
+        "*.{ts,js,json,html,css,md}": "prettier --write"
     }
 }

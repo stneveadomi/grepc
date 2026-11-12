@@ -1,0 +1,58 @@
+# Minimal tag-driven release. Phase 2 of ROADMAP.md adds attestation, Open VSX,
+# CHANGELOG release notes, a release environment and OIDC publishing.
+name: Release
+
+on:
+    push:
+        tags: ['v*']
+
+permissions: {}
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: false
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  persist-credentials: false
+            - uses: actions/setup-node@v7
+              with:
+                  node-version-file: .nvmrc
+                  cache: npm
+                  cache-dependency-path: |
+                      package-lock.json
+                      webview-ui/grepc-webview/package-lock.json
+            - name: Check tag matches package.json version
+              run: |
+                  version="$(node -p "require('./package.json').version")"
+                  if [ "${GITHUB_REF_NAME#v}" != "$version" ]; then
+                      echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $version"
+                      exit 1
+                  fi
+                  echo "VERSION=$version" >> "$GITHUB_ENV"
+            - name: Install extension dependencies
+              run: npm ci
+            - name: Extension tests
+              run: xvfb-run -a npm test
+            # vscode:prepublish installs, unit-tests and builds the webview, then bundles the extension.
+            - name: Package universal VSIX
+              run: npx vsce package
+            - uses: actions/upload-artifact@v7
+              with:
+                  name: vsix
+                  path: grepc-${{ env.VERSION }}.vsix
+                  if-no-files-found: error
+            - name: Publish to Visual Studio Marketplace
+              run: npx vsce publish --packagePath "grepc-$VERSION.vsix"
+              env:
+                  VSCE_PAT: ${{ secrets.VSCE_PAT }}
+            - name: Create GitHub Release
+              uses: softprops/action-gh-release@v3
+              with:
+                  files: grepc-${{ env.VERSION }}.vsix

@@ -16,11 +16,12 @@ If you just want to install the extension, this is the wrong place! If you are w
         2. This also contains the code to fetch the SPA
     2. The other is within `./webview-ui/grepc-webview`
         1. This is for the [SPA](https://en.wikipedia.org/wiki/Single-page_application). This is the [webview](https://code.visualstudio.com/api/extension-guides/webview) that runs the UI for the rules (global and local). This is an Angular SPA.
-6. Run `npm install` to pull the packages for both dependencies
+6. Use Node.js 24 or newer. The version is pinned in `.nvmrc`, so `nvm use` picks it up.
+7. Run `npm install` to pull the packages for both dependencies
     1. Run `npm i` in both the aforementioned directories.
         1. `./`
         2. `./webview-ui/grepc-webview/`
-7. Run `npm run vscode:prepublish` in the top level directory.
+8. Run `npm run vscode:prepublish` in the top level directory.
 
 # How to develop
 

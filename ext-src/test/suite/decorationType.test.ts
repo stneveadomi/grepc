@@ -22,6 +22,7 @@ suite('DecorationTypeWrapper', () => {
         });
         rule = new Rule('rule 1');
         rule.regularExpression = '[0-9]+';
+        rule.enabled = true;
 
         dt = new DecorationTypeWrapper(textDoc, rule, logger);
         dt.updateOccurrences(textDoc);
@@ -101,6 +102,7 @@ suite('DecorationTypeWrapper', () => {
         });
         rule = new Rule('rule 1');
         rule.regularExpression = '[0-9]+';
+        rule.enabled = true;
 
         dt = new DecorationTypeWrapper(textDoc, rule, logger);
         dt.updateOccurrences(textDoc);

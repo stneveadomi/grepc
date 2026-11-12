@@ -92,8 +92,8 @@ export class ReleaseNotesWebview {
                             <a href="https://github.com/stneveadomi/grepc/releases">
                                 <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/stneveadomi/grepc">
                             </a>
-                            <a href="https://github.com/stneveadomi/grepc/actions/workflows/node.js.yml">
-                                <img src="https://github.com/stneveadomi/grepc/actions/workflows/node.js.yml/badge.svg" alt="CI Tests" style="max-width: 100%;">
+                            <a href="https://github.com/stneveadomi/grepc/actions/workflows/ci.yml">
+                                <img src="https://github.com/stneveadomi/grepc/actions/workflows/ci.yml/badge.svg" alt="CI Tests" style="max-width: 100%;">
                             </a>
                             <img alt="Visual Studio Marketplace Downloads" src="https://img.shields.io/visual-studio-marketplace/d/stneveadomi.grepc">
                             <img alt="Visual Studio Marketplace Rating" src="https://img.shields.io/visual-studio-marketplace/stars/stneveadomi.grepc">

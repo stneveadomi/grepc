@@ -1,0 +1,8 @@
+# Normalize line endings to LF in the repo and the working tree, on every OS.
+# Prettier expects LF.
+* text=auto eol=lf
+
+*.png binary
+*.gif binary
+*.ico binary
+*.vsix binary
