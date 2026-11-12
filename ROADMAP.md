@@ -60,7 +60,7 @@ Each phase is independently mergeable. Phases 0 and 1 are the minimum to be able
 
 Goal: any PR can be merged and a release can be cut again.
 
--   [x] Replace both workflows with a single `ci.yml` (lint, format check, build, unit tests, extension tests, package) and a separate `release.yml` (see Phase 2). Use `actions/checkout@v7`, `actions/setup-node@v7` with `node-version-file: .nvmrc`, Node 24. _Done. `release.yml` is a minimal tag -> test, package, Marketplace publish, GitHub Release; Phase 2 extends it. Both workflows already carry `permissions: {}` with per-job grants, `persist-credentials: false` and CI `concurrency` from Phase 1; SHA pinning is still open._
+-   [x] Replace both workflows with a single `ci.yml` (lint, format check, build, unit tests, extension tests, package) and a separate `release.yml` (see Phase 2). Use `actions/checkout@v7`, `actions/setup-node@v7` with `node-version-file: .nvmrc`, Node 24. _Done. `release.yml` is a minimal tag -> test, package, Marketplace publish, GitHub Release; Phase 2 extends it. Both workflows already carry `permissions: {}` with per-job grants, `persist-credentials: false` and CI `concurrency` from Phase 1; actions were pinned to SHAs in Phase 1._
 -   [x] Add `.nvmrc` (`24`) and `engines.node` in both `package.json` files so local and CI agree.
 -   [x] Run the extension tests in CI for the first time: `xvfb-run -a npm test` on Linux, `npm test` on Windows. Fix whatever has rotted in `ext-src/test/suite` (two files exist; neither has run in CI). _Done: every test built a `Rule` without enabling it (rules default to disabled since 87a26e7), so `updateOccurrences` returned early and 9 of 11 tests failed._
 -   [x] Remove `--force` from `npm ci`. If it fails, fix the peer dependency conflict rather than hiding it. `--force` masks exactly the kind of breakage that dependency bots are meant to surface.
@@ -75,40 +75,8 @@ Goal: any PR can be merged and a release can be cut again.
 Goal: the free GitHub security features are on and workflows follow least privilege.
 
 -   [x] Settings > Security: enable Dependabot alerts, Dependabot security updates, secret scanning, push protection. Enable CodeQL default setup for `javascript-typescript` and `actions`. _Done 2026-11-11, along with private vulnerability reporting._
--   [x] Add `.github/dependabot.yml`: _Done. The committed file adds `globals` to the `eslint` group and a major-version ignore for `angular-eslint`, whose major is locked to Angular's._
-
-    ```yaml
-    version: 2
-    updates:
-        - package-ecosystem: github-actions
-          directory: /
-          schedule: { interval: weekly }
-          cooldown: { default-days: 7 }
-        - package-ecosystem: npm
-          directories: ['/', '/webview-ui/grepc-webview']
-          schedule: { interval: weekly }
-          cooldown: { default-days: 7, semver-major-days: 14 }
-          groups:
-              angular:
-                  patterns: ['@angular/*', 'angular-eslint', 'ngx-color-picker', 'zone.js']
-              eslint:
-                  patterns: ['eslint', '@eslint/*', 'typescript-eslint', '@typescript-eslint/*', 'eslint-config-prettier']
-              jest:
-                  patterns: ['jest', 'jest-*', '@jest/*', '@types/jest']
-              vscode-tooling:
-                  patterns: ['@vscode/*', '@types/vscode']
-              dev-minor-patch:
-                  dependency-type: development
-                  update-types: [minor, patch]
-          ignore:
-              # Angular majors are upgraded by hand with `ng update`, one major at a time.
-              - dependency-name: '@angular/*'
-                update-types: ['version-update:semver-major']
-              # @types/vscode must track engines.vscode, not latest.
-              - dependency-name: '@types/vscode'
-    ```
-
-    The seven-day cooldown is the cheap defence against the npm supply-chain compromises of 2025-2026: a poisoned release is usually pulled within days.
+-   [x] Add `.github/dependabot.yml`: _Done; see the file for the groups and ignore rules. Packages whose versions are locked to Angular's (`angular-eslint`, `jest-preset-angular`, `zone.js`, `typescript`) are ignored for the bumps Angular dictates._
+        The seven-day cooldown is the cheap defence against the npm supply-chain compromises of 2025-2026: a poisoned release is usually pulled within days.
 
 -   [x] Every workflow: top-level `permissions: {}`, per-job grants (`contents: read` for CI; `contents: write`, `id-token: write`, `attestations: write` only in the release job). Add `concurrency` with `cancel-in-progress` on the CI workflow. _Done. The release job holds `contents: write` only; `id-token: write` and `attestations: write` arrive in Phase 2 with the steps that use them._
 -   [x] Pin all third-party actions to commit SHAs with a `# vX.Y.Z` comment. Dependabot updates both. _Done, first-party actions included._

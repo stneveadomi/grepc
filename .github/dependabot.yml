@@ -20,6 +20,10 @@ updates:
               patterns: ['jest', 'jest-*', '@jest/*', '@types/jest']
           vscode-tooling:
               patterns: ['@vscode/*', '@types/vscode']
+          # Prettier is pinned exactly and a minor bump can reformat files, which fails
+          # the format check. Its own group keeps that out of the dev-minor-patch PR.
+          prettier:
+              patterns: ['prettier']
           dev-minor-patch:
               dependency-type: development
               update-types: [minor, patch]
@@ -29,6 +33,19 @@ updates:
             update-types: ['version-update:semver-major']
           # angular-eslint majors track Angular majors and move with `ng update angular-eslint`.
           - dependency-name: 'angular-eslint'
+            update-types: ['version-update:semver-major']
+          # jest-preset-angular majors each require a minimum Angular major.
+          - dependency-name: 'jest-preset-angular'
+            update-types: ['version-update:semver-major']
+          # @angular/core peers on zone.js with a tilde range, so 0.x minors are breaking.
+          - dependency-name: 'zone.js'
+            update-types: ['version-update:semver-major', 'version-update:semver-minor']
+          # Angular's compiler and typescript-eslint both cap the TypeScript minor.
+          # TypeScript moves by hand, together with Angular.
+          - dependency-name: 'typescript'
+            update-types: ['version-update:semver-major', 'version-update:semver-minor']
+          # @types/node tracks the Node runtime in use, not latest.
+          - dependency-name: '@types/node'
             update-types: ['version-update:semver-major']
           # @types/vscode must track engines.vscode, not latest.
           - dependency-name: '@types/vscode'
