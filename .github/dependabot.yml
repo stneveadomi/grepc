@@ -15,9 +15,9 @@ updates:
           angular:
               patterns: ['@angular/*', 'angular-eslint', 'ngx-color-picker', 'zone.js']
           eslint:
-              patterns: ['eslint', '@eslint/*', 'typescript-eslint', '@typescript-eslint/*', 'eslint-config-prettier', 'globals']
+              patterns: ['eslint', '@eslint/*', 'typescript-eslint', 'eslint-config-prettier', 'globals']
           jest:
-              patterns: ['jest', 'jest-*', '@jest/*', '@types/jest']
+              patterns: ['jest', 'jest-*', '@types/jest', 'jsdom']
           vscode-tooling:
               patterns: ['@vscode/*', '@types/vscode']
           # Prettier is pinned exactly and a minor bump can reformat files, which fails
@@ -36,6 +36,9 @@ updates:
             update-types: ['version-update:semver-major']
           # jest-preset-angular majors each require a minimum Angular major.
           - dependency-name: 'jest-preset-angular'
+            update-types: ['version-update:semver-major']
+          # jest-environment-jsdom has its own jsdom range; a jsdom major would sit unused beside it.
+          - dependency-name: 'jsdom'
             update-types: ['version-update:semver-major']
           # @angular/core peers on zone.js with a tilde range, so 0.x minors are breaking.
           - dependency-name: 'zone.js'

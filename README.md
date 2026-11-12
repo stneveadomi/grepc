@@ -53,8 +53,8 @@ Grepc is an approachable regular expression highlighter with advanced customizat
 
 ## Usage
 
--   Simply open the tree view in the left hand bar.
--   Optionally, use one of the following by right-clicking in the editor:
+- Simply open the tree view in the left hand bar.
+- Optionally, use one of the following by right-clicking in the editor:
 
 | Command                    | Title                                   | Description                                                                           |
 | -------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------- |

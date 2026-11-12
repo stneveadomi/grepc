@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SliderCheckboxComponent } from './slider-checkbox.component';
 import { FormControl } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SliderCheckboxComponent', () => {
     let component: SliderCheckboxComponent;
@@ -11,7 +10,7 @@ describe('SliderCheckboxComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [SliderCheckboxComponent, BrowserAnimationsModule],
+            imports: [SliderCheckboxComponent],
         }).compileComponents();
 
         fixture = TestBed.createComponent(SliderCheckboxComponent);

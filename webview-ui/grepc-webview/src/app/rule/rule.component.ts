@@ -9,6 +9,7 @@ import {
     OnInit,
     SimpleChanges,
     ViewChild,
+    ChangeDetectionStrategy,
 } from '@angular/core';
 import {
     ChildDecorationModel,
@@ -17,7 +18,7 @@ import {
     overwrite,
     Rule,
 } from '../../models/rule';
-import { CommonModule } from '@angular/common';
+import { JsonPipe, NgClass } from '@angular/common';
 import { SliderCheckboxComponent } from '../slider-checkbox/slider-checkbox.component';
 import { ColorPickerDirective } from 'ngx-color-picker';
 import { RuleService } from '../../services/rule.service';
@@ -40,7 +41,8 @@ import { ExtensionService } from '../../services/extension.service';
 @Component({
     selector: 'app-rule',
     imports: [
-        CommonModule,
+        NgClass,
+        JsonPipe,
         ReactiveFormsModule,
         SliderCheckboxComponent,
         DecorationPreviewComponent,
@@ -49,6 +51,7 @@ import { ExtensionService } from '../../services/extension.service';
         ColorPickerDirective,
     ],
     templateUrl: './rule.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './rule.component.css',
 })
 export class RuleComponent

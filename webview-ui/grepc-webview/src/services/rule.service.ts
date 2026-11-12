@@ -18,8 +18,9 @@ export class RuleService {
 
     private _isAwaitingRulesResponse: Promise<void> | undefined = undefined;
 
-    private _isAwaitingRulesResolveReject: // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    { resolve: any; reject: any } | undefined = undefined;
+    private _isAwaitingRulesResolveReject:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { resolve: any; reject: any } | undefined = undefined;
 
     constructor(
         private extensionService: ExtensionService,

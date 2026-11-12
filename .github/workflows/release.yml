@@ -24,6 +24,8 @@ jobs:
             - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
                   node-version-file: .nvmrc
+                  # engines.node needs >=24.15.0, but `24` alone accepts any 24.x in the tool cache.
+                  check-latest: true
                   # No dependency cache in the release job: a cache written by a
                   # CI run could otherwise poison the published VSIX.
                   package-manager-cache: false

@@ -18,68 +18,73 @@
                     [ngClass]="this.rule.expanded ? 'open' : 'closed'"
                     tabindex="0"
                     class="drop-down codicon codicon-chevron-right"></div>
-                <span
-                    *ngIf="!this.isEditingTitle"
-                    (click)="toggleExpand($event)"
-                    (mouseenter)="showEditIcon = true"
-                    (mouseleave)="showEditIcon = false"
-                    (focus)="showEditIcon = true"
-                    (blur)="showEditIcon = false"
-                    tabindex="0"
-                    (keydown.enter)="toggleEditTitle()"
-                    class="rule-id center-vertical">
-                    {{ rule.title }}
-                    <div
+                @if (!this.isEditingTitle) {
+                    <span
+                        (click)="toggleExpand($event)"
+                        (mouseenter)="showEditIcon = true"
+                        (mouseleave)="showEditIcon = false"
+                        (focus)="showEditIcon = true"
+                        (blur)="showEditIcon = false"
                         tabindex="0"
-                        (click)="toggleEditTitle()"
                         (keydown.enter)="toggleEditTitle()"
-                        [ngClass]="this.showEditIcon ? 'editing' : 'fixed'"
-                        class="codicon codicon-edit clickable"></div>
-                </span>
-                <div *ngIf="this.isEditingTitle" class="edit-title-controls">
-                    <input
-                        class="rule-id-input"
-                        type="text"
-                        (focus)="onFormFocus()"
-                        (blur)="onFormBlur()"
-                        (keydown.enter)="
-                            updateTitle();
-                            toggleEditTitle();
-                            showEditIcon = false
-                        "
-                        (keydown.escape)="
-                            toggleEditTitle(); showEditIcon = false
-                        "
-                        formControlName="title" />
-                    <div
-                        (keydown.enter)="
-                            toggleEditTitle(); showEditIcon = false
-                        "
-                        (click)="toggleEditTitle(); showEditIcon = false"
-                        tabindex="0"
-                        class="codicon codicon-close clickable"></div>
-                    <div
-                        (keydown.enter)="
-                            updateTitle();
-                            toggleEditTitle();
-                            showEditIcon = false
-                        "
-                        (click)="
-                            updateTitle();
-                            toggleEditTitle();
-                            showEditIcon = false
-                        "
-                        tabindex="0"
-                        class="codicon codicon-check clickable"></div>
-                </div>
+                        class="rule-id center-vertical">
+                        {{ rule.title }}
+                        <div
+                            tabindex="0"
+                            (click)="toggleEditTitle()"
+                            (keydown.enter)="toggleEditTitle()"
+                            [ngClass]="this.showEditIcon ? 'editing' : 'fixed'"
+                            class="codicon codicon-edit clickable"></div>
+                    </span>
+                }
+                @if (this.isEditingTitle) {
+                    <div class="edit-title-controls">
+                        <input
+                            class="rule-id-input"
+                            type="text"
+                            (focus)="onFormFocus()"
+                            (blur)="onFormBlur()"
+                            (keydown.enter)="
+                                updateTitle();
+                                toggleEditTitle();
+                                showEditIcon = false
+                            "
+                            (keydown.escape)="
+                                toggleEditTitle(); showEditIcon = false
+                            "
+                            formControlName="title" />
+                        <div
+                            (keydown.enter)="
+                                toggleEditTitle(); showEditIcon = false
+                            "
+                            (click)="toggleEditTitle(); showEditIcon = false"
+                            tabindex="0"
+                            class="codicon codicon-close clickable"></div>
+                        <div
+                            (keydown.enter)="
+                                updateTitle();
+                                toggleEditTitle();
+                                showEditIcon = false
+                            "
+                            (click)="
+                                updateTitle();
+                                toggleEditTitle();
+                                showEditIcon = false
+                            "
+                            tabindex="0"
+                            class="codicon codicon-check clickable"></div>
+                    </div>
+                }
             </div>
 
             <div class="rule-header-controls center-vertical">
                 <app-decoration-preview [rule]="rule"> </app-decoration-preview>
                 <div class="center-vertical control-gap">
-                    <span *ngIf="this.rule.enabled" class="circle">
-                        {{ this.occurrenceData.occurrences }}
-                    </span>
+                    @if (this.rule.enabled) {
+                        <span class="circle">
+                            {{ this.occurrenceData.occurrences }}
+                        </span>
+                    }
                     <app-slider-checkbox
                         (toggles)="onToggle()"
                         [control]="this.ruleForm.controls['enabled']">
@@ -477,13 +482,16 @@
                 </div>
             </div>
 
-            <app-occurrences
-                *ngIf="rule.enabled"
-                [occurrenceData]="this.occurrenceData"
-                [(rule)]="rule">
-            </app-occurrences>
+            @if (rule.enabled) {
+                <app-occurrences
+                    [occurrenceData]="this.occurrenceData"
+                    [(rule)]="rule">
+                </app-occurrences>
+            }
         </div>
     </form>
 </div>
 
-<pre *ngIf="extensionService.debugMode">{{ ruleForm.value | json }}</pre>
+@if (extensionService.debugMode) {
+    <pre>{{ ruleForm.value | json }}</pre>
+}
