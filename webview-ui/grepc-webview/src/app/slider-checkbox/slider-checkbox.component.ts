@@ -5,13 +5,13 @@ import {
     animate,
     transition,
 } from '@angular/animations';
-import { CommonModule } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-slider-checkbox',
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [NgClass, ReactiveFormsModule],
     animations: [
         trigger('slider', [
             state(

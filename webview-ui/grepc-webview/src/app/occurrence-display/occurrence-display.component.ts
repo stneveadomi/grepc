@@ -1,11 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { LineRange } from '../../models/line-range';
 import { Rule } from '../../models/rule';
-import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-occurrence-display',
-    imports: [CommonModule],
     templateUrl: './occurrence-display.component.html',
     styleUrl: './occurrence-display.component.css',
 })

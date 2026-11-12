@@ -1,13 +1,13 @@
 import { Component, DoCheck, EventEmitter, Input, Output } from '@angular/core';
 import { RuleService } from '../../services/rule.service';
 import { OccurrenceData, Rule } from '../../models/rule';
-import { CommonModule } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { LineRange } from '../../models/line-range';
 import { OccurrenceDisplayComponent } from '../occurrence-display/occurrence-display.component';
 
 @Component({
     selector: 'app-occurrences',
-    imports: [CommonModule, OccurrenceDisplayComponent],
+    imports: [NgClass, OccurrenceDisplayComponent],
     templateUrl: './occurrences.component.html',
     styleUrl: './occurrences.component.css',
 })

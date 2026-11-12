@@ -75,17 +75,19 @@
         <div
             class="occurrence-list"
             [style.display]="isListOpen ? 'block' : 'none'">
-            <app-occurrence-display
-                *ngFor="
-                    let lineRange of this.occurrenceData?.lineRanges ?? [];
-                    index as index
-                "
-                [lineRange]="lineRange"
-                [rule]="this.rule"
-                [occurrenceIndex]="index"
-                [isSelected]="lineRange === selectedLineRange"
-                (selected)="select(lineRange)">
-            </app-occurrence-display>
+            @for (
+                lineRange of this.occurrenceData.lineRanges ?? [];
+                track lineRange;
+                let index = $index
+            ) {
+                <app-occurrence-display
+                    [lineRange]="lineRange"
+                    [rule]="this.rule"
+                    [occurrenceIndex]="index"
+                    [isSelected]="lineRange === selectedLineRange"
+                    (selected)="select(lineRange)">
+                </app-occurrence-display>
+            }
         </div>
     </div>
 </div>

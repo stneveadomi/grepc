@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
     AbstractControl,
@@ -17,7 +17,7 @@ import { LoggerService } from '../../../services/logger.service';
 
 @Component({
     selector: 'app-child-decoration',
-    imports: [CommonModule, ReactiveFormsModule, ColorPickerDirective],
+    imports: [NgClass, ReactiveFormsModule, ColorPickerDirective],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,

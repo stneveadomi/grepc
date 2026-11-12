@@ -7,7 +7,7 @@ import {
     OnInit,
     ViewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { RuleComponent } from './rule/rule.component';
 import { Rule } from '../models/rule';
 import { RuleService } from '../services/rule.service';
@@ -20,7 +20,7 @@ import { EditModeComponent } from './edit-mode/edit-mode.component';
 
 @Component({
     selector: 'app-root',
-    imports: [CommonModule, RuleComponent, AddRuleComponent, EditModeComponent],
+    imports: [AsyncPipe, RuleComponent, AddRuleComponent, EditModeComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
 })

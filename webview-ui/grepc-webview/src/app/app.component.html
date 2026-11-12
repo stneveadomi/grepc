@@ -1,10 +1,18 @@
-<div *ngIf="!extension.editMode" class="main-container">
-    <app-rule *ngFor="let r of $rules | async" [rule]="r"> </app-rule>
-    <app-add-rule> </app-add-rule>
-</div>
+@if (!extension.editMode) {
+    <div class="main-container">
+        @for (r of $rules | async; track r) {
+            <app-rule [rule]="r"> </app-rule>
+        }
+        <app-add-rule> </app-add-rule>
+    </div>
+}
 
-<div class="edit-mode-container" *ngIf="extension.editMode">
-    <app-edit-mode> </app-edit-mode>
-</div>
+@if (extension.editMode) {
+    <div class="edit-mode-container">
+        <app-edit-mode> </app-edit-mode>
+    </div>
+}
 
-<div #dropOverlay class="drop-overlay" *ngIf="showDropOverlay()"></div>
+@if (showDropOverlay()) {
+    <div #dropOverlay class="drop-overlay"></div>
+}
