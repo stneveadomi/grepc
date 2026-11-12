@@ -12,9 +12,9 @@ Report it privately through GitHub private vulnerability reporting instead: go t
 
 Helpful details to include:
 
--   the grepc version and VS Code version
--   what an attacker can do, and under what conditions
--   steps or a minimal workspace that reproduces it
+- the grepc version and VS Code version
+- what an attacker can do, and under what conditions
+- steps or a minimal workspace that reproduces it
 
 ## What to expect
 
