@@ -12,6 +12,18 @@
     border-radius: 1em;
 
     cursor: pointer;
+
+    /* Replaces the former @angular/animations `slider` trigger: animate('0.3s') with no
+       easing ran a Web Animation with the default linear easing. */
+    transition: background 0.3s linear;
+}
+
+.slider-checkbox.enabled {
+    background: #009b32cf;
+}
+
+.slider-checkbox.disabled {
+    background: var(--vscode-input-background);
 }
 
 .slider-checkbox::before {

@@ -1,10 +1,3 @@
-import {
-    trigger,
-    state,
-    style,
-    animate,
-    transition,
-} from '@angular/animations';
 import { NgClass } from '@angular/common';
 import {
     Component,
@@ -18,23 +11,6 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 @Component({
     selector: 'app-slider-checkbox',
     imports: [NgClass, ReactiveFormsModule],
-    animations: [
-        trigger('slider', [
-            state(
-                'enabled',
-                style({
-                    background: '#009b32cf',
-                }),
-            ),
-            state(
-                'disabled',
-                style({
-                    background: 'var(--vscode-input-background)',
-                }),
-            ),
-            transition('enabled <=> disabled', [animate('0.3s')]),
-        ]),
-    ],
     templateUrl: './slider-checkbox.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './slider-checkbox.component.css',
