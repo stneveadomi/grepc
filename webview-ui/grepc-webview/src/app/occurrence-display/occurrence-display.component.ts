@@ -1,10 +1,17 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ChangeDetectionStrategy,
+} from '@angular/core';
 import { LineRange } from '../../models/line-range';
 import { Rule } from '../../models/rule';
 
 @Component({
     selector: 'app-occurrence-display',
     templateUrl: './occurrence-display.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './occurrence-display.component.css',
 })
 export class OccurrenceDisplayComponent {

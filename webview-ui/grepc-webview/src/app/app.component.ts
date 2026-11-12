@@ -6,6 +6,7 @@ import {
     OnDestroy,
     OnInit,
     ViewChild,
+    ChangeDetectionStrategy,
 } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { RuleComponent } from './rule/rule.component';
@@ -22,6 +23,7 @@ import { EditModeComponent } from './edit-mode/edit-mode.component';
     selector: 'app-root',
     imports: [AsyncPipe, RuleComponent, AddRuleComponent, EditModeComponent],
     templateUrl: './app.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {

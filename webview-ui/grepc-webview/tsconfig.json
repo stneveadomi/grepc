@@ -17,7 +17,10 @@
         "importHelpers": true,
         "target": "ES2022",
         "module": "ES2022",
-        "useDefineForClassFields": false
+        "useDefineForClassFields": false,
+        // TypeScript 6 no longer includes every @types package by default; editors use this
+        // file for specs too, so list what TypeScript 5 picked up automatically.
+        "types": ["jest", "node"]
     },
     "include": ["src"],
     "exclude": ["node_modules"],

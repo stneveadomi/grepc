@@ -39,6 +39,11 @@ module.exports = tseslint.config(
             // injection throughout (including the Draggable/Droppable base classes that take
             // services via `super(...)`); moving to `inject()` is a separate refactor.
             '@angular-eslint/prefer-inject': 'off',
+            // angular-eslint 22 adds this to `tsRecommended`. Angular 22 made OnPush the default
+            // and its migration pinned every component to `ChangeDetectionStrategy.Eager` to keep
+            // the previous behaviour (components rely on in-place mutation of shared rule
+            // objects). Moving to OnPush is a separate, behaviour-changing refactor.
+            '@angular-eslint/prefer-on-push-component-change-detection': 'off',
         },
     },
     {

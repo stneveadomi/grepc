@@ -1,4 +1,11 @@
-import { Component, DoCheck, EventEmitter, Input, Output } from '@angular/core';
+import {
+    Component,
+    DoCheck,
+    EventEmitter,
+    Input,
+    Output,
+    ChangeDetectionStrategy,
+} from '@angular/core';
 import { RuleService } from '../../services/rule.service';
 import { OccurrenceData, Rule } from '../../models/rule';
 import { NgClass } from '@angular/common';
@@ -9,6 +16,7 @@ import { OccurrenceDisplayComponent } from '../occurrence-display/occurrence-dis
     selector: 'app-occurrences',
     imports: [NgClass, OccurrenceDisplayComponent],
     templateUrl: './occurrences.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './occurrences.component.css',
 })
 export class OccurrencesComponent implements DoCheck {

@@ -10,7 +10,7 @@
     ],
     "engines": {
         "vscode": "^1.84.0",
-        "node": ">=24"
+        "node": ">=24.15.0"
     },
     "galleryBanner": {
         "color": "#000000",

@@ -1,5 +1,11 @@
 import { NgClass } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ChangeDetectionStrategy,
+} from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
@@ -31,6 +37,7 @@ import { LoggerService } from '../../../services/logger.service';
         },
     ],
     templateUrl: './child-decoration.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './child-decoration.component.css',
 })
 export class ChildDecorationComponent

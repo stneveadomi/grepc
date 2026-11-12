@@ -9,6 +9,7 @@ import {
     OnInit,
     SimpleChanges,
     ViewChild,
+    ChangeDetectionStrategy,
 } from '@angular/core';
 import {
     ChildDecorationModel,
@@ -50,6 +51,7 @@ import { ExtensionService } from '../../services/extension.service';
         ColorPickerDirective,
     ],
     templateUrl: './rule.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './rule.component.css',
 })
 export class RuleComponent
