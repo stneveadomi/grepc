@@ -236,10 +236,9 @@ export class DecorationTypeWrapper {
                 return { removed: 0, insertIndex: left + 1 };
             }
 
-            let intersection;
-            if ((intersection = midRange.intersection(contentChangeRange))) {
+            if (midRange.intersection(contentChangeRange)) {
                 // once we find intersection, begin unioning the intersections.
-                intersection = contentChangeRange.union(midRange);
+                let intersection = contentChangeRange.union(midRange);
 
                 let newIntersection;
 

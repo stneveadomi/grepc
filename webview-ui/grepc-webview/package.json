@@ -42,13 +42,13 @@
         "@angular/build": "^22.2.6",
         "@angular/cli": "^22.2.6",
         "@angular/compiler-cli": "^22.2.4",
-        "@eslint/js": "9.16",
+        "@eslint/js": "^10.0.1",
         "@types/jest": "^30.0.0",
         "@types/node": "^24.19.2",
         "angular-eslint": "^22.6.0",
-        "eslint": "^9.29.0",
-        "eslint-config-prettier": "^9.1.0",
-        "globals": "^15.15.0",
+        "eslint": "^10.14.0",
+        "eslint-config-prettier": "^10.1.8",
+        "globals": "^17.14.0",
         "jest": "^30.5.2",
         "jest-environment-jsdom": "^30.5.2",
         "jest-preset-angular": "^17.0.3",
@@ -56,7 +56,7 @@
         "prettier": "3.3.2",
         "rimraf": "^5.0.10",
         "typescript": "~6.0.3",
-        "typescript-eslint": "8.72"
+        "typescript-eslint": "^8.72.1"
     },
     "lint-staged": {
         "*.{ts,js}": "eslint --fix",
