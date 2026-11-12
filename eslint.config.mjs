@@ -18,11 +18,11 @@ export default [
         // existed. Listed after eslint-config-prettier because it turns `curly` off; the default
         // "all" option does not conflict with Prettier.
         rules: {
-            curly: 'warn',
-            eqeqeq: 'warn',
-            'no-throw-literal': 'warn',
+            curly: 'error',
+            eqeqeq: 'error',
+            'no-throw-literal': 'error',
             '@typescript-eslint/naming-convention': [
-                'warn',
+                'error',
                 {
                     selector: 'import',
                     format: ['camelCase', 'PascalCase'],
