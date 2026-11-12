@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { LineRange } from './line-range';
 
 export interface IRule {
@@ -77,7 +77,7 @@ export enum OverviewRulerLane {
 
 export class Rule implements IRule {
     constructor(title: string) {
-        this.id = uuidv4();
+        this.id = randomUUID();
         this.title = title;
         this.enabled = false;
         this.expanded = false;
