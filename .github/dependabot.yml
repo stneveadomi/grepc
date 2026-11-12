@@ -1,0 +1,34 @@
+version: 2
+updates:
+    - package-ecosystem: github-actions
+      directory: /
+      schedule: { interval: weekly }
+      # GitHub Actions supports only default-days here, not the semver-*-days keys.
+      cooldown: { default-days: 7 }
+    - package-ecosystem: npm
+      directories: ['/', '/webview-ui/grepc-webview']
+      schedule: { interval: weekly }
+      # Cooldown applies to version updates only; security updates are never delayed.
+      cooldown: { default-days: 7, semver-major-days: 14 }
+      # A dependency goes to the first group it matches, so order matters.
+      groups:
+          angular:
+              patterns: ['@angular/*', 'angular-eslint', 'ngx-color-picker', 'zone.js']
+          eslint:
+              patterns: ['eslint', '@eslint/*', 'typescript-eslint', '@typescript-eslint/*', 'eslint-config-prettier', 'globals']
+          jest:
+              patterns: ['jest', 'jest-*', '@jest/*', '@types/jest']
+          vscode-tooling:
+              patterns: ['@vscode/*', '@types/vscode']
+          dev-minor-patch:
+              dependency-type: development
+              update-types: [minor, patch]
+      ignore:
+          # Angular majors are upgraded by hand with `ng update`, one major at a time.
+          - dependency-name: '@angular/*'
+            update-types: ['version-update:semver-major']
+          # angular-eslint majors track Angular majors and move with `ng update angular-eslint`.
+          - dependency-name: 'angular-eslint'
+            update-types: ['version-update:semver-major']
+          # @types/vscode must track engines.vscode, not latest.
+          - dependency-name: '@types/vscode'

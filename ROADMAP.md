@@ -64,8 +64,8 @@ Goal: any PR can be merged and a release can be cut again.
 -   [x] Add `.nvmrc` (`24`) and `engines.node` in both `package.json` files so local and CI agree.
 -   [x] Run the extension tests in CI for the first time: `xvfb-run -a npm test` on Linux, `npm test` on Windows. Fix whatever has rotted in `ext-src/test/suite` (two files exist; neither has run in CI). _Done: every test built a `Rule` without enabling it (rules default to disabled since 87a26e7), so `updateOccurrences` returned early and 9 of 11 tests failed._
 -   [x] Remove `--force` from `npm ci`. If it fails, fix the peer dependency conflict rather than hiding it. `--force` masks exactly the kind of breakage that dependency bots are meant to surface.
--   [ ] Update the `main` ruleset's required status checks to the new job names (`lint`, `test`, `package`) and consider dropping the one-approval requirement, which admins already bypass. Enable "Require branches to be up to date" so stale PRs rerun CI.
--   [ ] Rotate `VSCE_PAT` (new Azure DevOps PAT, Marketplace > Manage scope, all accessible organizations, max 1 year). This is only to make the next release possible; Phase 2 replaces it.
+-   [x] Update the `main` ruleset's required status checks to the new job names (`lint`, `test`, `package`) and consider dropping the one-approval requirement, which admins already bypass. Enable "Require branches to be up to date" so stale PRs rerun CI.
+-   [x] Rotate `VSCE_PAT` (new Azure DevOps PAT, Marketplace > Manage scope, all accessible organizations, max 1 year). This is only to make the next release possible; Phase 2 replaces it.
 -   [x] Add `.gitattributes` with `* text=auto eol=lf` plus binary entries for `*.png`, `*.gif`, `*.vsix`, and renormalize once (`git add --renormalize .`). Stops the 61-file phantom diff and makes Prettier's LF expectation hold on Windows.
 -   [x] Fix `lint-staged` to operate on staged files: `"*.ts": "eslint --fix"`, `"*.{ts,js,json,html,css,md}": "prettier --write"`, with a matching block in the webview `package.json`.
 -   [x] Bump `@vscode/vsce` to 4.x at the root (needs Node 22+, which Phase 0 provides).
@@ -74,8 +74,8 @@ Goal: any PR can be merged and a release can be cut again.
 
 Goal: the free GitHub security features are on and workflows follow least privilege.
 
--   [ ] Settings > Security: enable Dependabot alerts, Dependabot security updates, secret scanning, push protection. Enable CodeQL default setup for `javascript-typescript` and `actions`.
--   [ ] Add `.github/dependabot.yml`:
+-   [x] Settings > Security: enable Dependabot alerts, Dependabot security updates, secret scanning, push protection. Enable CodeQL default setup for `javascript-typescript` and `actions`. _Done 2026-11-11, along with private vulnerability reporting._
+-   [x] Add `.github/dependabot.yml`: _Done. The committed file adds `globals` to the `eslint` group and a major-version ignore for `angular-eslint`, whose major is locked to Angular's._
 
     ```yaml
     version: 2
@@ -110,10 +110,10 @@ Goal: the free GitHub security features are on and workflows follow least privil
 
     The seven-day cooldown is the cheap defence against the npm supply-chain compromises of 2025-2026: a poisoned release is usually pulled within days.
 
--   [ ] Every workflow: top-level `permissions: {}`, per-job grants (`contents: read` for CI; `contents: write`, `id-token: write`, `attestations: write` only in the release job). Add `concurrency` with `cancel-in-progress` on the CI workflow.
--   [ ] Pin all third-party actions to commit SHAs with a `# vX.Y.Z` comment. Dependabot updates both.
--   [ ] Add `zizmor` (`zizmorcore/zizmor-action`, SARIF to code scanning) to CI. It catches template injection, unpinned actions, excessive permissions and credential persistence in workflow files. Also add `persist-credentials: false` to every checkout that does not push.
--   [ ] Add `SECURITY.md` (supported version: latest minor; report via GitHub private vulnerability reporting, which is enabled under Settings > Security).
+-   [x] Every workflow: top-level `permissions: {}`, per-job grants (`contents: read` for CI; `contents: write`, `id-token: write`, `attestations: write` only in the release job). Add `concurrency` with `cancel-in-progress` on the CI workflow. _Done. The release job holds `contents: write` only; `id-token: write` and `attestations: write` arrive in Phase 2 with the steps that use them._
+-   [x] Pin all third-party actions to commit SHAs with a `# vX.Y.Z` comment. Dependabot updates both. _Done, first-party actions included._
+-   [x] Add `zizmor` (`zizmorcore/zizmor-action`, SARIF to code scanning) to CI. It catches template injection, unpinned actions, excessive permissions and credential persistence in workflow files. Also add `persist-credentials: false` to every checkout that does not push. _Done. Findings go to the Security tab and do not fail the job; the release job no longer uses the npm cache (zizmor `cache-poisoning`)._
+-   [x] Add `SECURITY.md` (supported version: latest minor; report via GitHub private vulnerability reporting, which is enabled under Settings > Security).
 
 ### Phase 2: Release pipeline (`release.yml`)
 
