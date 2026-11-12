@@ -297,7 +297,10 @@
         "showdown": "^2.1.0"
     },
     "lint-staged": {
-        "*.ts": "eslint --fix",
-        "*.{ts,js,json,html,css,md}": "prettier --write"
+        "*.ts": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "*.{js,json,html,css,md}": "prettier --write"
     }
 }
