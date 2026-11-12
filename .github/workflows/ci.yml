@@ -80,11 +80,12 @@ jobs:
             # @vscode/test-electron falls back to an installed VS Code under .vscode-test when its
             # version lookup fails, so a restored copy lets the tests run through that network flake.
             # Only the vscode-<platform>-<version> folders are cached (user-data would carry state
-            # between runs). The per-run key saves any newer VS Code after each successful job.
-            - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+            # between runs). Every run restores; only main saves, keyed by the VS Code build, so a
+            # new entry (about 400 MB per OS) is written once per VS Code release, not once per run.
+            - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
               with:
                   path: .vscode-test/vscode-*
-                  key: vscode-test-${{ runner.os }}-${{ github.run_id }}
+                  key: vscode-test-${{ runner.os }}
                   restore-keys: vscode-test-${{ runner.os }}-
             - name: Extension tests (Linux)
               if: runner.os == 'Linux'
@@ -94,8 +95,19 @@ jobs:
               run: npm test
             # Keep only the newest VS Code so the saved cache does not grow with every release.
             - name: Prune cached VS Code builds
+              id: vscode
               shell: bash
-              run: find .vscode-test -maxdepth 1 -type d -name 'vscode-*' | sort -V | head -n -1 | xargs -r rm -rf
+              run: |
+                  [ -d .vscode-test ] || exit 0
+                  find .vscode-test -maxdepth 1 -type d -name 'vscode-*' | sort -V | head -n -1 | xargs -r rm -rf
+                  newest=$(find .vscode-test -maxdepth 1 -type d -name 'vscode-*' | sort -V | tail -n 1)
+                  echo "dir=${newest##*/}" >> "$GITHUB_OUTPUT"
+            - name: Save VS Code to the cache
+              if: github.ref == 'refs/heads/main' && steps.vscode.outputs.dir != ''
+              uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+              with:
+                  path: .vscode-test/vscode-*
+                  key: vscode-test-${{ runner.os }}-${{ steps.vscode.outputs.dir }}
 
     package:
         runs-on: ubuntu-latest
