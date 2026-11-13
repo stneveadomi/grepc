@@ -10,7 +10,7 @@
     ],
     "engines": {
         "vscode": "^1.84.0",
-        "node": ">=24"
+        "node": ">=24.15.0"
     },
     "galleryBanner": {
         "color": "#000000",
@@ -271,40 +271,42 @@
         "deploy": "vsce publish"
     },
     "devDependencies": {
-        "@eslint/js": "^9.9.0",
+        "@eslint/js": "^10.0.1",
         "@types/mocha": "^10.0.10",
         "@types/node": "^22.15.32",
-        "@types/uuid": "^10.0.0",
+        "@types/showdown": "^2.0.6",
         "@types/vscode": "~1.84.0",
-        "@typescript-eslint/eslint-plugin": "^8.2.0",
-        "@typescript-eslint/parser": "^8.2.0",
-        "@vscode/codicons": "^0.0.36",
-        "@vscode/test-cli": "^0.0.10",
-        "@vscode/test-electron": "^2.5.2",
+        "@vscode/test-cli": "^0.0.15",
+        "@vscode/test-electron": "^3.1.0",
         "@vscode/vsce": "^4.0.0",
-        "eslint": "^9.29.0",
-        "eslint-config-prettier": "^9.1.0",
-        "glob": "^11.0.3",
-        "globals": "^15.15.0",
+        "eslint": "^10.14.0",
+        "eslint-config-prettier": "^10.1.8",
+        "globals": "^17.14.0",
         "husky": "^9.1.7",
         "lint-staged": "^17.6.0",
-        "mocha": "^10.8.2",
-        "prettier": "3.3.3",
+        "prettier": "3.9.10",
         "ts-loader": "^9.5.2",
-        "typescript": "^5.8.3",
-        "typescript-eslint": "^8.34.1",
+        "typescript": "~6.0.3",
+        "typescript-eslint": "^8.72.1",
         "webpack": "^5.99.9",
-        "webpack-cli": "^5.1.4"
+        "webpack-cli": "^7.3.1"
     },
     "dependencies": {
-        "@types/showdown": "^2.0.6",
-        "debounce": "^2.2.0",
         "rxjs": "^7.8.2",
-        "showdown": "^2.1.0",
-        "uuid": "^10.0.0"
+        "showdown": "^2.1.0"
+    },
+    "overrides": {
+        "@vscode/test-cli": {
+            "mocha": {
+                "serialize-javascript": "^7.1.3"
+            }
+        }
     },
     "lint-staged": {
-        "*.ts": "eslint --fix",
-        "*.{ts,js,json,html,css,md}": "prettier --write"
+        "*.ts": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "*.{js,mjs,json,html,css,md,yml,yaml}": "prettier --write"
     }
 }

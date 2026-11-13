@@ -4,20 +4,29 @@ out/**
 node_modules/**
 ext-src/**
 .gitignore
+.gitattributes
 .yarnrc
+.nvmrc
+**/.npmrc
+.agents/**
 webpack.config.js
 vsc-extension-quickstart.md
 **/tsconfig.json
-**/.eslintrc.json
 **/*.map
 **/*.ts
 **/*.gif
 .github/**
 .prettierignore
+.prettierrc
 .vscode-test.mjs
 eslint.config.mjs
 .husky/**/*
 !ext-src/release-notes-ui/release-notes.css
+
+# Repo-only docs. README links to docs/ are rewritten by vsce to point at GitHub.
+ROADMAP.md
+SECURITY.md
+docs/**
 
 webview-ui/grepc-webview/.angular/**
 webview-ui/grepc-webview/.vscode/**
@@ -25,11 +34,12 @@ webview-ui/grepc-webview/node_modules/**
 webview-ui/grepc-webview/src/**
 webview-ui/grepc-webview/coverage/**
 webview-ui/grepc-webview/.editorconfig
+webview-ui/grepc-webview/.gitignore
+webview-ui/grepc-webview/.prettierignore
+webview-ui/grepc-webview/.prettierrc
+webview-ui/grepc-webview/eslint.config.js
 webview-ui/grepc-webview/*.json
 webview-ui/grepc-webview/*.md
-webview-ui/grepc-webview/dist/grepc-webview/.gitignore
-webview-ui/grepc-webview/dist/grepc-webview/.prettierignore
-webview-ui/grepc-webview/dist/grepc-webview/.prettierrc
-webview-ui/grepc-webview/dist/grepc-webview/eslint.config.js
+webview-ui/grepc-webview/dist/grepc-webview/prerendered-routes.json
 webview-ui/grepc-webview/dist/grepc-webview/browser/index.html
 webview-ui/grepc-webview/dist/grepc-webview/browser/favicon.ico

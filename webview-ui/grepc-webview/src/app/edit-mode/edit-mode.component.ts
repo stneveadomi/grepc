@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { RuleService } from '../../services/rule.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { decode } from 'html-entities';
@@ -7,6 +7,7 @@ import { decode } from 'html-entities';
     selector: 'app-edit-mode',
     imports: [],
     templateUrl: './edit-mode.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './edit-mode.component.css',
 })
 export class EditModeComponent implements OnInit {

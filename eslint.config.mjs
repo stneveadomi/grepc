@@ -13,4 +13,21 @@ export default [
     pluginJs.configs.recommended,
     ...tseslint.configs.recommended,
     eslintConfigPrettier,
+    {
+        // Carried over from the legacy .eslintrc.json, which ESLint 9+ never read once this file
+        // existed. Listed after eslint-config-prettier because it turns `curly` off; the default
+        // "all" option does not conflict with Prettier.
+        rules: {
+            curly: 'error',
+            eqeqeq: 'error',
+            'no-throw-literal': 'error',
+            '@typescript-eslint/naming-convention': [
+                'error',
+                {
+                    selector: 'import',
+                    format: ['camelCase', 'PascalCase'],
+                },
+            ],
+        },
+    },
 ];

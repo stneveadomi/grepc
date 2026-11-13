@@ -105,7 +105,9 @@ export class RuleFactory {
     public getEnabledRuleIdSet() {
         const enabledSet = new Set();
         for (const rule of this.getRulesArray()) {
-            if (rule.enabled) enabledSet.add(rule.id);
+            if (rule.enabled) {
+                enabledSet.add(rule.id);
+            }
         }
 
         return enabledSet;

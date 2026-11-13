@@ -75,17 +75,22 @@
         <div
             class="occurrence-list"
             [style.display]="isListOpen ? 'block' : 'none'">
-            <app-occurrence-display
-                *ngFor="
-                    let lineRange of this.occurrenceData?.lineRanges ?? [];
-                    index as index
-                "
-                [lineRange]="lineRange"
-                [rule]="this.rule"
-                [occurrenceIndex]="index"
-                [isSelected]="lineRange === selectedLineRange"
-                (selected)="select(lineRange)">
-            </app-occurrence-display>
+            <!-- Tracking by identity is deliberate and matches the old *ngFor. The extension
+                 re-sends fresh line-range objects, so dev builds log NG0956; tracking by a key
+                 would instead reuse components across updates and change their lifetimes. -->
+            @for (
+                lineRange of this.occurrenceData.lineRanges ?? [];
+                track lineRange;
+                let index = $index
+            ) {
+                <app-occurrence-display
+                    [lineRange]="lineRange"
+                    [rule]="this.rule"
+                    [occurrenceIndex]="index"
+                    [isSelected]="lineRange === selectedLineRange"
+                    (selected)="select(lineRange)">
+                </app-occurrence-display>
+            }
         </div>
     </div>
 </div>

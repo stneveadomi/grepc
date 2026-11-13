@@ -25,6 +25,8 @@ jobs:
             - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
                   node-version-file: .nvmrc
+                  # engines.node needs >=24.15.0, but `24` alone accepts any 24.x in the tool cache.
+                  check-latest: true
                   cache: npm
                   cache-dependency-path: |
                       package-lock.json
@@ -59,6 +61,8 @@ jobs:
             - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
                   node-version-file: .nvmrc
+                  # engines.node needs >=24.15.0, but `24` alone accepts any 24.x in the tool cache.
+                  check-latest: true
                   cache: npm
                   cache-dependency-path: |
                       package-lock.json
@@ -73,12 +77,37 @@ jobs:
               if: runner.os == 'Linux'
               run: npm run test:coverage
               working-directory: webview-ui/grepc-webview
+            # @vscode/test-electron falls back to an installed VS Code under .vscode-test when its
+            # version lookup fails, so a restored copy lets the tests run through that network flake.
+            # Only the vscode-<platform>-<version> folders are cached (user-data would carry state
+            # between runs). Every run restores; only main saves, keyed by the VS Code build, so a
+            # new entry (about 400 MB per OS) is written once per VS Code release, not once per run.
+            - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+              with:
+                  path: .vscode-test/vscode-*
+                  key: vscode-test-${{ runner.os }}
+                  restore-keys: vscode-test-${{ runner.os }}-
             - name: Extension tests (Linux)
               if: runner.os == 'Linux'
               run: xvfb-run -a npm test
             - name: Extension tests (Windows)
               if: runner.os == 'Windows'
               run: npm test
+            # Keep only the newest VS Code so the saved cache does not grow with every release.
+            - name: Prune cached VS Code builds
+              id: vscode
+              shell: bash
+              run: |
+                  [ -d .vscode-test ] || exit 0
+                  find .vscode-test -maxdepth 1 -type d -name 'vscode-*' | sort -V | head -n -1 | xargs -r rm -rf
+                  newest=$(find .vscode-test -maxdepth 1 -type d -name 'vscode-*' | sort -V | tail -n 1)
+                  echo "dir=${newest##*/}" >> "$GITHUB_OUTPUT"
+            - name: Save VS Code to the cache
+              if: github.ref == 'refs/heads/main' && steps.vscode.outputs.dir != ''
+              uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+              with:
+                  path: .vscode-test/vscode-*
+                  key: vscode-test-${{ runner.os }}-${{ steps.vscode.outputs.dir }}
 
     package:
         runs-on: ubuntu-latest
@@ -91,6 +120,8 @@ jobs:
             - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
                   node-version-file: .nvmrc
+                  # engines.node needs >=24.15.0, but `24` alone accepts any 24.x in the tool cache.
+                  check-latest: true
                   cache: npm
                   cache-dependency-path: |
                       package-lock.json

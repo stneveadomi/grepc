@@ -32,7 +32,7 @@ suite('DecorationTypeWrapper', () => {
         const contentChangeRange = new vscode.Range(textDoc.positionAt(2), textDoc.positionAt(7));
         const expectedRange = new vscode.Range(textDoc.positionAt(0), textDoc.positionAt(8));
         const result = dt.removeIntersectingOccurrences(contentChangeRange);
-        assert.ok(result.removed == 1);
+        assert.ok(result.removed === 1);
         assert.equal(textDoc.getText(result.range), textDoc.getText(expectedRange));
         assert.equal(result.insertIndex, 0);
     });
@@ -40,7 +40,7 @@ suite('DecorationTypeWrapper', () => {
     test('removeIntersectingOccurrences() -> single intersection, first position', () => {
         const expectedRange = dt.activeOccurrences[0];
         const result = dt.removeIntersectingOccurrences(expectedRange);
-        assert.ok(result.removed == 1);
+        assert.ok(result.removed === 1);
         assert.equal(textDoc.getText(result.range), textDoc.getText(expectedRange));
         assert.equal(result.insertIndex, 0);
     });
@@ -48,7 +48,7 @@ suite('DecorationTypeWrapper', () => {
     test('removeIntersectingOccurrences() -> single intersection, middle position', () => {
         const expectedRange = dt.activeOccurrences[5];
         const result = dt.removeIntersectingOccurrences(expectedRange);
-        assert.ok(result.removed == 1);
+        assert.ok(result.removed === 1);
         assert.equal(textDoc.getText(result.range), textDoc.getText(expectedRange));
         assert.equal(result.insertIndex, 5);
     });
@@ -56,7 +56,7 @@ suite('DecorationTypeWrapper', () => {
     test('removeIntersectingOccurrences() -> no intersection, first position', () => {
         const contentChangeRange = new vscode.Range(textDoc.positionAt(0), textDoc.positionAt(2));
         const result = dt.removeIntersectingOccurrences(contentChangeRange);
-        assert.ok(result.removed == 0);
+        assert.ok(result.removed === 0);
         assert.equal(result.insertIndex, 0);
     });
 
@@ -67,7 +67,7 @@ suite('DecorationTypeWrapper', () => {
         const end = range1.end.translate(1, -1);
         const contentChangeRange = new vscode.Range(start, end);
         const result = dt.removeIntersectingOccurrences(contentChangeRange);
-        assert.ok(result.removed == 0);
+        assert.ok(result.removed === 0);
         assert.equal(result.insertIndex, 5);
     });
 
@@ -78,7 +78,7 @@ suite('DecorationTypeWrapper', () => {
         const end = range1.end.translate(1, -1);
         const contentChangeRange = new vscode.Range(start, end);
         const result = dt.removeIntersectingOccurrences(contentChangeRange);
-        assert.ok(result.removed == 0);
+        assert.ok(result.removed === 0);
         assert.equal(result.insertIndex, dt.activeOccurrences.length);
     });
 
@@ -89,7 +89,7 @@ suite('DecorationTypeWrapper', () => {
         const end = range1.end.translate(1, -1);
         const contentChangeRange = new vscode.Range(start, end);
         const result = dt.removeIntersectingOccurrences(contentChangeRange);
-        assert.ok(result.removed == 0);
+        assert.ok(result.removed === 0);
         assert.equal(result.insertIndex, dt.activeOccurrences.length - 9);
     });
 

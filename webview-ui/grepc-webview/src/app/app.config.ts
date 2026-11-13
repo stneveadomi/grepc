@@ -1,6 +1,5 @@
-import { ApplicationConfig } from '@angular/core';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 
 export const appConfig: ApplicationConfig = {
-    providers: [provideAnimations()],
+    providers: [provideZoneChangeDetection()],
 };

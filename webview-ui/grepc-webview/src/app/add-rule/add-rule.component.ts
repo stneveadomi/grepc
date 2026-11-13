@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RuleService } from '../../services/rule.service';
 import { Rule } from '../../models/rule';
 import { LoggerService } from '../../services/logger.service';
@@ -7,6 +7,7 @@ import { LoggerService } from '../../services/logger.service';
     selector: 'app-add-rule',
     imports: [],
     templateUrl: './add-rule.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './add-rule.component.css',
 })
 export class AddRuleComponent {

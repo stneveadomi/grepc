@@ -1,5 +1,11 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { NgClass } from '@angular/common';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ChangeDetectionStrategy,
+} from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
@@ -17,7 +23,7 @@ import { LoggerService } from '../../../services/logger.service';
 
 @Component({
     selector: 'app-child-decoration',
-    imports: [CommonModule, ReactiveFormsModule, ColorPickerDirective],
+    imports: [NgClass, ReactiveFormsModule, ColorPickerDirective],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -31,6 +37,7 @@ import { LoggerService } from '../../../services/logger.service';
         },
     ],
     templateUrl: './child-decoration.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './child-decoration.component.css',
 })
 export class ChildDecorationComponent
