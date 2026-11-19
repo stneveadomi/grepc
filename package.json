@@ -284,7 +284,7 @@
         "globals": "^17.14.0",
         "husky": "^9.1.7",
         "lint-staged": "^17.6.0",
-        "prettier": "3.9.10",
+        "prettier": "3.10.1",
         "ts-loader": "^9.5.2",
         "typescript": "~6.0.3",
         "typescript-eslint": "^8.72.1",
